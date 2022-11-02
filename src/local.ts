@@ -11,8 +11,9 @@ import { Storage } from './abstract-storage'
 const pipeline = promisify(_pipeline)
 
 export class LocalStorage extends Storage {
-  async write(filePath: string, fileReadable: Readable): Promise<void> {
+  async write(filePath: string, fileReadable: Readable): Promise<string> {
     await pipeline(fileReadable, createWriteStream(filePath))
+    return filePath
   }
 
   async exists(filePath: string): Promise<boolean> {

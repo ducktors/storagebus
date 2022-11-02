@@ -11,8 +11,8 @@ import {
 import { mockClient } from 'aws-sdk-client-mock'
 import { beforeEach, expect, test, vi } from 'vitest'
 
-import { Storage } from './abstract-storage'
-import { S3Storage } from './s3'
+import { Storage } from '../abstract-storage'
+import { S3Storage } from './'
 
 const accessKeyId = 'my-access-key-id'
 const secretAccessKey = 'my-secret-access-key'
@@ -33,12 +33,50 @@ beforeEach(() => {
   s3Mock.reset()
 })
 
-test('create LocalStorage instance', () => {
+test('create s3Storage instance', () => {
   expect(s3Storage).toBeInstanceOf(S3Storage)
 })
 
-test('LocalStorage instance extends from Storage', () => {
+test('s3Storage instance extends from Storage', () => {
   expect(s3Storage).toBeInstanceOf(Storage)
+})
+
+test('create s3Storage instance with custom sanitizeKey function', () => {
+  const s3Storage = new S3Storage({
+    bucket,
+    accessKeyId,
+    secretAccessKey,
+    region,
+    sanitizeKey: key => key,
+  })
+
+  expect(s3Storage).toBeInstanceOf(S3Storage)
+})
+
+test('create s3Storage instance with wrong type for sanitizeKey param', () => {
+  try {
+    new S3Storage({
+      bucket,
+      accessKeyId,
+      secretAccessKey,
+      region,
+      // @ts-expect-error: testing wrong type
+      sanitizeKey: '',
+    })
+  } catch (err) {
+    expect(err).toBeInstanceOf(TypeError)
+  }
+})
+
+test('create s3Storage instance with default sanitize function', () => {
+  const s3Storage = new S3Storage({
+    bucket,
+    accessKeyId,
+    secretAccessKey,
+    region,
+    sanitizeKey: true,
+  })
+  expect(s3Storage).toBeInstanceOf(S3Storage)
 })
 
 test('s3storage.write a Readable to s3 bucket', async () => {
@@ -108,6 +146,26 @@ test('s3storage.remove removes key from s3 bucket', async () => {
   await s3Storage.remove(key)
 
   expect(await s3Storage.exists(key)).toBe(false)
+})
+
+test('s3storage.copy copy a file to new location', async () => {
+  const key = randomUUID()
+  const objectKey = await s3Storage.write(key, Readable.from(key))
+  const newKey = await s3Storage.copy(objectKey, 'new-key')
+
+  expect(await s3Storage.exists(objectKey)).toBe(true)
+  expect(await s3Storage.exists(newKey)).toBe(true)
+})
+
+test('s3storage.move moves a file to a new location', async () => {
+  const key = randomUUID()
+
+  const objectKey = await s3Storage.write(key, Readable.from(key))
+  const newKey = await s3Storage.move(objectKey, 'new-key')
+  s3Mock.on(HeadObjectCommand).rejects({})
+  expect(await s3Storage.exists(objectKey)).toBe(false)
+  s3Mock.reset()
+  expect(await s3Storage.exists(newKey)).toBe(true)
 })
 
 test(`Creates S3Storage using env vars`, () => {
