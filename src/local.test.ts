@@ -2,8 +2,9 @@ import { randomUUID } from 'node:crypto'
 import { stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import { Readable } from 'node:stream'
+import fs from 'node:fs/promises'
 
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 
 import { Storage } from './abstract-storage'
 import { LocalStorage } from './local'
@@ -64,6 +65,80 @@ test('localStorage.remove unlinks a path on the disk', async () => {
   await localStorage.remove(path)
 
   expect(await localStorage.exists(path)).toBe(false)
+})
+
+test('localStorage.copy copies a file to the new destination', async () => {
+  const tmpFolder = await localStorage.getTmpFolder()
+  const sourceFileName = randomUUID()
+  const destFileName = randomUUID()
+  const destpath = join(tmpFolder, destFileName)
+
+  const sourcePath = await localStorage.saveToTmpFolder(
+    sourceFileName,
+    Readable.from(sourceFileName),
+  )
+  await localStorage.copy(sourcePath, destpath)
+
+  expect(await localStorage.exists(sourcePath)).toBe(true)
+  expect(await localStorage.exists(destpath)).toBe(true)
+})
+
+test('localStorage.move moves a file to the new destination', async () => {
+  const tmpFolder = await localStorage.getTmpFolder()
+  const sourceFileName = randomUUID()
+  const destFileName = randomUUID()
+  const destpath = join(tmpFolder, destFileName)
+
+  const sourcePath = await localStorage.saveToTmpFolder(
+    sourceFileName,
+    Readable.from(sourceFileName),
+  )
+  await localStorage.move(sourcePath, destpath)
+
+  expect(await localStorage.exists(sourcePath)).toBe(false)
+  expect(await localStorage.exists(destpath)).toBe(true)
+})
+
+test('localStorage.move defaults to copy when EXDEV is thrown', async () => {
+  const renameSpy = vi.spyOn(fs, 'rename')
+  const exDevError: NodeJS.ErrnoException = new Error('EXDEV: cross-device link not permitted')
+  exDevError.code = 'EXDEV'
+
+  renameSpy.mockRejectedValueOnce(exDevError)
+
+  const tmpFolder = await localStorage.getTmpFolder()
+  const sourceFileName = randomUUID()
+  const destFileName = randomUUID()
+  const destpath = join(tmpFolder, destFileName)
+
+  const sourcePath = await localStorage.saveToTmpFolder(
+    sourceFileName,
+    Readable.from(sourceFileName),
+  )
+  await localStorage.move(sourcePath, destpath)
+
+  expect(await localStorage.exists(sourcePath)).toBe(false)
+  expect(await localStorage.exists(destpath)).toBe(true)
+  renameSpy.mockReset()
+})
+
+test('localStorage.move rethrows generic error', async () => {
+  const renameSpy = vi.spyOn(fs, 'rename')
+
+  renameSpy.mockRejectedValueOnce(new Error('Generic error'))
+
+  const tmpFolder = await localStorage.getTmpFolder()
+  const sourceFileName = randomUUID()
+  const destFileName = randomUUID()
+  const destpath = join(tmpFolder, destFileName)
+
+  const sourcePath = await localStorage.saveToTmpFolder(
+    sourceFileName,
+    Readable.from(sourceFileName),
+  )
+
+  await expect(() => localStorage.move(sourcePath, destpath)).rejects.toThrow('Generic error')
+  renameSpy.mockReset()
 })
 
 test('localStorage.saveToTmpFolder saves a Readable to the tmp folder', async () => {

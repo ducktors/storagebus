@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { constants, createReadStream, createWriteStream } from 'node:fs'
-import { access, mkdir, unlink } from 'node:fs/promises'
+import fs from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { Readable, pipeline as _pipeline } from 'node:stream'
@@ -18,7 +18,7 @@ export class LocalStorage extends Storage {
 
   async exists(filePath: string): Promise<boolean> {
     try {
-      await access(filePath, constants.F_OK)
+      await fs.access(filePath, constants.F_OK)
       return true
     } catch (err) {
       return false
@@ -30,7 +30,26 @@ export class LocalStorage extends Storage {
   }
 
   async remove(filePath: string): Promise<void> {
-    return unlink(filePath)
+    return fs.unlink(filePath)
+  }
+
+  async copy(filePath: string, destFilePath: string): Promise<string> {
+    await fs.copyFile(filePath, destFilePath)
+    return destFilePath
+  }
+
+  async move(filePath: string, destFilePath: string): Promise<string> {
+    try {
+      await fs.rename(filePath, destFilePath)
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === 'EXDEV') {
+        await this.copy(filePath, destFilePath)
+        await this.remove(filePath)
+      } else {
+        throw err
+      }
+    }
+    return destFilePath
   }
 
   async saveToTmpFolder(
@@ -51,7 +70,7 @@ export class LocalStorage extends Storage {
       subFolder = randomUUID()
     }
     const path = join(tmpdir(), subFolder)
-    await mkdir(path, {
+    await fs.mkdir(path, {
       recursive: true,
     })
     return path
