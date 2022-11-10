@@ -14,7 +14,7 @@ import {
 } from '@aws-sdk/client-s3'
 import { Progress, Upload } from '@aws-sdk/lib-storage'
 
-import { Storage } from '../abstract-storage'
+import { AbstractStorageOptions, Storage } from '../abstract-storage'
 import { sanitize } from './sanitize-key'
 
 function isFunction(x: unknown): x is (x: string) => string {
@@ -34,14 +34,17 @@ export class S3Storage extends Storage {
   protected bucket: string
   protected sanitize: (key: string) => string
 
-  constructor(opts?: {
-    region?: string
-    bucket?: string
-    accessKeyId?: string
-    secretAccessKey?: string
-    sanitizeKey?: ((key: string) => string) | boolean
-  }) {
-    super()
+  constructor(
+    opts?: {
+      region?: string
+      bucket?: string
+      accessKeyId?: string
+      secretAccessKey?: string
+      sanitizeKey?: ((key: string) => string) | boolean
+    } & AbstractStorageOptions,
+  ) {
+    super({ debug: opts?.debug, logger: opts?.logger })
+
     const { region, bucket, accessKeyId, secretAccessKey, sanitizeKey = false } = opts ?? {}
 
     this.client = new S3Client({
@@ -91,6 +94,9 @@ export class S3Storage extends Storage {
       await this.client.send(new HeadObjectCommand(headParams))
       return true
     } catch (err) {
+      if (this._debug) {
+        this._logger.info({ err })
+      }
       return false
     }
   }

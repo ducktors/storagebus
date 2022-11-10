@@ -24,6 +24,7 @@ const s3Storage = new S3Storage({
   accessKeyId,
   secretAccessKey,
   region,
+  debug: true,
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

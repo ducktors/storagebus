@@ -9,7 +9,7 @@ import { expect, test, vi } from 'vitest'
 import { Storage } from './abstract-storage'
 import { LocalStorage } from './local'
 
-const localStorage = new LocalStorage()
+const localStorage = new LocalStorage({ debug: true })
 
 test('create LocalStorage instance', () => {
   expect(localStorage).toBeInstanceOf(LocalStorage)

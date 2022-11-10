@@ -6,11 +6,14 @@ import { join } from 'node:path'
 import { Readable, pipeline as _pipeline } from 'node:stream'
 import { promisify } from 'node:util'
 
-import { Storage } from './abstract-storage'
+import { AbstractStorageOptions, Storage } from './abstract-storage'
 
 const pipeline = promisify(_pipeline)
 
 export class LocalStorage extends Storage {
+  constructor(opts: AbstractStorageOptions) {
+    super(opts)
+  }
   async write(filePath: string, fileReadable: Readable): Promise<string> {
     await pipeline(fileReadable, createWriteStream(filePath))
     return filePath
@@ -21,6 +24,9 @@ export class LocalStorage extends Storage {
       await fs.access(filePath, constants.F_OK)
       return true
     } catch (err) {
+      if (this._debug) {
+        this._logger.info({ err })
+      }
       return false
     }
   }
