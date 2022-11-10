@@ -11,6 +11,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "prepublish": "pnpm build",
     "build": "rimraf ./dist && tsc -p ./tsconfig.build.json",
     "lint": "eslint",
     "test": "vitest run",
