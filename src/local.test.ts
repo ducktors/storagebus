@@ -9,7 +9,7 @@ import { expect, test, vi } from 'vitest'
 import { Storage } from './abstract-storage'
 import { LocalStorage } from './local'
 
-const localStorage = new LocalStorage({ debug: true })
+const localStorage = new LocalStorage()
 
 test('create LocalStorage instance', () => {
   expect(localStorage).toBeInstanceOf(LocalStorage)
@@ -162,4 +162,15 @@ test('localStorage.getTmpFolder returns a path to system tmp subfolder', async (
   const tmp = await localStorage.getTmpFolder(subFolder)
 
   expect(tmp.includes(subFolder)).toBe(true)
+})
+
+test('logs the error when in debug mode', async () => {
+  const localStorage = new LocalStorage({ debug: true })
+
+  try {
+    await localStorage.exists('foo')
+    // eslint-disable-next-line
+  } catch (err: any) {
+    expect(err.message).toMatch('ENOENT: no such file or directory')
+  }
 })

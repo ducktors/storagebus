@@ -11,7 +11,7 @@ import { AbstractStorageOptions, Storage } from './abstract-storage'
 const pipeline = promisify(_pipeline)
 
 export class LocalStorage extends Storage {
-  constructor(opts: AbstractStorageOptions) {
+  constructor(opts: AbstractStorageOptions = {}) {
     super(opts)
   }
   async write(filePath: string, fileReadable: Readable): Promise<string> {

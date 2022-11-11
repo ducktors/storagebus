@@ -24,7 +24,6 @@ const s3Storage = new S3Storage({
   accessKeyId,
   secretAccessKey,
   region,
-  debug: true,
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -172,4 +171,22 @@ test('s3storage.move moves a file to a new location', async () => {
 test(`Creates S3Storage using env vars`, () => {
   const storage = new S3Storage()
   expect(storage).toBeInstanceOf(S3Storage)
+})
+
+test('logs the error when in debug mode', async () => {
+  s3Mock.on(HeadObjectCommand).rejects({})
+
+  const s3Storage = new S3Storage({
+    bucket,
+    accessKeyId,
+    secretAccessKey,
+    region,
+    debug: true,
+  })
+
+  try {
+    await s3Storage.exists('foobar')
+  } catch (err) {
+    expect(err).toEqual({})
+  }
 })

@@ -4,6 +4,7 @@ export default async () => {
   return defineConfig({
     test: {
       clearMocks: true,
+      silent: true, // we disable console log because we have some test that are expected to throw errors
       outputFile: {
         junit: 'junit.xml',
       },
