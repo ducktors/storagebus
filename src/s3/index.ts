@@ -13,6 +13,7 @@ import {
   ServerSideEncryption,
 } from '@aws-sdk/client-s3'
 import { Progress, Upload } from '@aws-sdk/lib-storage'
+import { lookup } from 'mime-types'
 
 import { AbstractStorageOptions, Storage } from '../abstract-storage'
 import { sanitize } from './sanitize-key'
@@ -67,12 +68,15 @@ export class S3Storage extends Storage {
 
   async write(key: string, fileReadable: Readable, opts?: WriteOpts): Promise<string> {
     key = this.sanitize(key)
+    const mimeType = lookup(key)
+
     const upload = new Upload({
       client: this.client,
       params: {
         Key: key,
         Bucket: this.bucket,
         Body: fileReadable,
+        ...(mimeType ? { ContentType: mimeType } : {}),
         ...(opts?.entryption ?? {}),
       },
     })
@@ -126,10 +130,12 @@ export class S3Storage extends Storage {
   }
 
   async copy(key: string, destKey: string): Promise<string> {
+    const mimeType = lookup(key)
     const copyParams: CopyObjectCommandInput = {
       Bucket: this.bucket,
       CopySource: `${this.bucket}/${this.sanitize(key)}`,
       Key: this.sanitize(destKey),
+      ...(mimeType ? { ContentType: mimeType } : {}),
     }
 
     await this.client.send(new CopyObjectCommand(copyParams))

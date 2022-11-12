@@ -26,8 +26,18 @@ const s3Storage = new S3Storage({
   region,
 })
 
+const s3StorageWithDebug = new S3Storage({
+  bucket,
+  accessKeyId,
+  secretAccessKey,
+  region,
+  debug: true,
+})
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const s3Mock = mockClient((s3Storage as any).client)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const s3MockWithDebug = mockClient((s3StorageWithDebug as any).client)
 
 beforeEach(() => {
   s3Mock.reset()
@@ -120,6 +130,14 @@ test('s3storage.write a Readable to s3 bucket and calls the progress function', 
   expect(progress).toBeCalled()
 })
 
+test('s3storage.write a Readable to s3 bucket with ContentType set', async () => {
+  const key = `${randomUUID()}.pdf`
+  const returnedKey = await s3Storage.write(key, Readable.from(key))
+
+  expect(await s3Storage.exists(key)).toBe(true)
+  expect(returnedKey).toEqual(key)
+})
+
 test('s3storage.read reads a file from s3 bucket', async () => {
   s3Mock.on(GetObjectCommand).resolves({ Body: Readable.from('key') })
 
@@ -157,6 +175,15 @@ test('s3storage.copy copy a file to new location', async () => {
   expect(await s3Storage.exists(newKey)).toBe(true)
 })
 
+test('s3storage.copy copy a file with ContentType set to new location', async () => {
+  const key = `${randomUUID()}.jpeg`
+  const objectKey = await s3Storage.write(key, Readable.from(key))
+  const newKey = await s3Storage.copy(objectKey, 'new-key')
+
+  expect(await s3Storage.exists(objectKey)).toBe(true)
+  expect(await s3Storage.exists(newKey)).toBe(true)
+})
+
 test('s3storage.move moves a file to a new location', async () => {
   const key = randomUUID()
 
@@ -174,18 +201,10 @@ test(`Creates S3Storage using env vars`, () => {
 })
 
 test('logs the error when in debug mode', async () => {
-  s3Mock.on(HeadObjectCommand).rejects({})
-
-  const s3Storage = new S3Storage({
-    bucket,
-    accessKeyId,
-    secretAccessKey,
-    region,
-    debug: true,
-  })
+  s3MockWithDebug.on(HeadObjectCommand).rejects({})
 
   try {
-    await s3Storage.exists('foobar')
+    await s3StorageWithDebug.exists('foobar')
   } catch (err) {
     expect(err).toEqual({})
   }
