@@ -22,13 +22,16 @@ function isFunction(x: unknown): x is (x: string) => string {
   return Object.prototype.toString.call(x) == '[object Function]'
 }
 
-export type WriteOpts = {
-  progress?: (p: Progress) => void
+export type EntryptionOptions = {
   entryption?: {
     ServerSideEncryption: ServerSideEncryption
     SSEKMSKeyId?: string
   }
 }
+
+export type WriteOpts = {
+  progress?: (p: Progress) => void
+} & EntryptionOptions
 
 export class S3Storage extends Storage {
   protected client: S3Client
@@ -129,21 +132,22 @@ export class S3Storage extends Storage {
     await this.client.send(new DeleteObjectCommand(deleteParams))
   }
 
-  async copy(key: string, destKey: string): Promise<string> {
+  async copy(key: string, destKey: string, opts?: EntryptionOptions): Promise<string> {
     const mimeType = lookup(key)
     const copyParams: CopyObjectCommandInput = {
       Bucket: this.bucket,
       CopySource: `${this.bucket}/${this.sanitize(key)}`,
       Key: this.sanitize(destKey),
       ...(mimeType ? { ContentType: mimeType } : {}),
+      ...(opts?.entryption ?? {}),
     }
 
     await this.client.send(new CopyObjectCommand(copyParams))
     return destKey
   }
 
-  async move(key: string, destKey: string): Promise<string> {
-    await this.copy(key, destKey)
+  async move(key: string, destKey: string, opts?: EntryptionOptions): Promise<string> {
+    await this.copy(key, destKey, opts)
     await this.remove(key)
     return destKey
   }
