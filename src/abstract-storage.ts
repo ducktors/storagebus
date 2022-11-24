@@ -26,4 +26,11 @@ export abstract class Storage {
   public abstract remove(fileName: string): Promise<void>
   public abstract copy(key: string, destKey: string): Promise<string>
   public abstract move(key: string, destKey: string): Promise<string>
+  static async toBuffer(readableStream: Readable): Promise<Buffer> {
+    const chunks = []
+    for await (const chunk of readableStream) {
+      chunks.push(chunk)
+    }
+    return Buffer.concat(chunks)
+  }
 }

@@ -1,4 +1,6 @@
+import { Readable } from 'node:stream'
 import { expect, test } from 'vitest'
+
 import { Storage } from './abstract-storage'
 
 test('constructs abstract storage', () => {
@@ -19,4 +21,11 @@ test('abstract storage uses custom logger', () => {
   const storage = new Storage({ debug: true, logger: { info: 'foo' } })
 
   expect(storage._logger).toEqual({ info: 'foo' })
+})
+
+test('toBuffer returns a buffer from Readable', async () => {
+  const buffer = await Storage.toBuffer(Readable.from('foo', { objectMode: false }))
+
+  expect(buffer).toBeInstanceOf(Buffer)
+  expect(buffer.toString()).toBe('foo')
 })
