@@ -24,7 +24,7 @@ function isFunction(x: unknown): x is (x: string) => string {
 
 export type EntryptionOptions = {
   entryption?: {
-    ServerSideEncryption: ServerSideEncryption
+    ServerSideEncryption: `${ServerSideEncryption}`
     SSEKMSKeyId?: string
   }
 }
