@@ -209,3 +209,19 @@ test('logs the error when in debug mode', async () => {
     expect(err).toEqual({})
   }
 })
+
+test('toBuffer returns a buffer from Readable with objectMode true', async () => {
+  const storage = new S3Storage()
+  const buffer = await storage.toBuffer(Readable.from('foo', { objectMode: true }))
+
+  expect(buffer).toBeInstanceOf(Buffer)
+  expect(buffer.toString()).toBe('foo')
+})
+
+test('toBuffer returns a buffer from Readable with objectMode false', async () => {
+  const storage = new S3Storage()
+  const buffer = await storage.toBuffer(Readable.from('foo', { objectMode: false }))
+
+  expect(buffer).toBeInstanceOf(Buffer)
+  expect(buffer.toString()).toBe('foo')
+})

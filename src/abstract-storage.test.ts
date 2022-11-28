@@ -23,8 +23,19 @@ test('abstract storage uses custom logger', () => {
   expect(storage._logger).toEqual({ info: 'foo' })
 })
 
-test('toBuffer returns a buffer from Readable', async () => {
-  const buffer = await Storage.toBuffer(Readable.from('foo', { objectMode: false }))
+test('toBuffer returns a buffer from Readable with objectMode true', async () => {
+  // @ts-expect-error: testing wrong type
+  const storage = new Storage()
+  const buffer = await storage.toBuffer(Readable.from('foo', { objectMode: true }))
+
+  expect(buffer).toBeInstanceOf(Buffer)
+  expect(buffer.toString()).toBe('foo')
+})
+
+test('toBuffer returns a buffer from Readable with objectMode false', async () => {
+  // @ts-expect-error: testing wrong type
+  const storage = new Storage()
+  const buffer = await storage.toBuffer(Readable.from('foo', { objectMode: false }))
 
   expect(buffer).toBeInstanceOf(Buffer)
   expect(buffer.toString()).toBe('foo')

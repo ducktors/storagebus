@@ -174,3 +174,25 @@ test('logs the error when in debug mode', async () => {
     expect(err.message).toMatch('ENOENT: no such file or directory')
   }
 })
+
+test('toBuffer returns a buffer from readable with objectMode true', async () => {
+  const localStorage = new LocalStorage()
+
+  const readable = Readable.from('foo', { objectMode: true })
+  readable.readableObjectMode
+
+  const buffer = await localStorage.toBuffer(readable)
+  expect(buffer).toBeInstanceOf(Buffer)
+  expect(buffer.toString()).toBe('foo')
+})
+
+test('toBuffer returns a buffer from readable with objectMode false', async () => {
+  const localStorage = new LocalStorage()
+
+  const readable = Readable.from('foo', { objectMode: false })
+  readable.readableObjectMode
+
+  const buffer = await localStorage.toBuffer(readable)
+  expect(buffer).toBeInstanceOf(Buffer)
+  expect(buffer.toString()).toBe('foo')
+})
