@@ -12,15 +12,14 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "prepublish": "pnpm build",
-    "build": "rimraf ./dist && tsc -p ./tsconfig.build.json",
     "lint": "rome check .",
     "format": "rome format .",
-    "test": "vitest run",
-    "test:watch": "vitest --watch",
-    "test:ci": "vitest run --coverage --silent --reporter=default --reporter=junit"
+    "prepare": "husky install"
   },
   "keywords": [],
   "devDependencies": {
+    "husky": "^8.0.2",
+    "lint-staged": "^13.0.4",
     "rome": "10.0.1",
     "turbo": "^1.6.3"
   }
