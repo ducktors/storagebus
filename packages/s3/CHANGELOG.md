@@ -1,5 +1,11 @@
 # @ducktors/storagebus-s3
 
+## 0.10.1
+
+### Patch Changes
+
+- add barrel file to storagebus-s3
+
 ## 0.10.0
 
 ### Minor Changes
