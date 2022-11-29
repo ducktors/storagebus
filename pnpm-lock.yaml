@@ -43,10 +43,12 @@ importers:
       '@google-cloud/storage': ^6.7.0
       '@types/mime-types': ^2.1.1
       '@types/node': ^16.18.3
+      '@types/stream-buffers': ^3.0.4
       '@vitest/coverage-istanbul': ^0.24.5
       fox1t-tsconfig: ^0.2.0
       mime-types: ^2.1.35
       rimraf: ^3.0.2
+      stream-buffers: ^3.0.2
       tslib: ^2.4.1
       typescript: ^4.9.3
       vitest: ^0.24.5
@@ -58,9 +60,11 @@ importers:
     devDependencies:
       '@types/mime-types': 2.1.1
       '@types/node': 16.18.3
+      '@types/stream-buffers': 3.0.4
       '@vitest/coverage-istanbul': 0.24.5
       fox1t-tsconfig: 0.2.0
       rimraf: 3.0.2
+      stream-buffers: 3.0.2
       typescript: 4.9.3
       vitest: 0.24.5
 
@@ -1754,6 +1758,12 @@ packages:
 
   /@types/sinonjs__fake-timers/8.1.2:
     resolution: {integrity: sha512-9GcLXF0/v3t80caGs5p2rRfkB+a8VBGLJZVih6CNFkx8IZ994wiKKLSRs9nuFwk1HevWs/1mnUmkApGrSGsShA==}
+    dev: true
+
+  /@types/stream-buffers/3.0.4:
+    resolution: {integrity: sha512-qU/K1tb2yUdhXkLIATzsIPwbtX6BpZk0l3dPW6xqWyhfzzM1ECaQ/8faEnu3CNraLiQ9LHyQQPBGp7N9Fbs25w==}
+    dependencies:
+      '@types/node': 16.18.3
     dev: true
 
   /@vitest/coverage-istanbul/0.24.5:
@@ -4066,6 +4076,11 @@ packages:
       inherits: 2.0.4
       readable-stream: 3.6.0
     dev: false
+
+  /stream-buffers/3.0.2:
+    resolution: {integrity: sha512-DQi1h8VEBA/lURbSwFtEHnSTb9s2/pwLEaFuNhXwy1Dx3Sa0lOuYT2yNUr4/j2fs8oCAMANtrZ5OrPZtyVs3MQ==}
+    engines: {node: '>= 0.10.0'}
+    dev: true
 
   /stream-events/1.0.5:
     resolution: {integrity: sha512-E1GUzBSgvct8Jsb3v2X15pjzN1tYebtbLaMg+eBOUOAxgbLoSbT2NS91ckc5lJD1KfLjId+jXJRgo0qnV5Nerg==}

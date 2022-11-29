@@ -1,0 +1,38 @@
+{
+  "name": "@ducktors/storagebus-gcs",
+  "version": "0.9.1",
+  "description": "",
+  "license": "MIT",
+  "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
+  "private": false,
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepublish": "pnpm build",
+    "build": "rimraf ./dist && tsc -p ./tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest --watch",
+    "test:ci": "vitest run --coverage --silent --reporter=default --reporter=junit"
+  },
+  "keywords": [],
+  "dependencies": {
+    "@ducktors/storagebus-abstract": "workspace:*",
+    "@google-cloud/storage": "^6.7.0",
+    "mime-types": "^2.1.35",
+    "tslib": "^2.4.1"
+  },
+  "devDependencies": {
+    "@types/mime-types": "^2.1.1",
+    "@types/node": "^16.18.3",
+    "@types/stream-buffers": "^3.0.4",
+    "@vitest/coverage-istanbul": "^0.24.5",
+    "fox1t-tsconfig": "^0.2.0",
+    "rimraf": "^3.0.2",
+    "stream-buffers": "^3.0.2",
+    "typescript": "^4.9.3",
+    "vitest": "^0.24.5"
+  }
+}

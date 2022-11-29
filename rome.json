@@ -4,13 +4,15 @@
     "indentStyle": "space",
     "lineWidth": 100,
     "ignore": [
-      "**/dist/*"
+      "**/dist/*",
+      "**/coverage/*"
     ]
   },
   "linter": {
     "enabled": true,
     "ignore": [
-      "**/dist/*"
+      "**/dist/*",
+      "**/coverage/*"
     ],
     "rules": {
       "recommended": true,
