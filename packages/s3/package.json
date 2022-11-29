@@ -13,10 +13,9 @@
   "scripts": {
     "prepublish": "pnpm build",
     "build": "rimraf ./dist && tsc -p ./tsconfig.build.json",
-    "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest --watch",
-    "test:ci": "vitest run --coverage --reporter=default --reporter=junit"
+    "test:ci": "vitest run --coverage --silent --reporter=default --reporter=junit"
   },
   "keywords": [],
   "dependencies": {

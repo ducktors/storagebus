@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig } from 'vitest/config';
 
 export default async () => {
   return defineConfig({
@@ -25,5 +25,5 @@ export default async () => {
         ],
       },
     },
-  })
-}
+  });
+};

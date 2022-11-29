@@ -1,0 +1,31 @@
+{
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "lineWidth": 100,
+    "ignore": [
+      "**/dist/*"
+    ]
+  },
+  "linter": {
+    "enabled": true,
+    "ignore": [
+      "**/dist/*"
+    ],
+    "rules": {
+      "recommended": true,
+      "style": {
+        "noUnusedTemplateLiteral": "off"
+      },
+      "complexity": {
+        "useSimplifiedLogicExpression": "off"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "quoteProperties": "preserve"
+    }
+  }
+}
