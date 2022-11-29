@@ -18,6 +18,7 @@
   },
   "keywords": [],
   "devDependencies": {
+    "@changesets/cli": "^2.25.2",
     "husky": "^8.0.2",
     "lint-staged": "^13.0.4",
     "rome": "10.0.1",
