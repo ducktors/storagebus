@@ -14,13 +14,7 @@ import {
 } from '@aws-sdk/client-s3'
 import { Progress, Upload } from '@aws-sdk/lib-storage'
 import { lookup } from 'mime-types'
-
-import { AbstractStorageOptions, Storage } from '../abstract-storage'
-import { sanitize } from './sanitize-key'
-
-function isFunction(x: unknown): x is (x: string) => string {
-  return Object.prototype.toString.call(x) == '[object Function]'
-}
+import { AbstractStorageOptions, Storage as AbstractStorage } from '@ducktors/storagebus-abstract'
 
 export type EntryptionOptions = {
   entryption?: {
@@ -33,10 +27,9 @@ export type WriteOpts = {
   progress?: (p: Progress) => void
 } & EntryptionOptions
 
-export class S3Storage extends Storage {
+export class Storage extends AbstractStorage {
   protected client: S3Client
   protected bucket: string
-  protected sanitize: (key: string) => string
 
   constructor(
     opts?: {
@@ -44,29 +37,18 @@ export class S3Storage extends Storage {
       bucket?: string
       accessKeyId?: string
       secretAccessKey?: string
-      sanitizeKey?: ((key: string) => string) | boolean
     } & AbstractStorageOptions,
   ) {
     super({ debug: opts?.debug, logger: opts?.logger })
 
-    const { region, bucket, accessKeyId, secretAccessKey, sanitizeKey = false } = opts ?? {}
+    const { region, bucket, accessKeyId, secretAccessKey } = opts ?? {}
 
     this.client = new S3Client({
-      region,
+      ...(region ? { region } : {}),
       ...(accessKeyId && secretAccessKey ? { credentials: { accessKeyId, secretAccessKey } } : {}),
     })
 
     this.bucket = bucket ?? ''
-
-    if (isFunction(sanitizeKey)) {
-      this.sanitize = sanitizeKey
-    } else if (typeof sanitizeKey === 'boolean') {
-      this.sanitize = sanitizeKey === true ? sanitize : value => value
-    } else {
-      throw new TypeError(
-        'Invalid sanitizeKey option. If provided, should be a function or boolean',
-      )
-    }
   }
 
   async write(key: string, fileReadable: Readable, opts?: WriteOpts): Promise<string> {

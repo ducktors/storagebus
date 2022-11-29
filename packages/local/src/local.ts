@@ -6,11 +6,11 @@ import { join } from 'node:path'
 import { Readable, pipeline as _pipeline } from 'node:stream'
 import { promisify } from 'node:util'
 
-import { AbstractStorageOptions, Storage } from './abstract-storage'
+import { AbstractStorageOptions, Storage as AbstractStorage } from '@ducktors/storagebus-abstract'
 
 const pipeline = promisify(_pipeline)
 
-export class LocalStorage extends Storage {
+export class Storage extends AbstractStorage {
   constructor(opts: AbstractStorageOptions = {}) {
     super(opts)
   }

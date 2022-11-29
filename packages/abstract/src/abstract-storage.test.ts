@@ -40,3 +40,31 @@ test('toBuffer returns a buffer from Readable with objectMode false', async () =
   expect(buffer).toBeInstanceOf(Buffer)
   expect(buffer.toString()).toBe('foo')
 })
+
+test('create storage instance with custom sanitizeKey function', () => {
+  // @ts-expect-error: testing wrong type
+  const storage = new Storage({
+    sanitizeKey: (key: string) => key,
+  })
+
+  expect(storage).toBeInstanceOf(Storage)
+})
+
+test('create storage instance with wrong type for sanitizeKey param', () => {
+  try {
+    // @ts-expect-error: testing wrong type
+    new Storage({
+      sanitizeKey: '',
+    })
+  } catch (err) {
+    expect(err).toBeInstanceOf(TypeError)
+  }
+})
+
+test('create storage instance with default sanitize function', () => {
+  // @ts-expect-error: testing wrong type
+  const storage = new Storage({
+    sanitizeKey: true,
+  })
+  expect(storage).toBeInstanceOf(Storage)
+})

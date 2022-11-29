@@ -5,18 +5,18 @@ import { Readable } from 'node:stream'
 import fs from 'node:fs/promises'
 
 import { expect, test, vi } from 'vitest'
+import { Storage as AbstractStorage } from '@ducktors/storagebus-abstract'
 
-import { Storage } from './abstract-storage'
-import { LocalStorage } from './local'
+import { Storage } from './local'
 
-const localStorage = new LocalStorage()
+const localStorage = new Storage()
 
 test('create LocalStorage instance', () => {
-  expect(localStorage).toBeInstanceOf(LocalStorage)
+  expect(localStorage).toBeInstanceOf(Storage)
 })
 
 test('localStorage instance extends from Storage', () => {
-  expect(localStorage).toBeInstanceOf(Storage)
+  expect(localStorage).toBeInstanceOf(AbstractStorage)
 })
 
 test('localStorage.write writes a Readable to disk', async () => {
@@ -165,7 +165,7 @@ test('localStorage.getTmpFolder returns a path to system tmp subfolder', async (
 })
 
 test('logs the error when in debug mode', async () => {
-  const localStorage = new LocalStorage({ debug: true })
+  const localStorage = new Storage({ debug: true })
 
   try {
     await localStorage.exists('foo')
@@ -176,7 +176,7 @@ test('logs the error when in debug mode', async () => {
 })
 
 test('toBuffer returns a buffer from readable with objectMode true', async () => {
-  const localStorage = new LocalStorage()
+  const localStorage = new Storage()
 
   const readable = Readable.from('foo', { objectMode: true })
   readable.readableObjectMode
@@ -187,7 +187,7 @@ test('toBuffer returns a buffer from readable with objectMode true', async () =>
 })
 
 test('toBuffer returns a buffer from readable with objectMode false', async () => {
-  const localStorage = new LocalStorage()
+  const localStorage = new Storage()
 
   const readable = Readable.from('foo', { objectMode: false })
   readable.readableObjectMode
