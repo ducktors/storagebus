@@ -3,25 +3,46 @@ import { constants, createReadStream, createWriteStream } from 'node:fs';
 import fs from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { Readable, pipeline as _pipeline } from 'node:stream';
-import { promisify } from 'node:util';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 
 import { AbstractStorageOptions, Storage as AbstractStorage } from '@ducktors/storagebus-abstract';
 
-const pipeline = promisify(_pipeline);
+// taken from https://github.com/sindresorhus/type-fest/blob/main/source/require-exactly-one.d.ts
+type RequireExactlyOne<ObjectType, KeysType extends keyof ObjectType = keyof ObjectType> = {
+  [Key in KeysType]: Required<Pick<ObjectType, Key>> &
+    Partial<Record<Exclude<KeysType, Key>, never>>;
+}[KeysType] &
+  Omit<ObjectType, KeysType>;
+
+export type StorageOptions = RequireExactlyOne<
+  {
+    bucket: string;
+    rootFolder: string;
+  },
+  'bucket' | 'rootFolder'
+> &
+  AbstractStorageOptions;
 
 export class Storage extends AbstractStorage {
-  constructor(opts: AbstractStorageOptions = {}) {
+  protected bucket: string;
+
+  constructor(opts: StorageOptions) {
     super(opts);
+
+    this.bucket = opts.bucket ?? opts.rootFolder;
   }
   async write(filePath: string, fileReadable: Readable): Promise<string> {
-    await pipeline(fileReadable, createWriteStream(filePath));
+    const path = join(this.bucket, filePath);
+    await pipeline(fileReadable, createWriteStream(path));
+
     return filePath;
   }
 
   async exists(filePath: string): Promise<boolean> {
     try {
-      await fs.access(filePath, constants.F_OK);
+      const path = join(this.bucket, filePath);
+      await fs.access(path, constants.F_OK);
       return true;
     } catch (err) {
       if (this._debug) {
@@ -32,21 +53,27 @@ export class Storage extends AbstractStorage {
   }
 
   async read(filePath: string): Promise<Readable> {
-    return createReadStream(filePath);
+    const path = join(this.bucket, filePath);
+    return createReadStream(path);
   }
 
   async remove(filePath: string): Promise<void> {
-    return fs.unlink(filePath);
+    const path = join(this.bucket, filePath);
+    return fs.unlink(path);
   }
 
   async copy(filePath: string, destFilePath: string): Promise<string> {
-    await fs.copyFile(filePath, destFilePath);
+    const path = join(this.bucket, filePath);
+    const destPath = join(this.bucket, destFilePath);
+    await fs.copyFile(path, destPath);
     return destFilePath;
   }
 
   async move(filePath: string, destFilePath: string): Promise<string> {
+    const path = join(this.bucket, filePath);
+    const destPath = join(this.bucket, destFilePath);
     try {
-      await fs.rename(filePath, destFilePath);
+      await fs.rename(path, destPath);
     } catch (err) {
       if ((err as NodeJS.ErrnoException).code === 'EXDEV') {
         await this.copy(filePath, destFilePath);
@@ -58,20 +85,7 @@ export class Storage extends AbstractStorage {
     return destFilePath;
   }
 
-  async saveToTmpFolder(
-    filePath: string,
-    fileReadable: Readable,
-    subFolder?: string,
-  ): Promise<string> {
-    const outDir = await this.getTmpFolder(subFolder);
-    const tmpFilePath = join(outDir, filePath);
-
-    await this.write(tmpFilePath, fileReadable);
-
-    return tmpFilePath;
-  }
-
-  async getTmpFolder(subFolder?: string) {
+  static async getTmpSubFolder(subFolder?: string) {
     if (!subFolder) {
       subFolder = randomUUID();
     }

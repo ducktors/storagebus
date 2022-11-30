@@ -194,7 +194,7 @@ test('storage.move moves a file to a new location', async () => {
 });
 
 test(`Creates storage using env vars`, () => {
-  const storage = new Storage();
+  const storage = new Storage({ bucket: 'test-bucket' });
   expect(storage).toBeInstanceOf(Storage);
 });
 

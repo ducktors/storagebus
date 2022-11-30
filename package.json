@@ -11,7 +11,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "pnpm build",
     "lint": "rome check .",
     "format": "rome format .",
     "prepare": "husky install"

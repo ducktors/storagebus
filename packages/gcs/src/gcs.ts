@@ -5,19 +5,19 @@ import { type Bucket, Storage as GCS } from '@google-cloud/storage';
 import { AbstractStorageOptions, Storage as AbstractStorage } from '@ducktors/storagebus-abstract';
 import { lookup } from 'mime-types';
 
-export interface GoogleCloudStorageOptions {
+export type StorageOptions = {
   bucket: string;
   projectId?: string;
   clientEmail?: string;
   privateKey?: string;
-}
+} & AbstractStorageOptions;
 
 export class Storage extends AbstractStorage {
   protected client: GCS;
   protected bucket: Bucket;
 
-  constructor(opts: GoogleCloudStorageOptions & AbstractStorageOptions) {
-    super();
+  constructor(opts: StorageOptions) {
+    super({ debug: opts?.debug, logger: opts?.logger });
 
     const { bucket, clientEmail, privateKey, projectId } = opts;
     if (!clientEmail || !privateKey || !projectId) {

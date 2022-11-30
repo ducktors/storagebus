@@ -16,7 +16,14 @@ import { Progress, Upload } from '@aws-sdk/lib-storage';
 import { lookup } from 'mime-types';
 import { AbstractStorageOptions, Storage as AbstractStorage } from '@ducktors/storagebus-abstract';
 
-export type EntryptionOptions = {
+export type StorageOptions = {
+  bucket: string;
+  region?: string;
+  accessKeyId?: string;
+  secretAccessKey?: string;
+} & AbstractStorageOptions;
+
+type EntryptionOptions = {
   entryption?: {
     ServerSideEncryption: `${ServerSideEncryption}`;
     SSEKMSKeyId?: string;
@@ -31,24 +38,17 @@ export class Storage extends AbstractStorage {
   protected client: S3Client;
   protected bucket: string;
 
-  constructor(
-    opts?: {
-      region?: string;
-      bucket?: string;
-      accessKeyId?: string;
-      secretAccessKey?: string;
-    } & AbstractStorageOptions,
-  ) {
+  constructor(opts: StorageOptions) {
     super({ debug: opts?.debug, logger: opts?.logger });
 
-    const { region, bucket, accessKeyId, secretAccessKey } = opts ?? {};
+    const { bucket, region, accessKeyId, secretAccessKey } = opts;
 
     this.client = new S3Client({
       ...(region ? { region } : {}),
       ...(accessKeyId && secretAccessKey ? { credentials: { accessKeyId, secretAccessKey } } : {}),
     });
 
-    this.bucket = bucket ?? '';
+    this.bucket = bucket;
   }
 
   async write(key: string, fileReadable: Readable, opts?: WriteOpts): Promise<string> {
