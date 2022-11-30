@@ -1,5 +1,11 @@
 # @ducktors/storagebus-local
 
+## 0.11.0
+
+### Minor Changes
+
+- standardize exported classes
+
 ## 0.10.0
 
 ### Minor Changes
