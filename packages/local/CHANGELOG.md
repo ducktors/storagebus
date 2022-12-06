@@ -1,5 +1,11 @@
 # @ducktors/storagebus-local
 
+## 0.12.0
+
+### Minor Changes
+
+- make storagebus-local dropin replacement for s3 and gcs
+
 ## 0.11.0
 
 ### Minor Changes
