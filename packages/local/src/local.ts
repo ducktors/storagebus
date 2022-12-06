@@ -1,8 +1,7 @@
-import { randomUUID } from 'node:crypto';
-import { constants, createReadStream, createWriteStream } from 'node:fs';
+import { constants, createReadStream, createWriteStream, mkdirSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, isAbsolute, dirname } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 
@@ -30,10 +29,23 @@ export class Storage extends AbstractStorage {
   constructor(opts: StorageOptions) {
     super(opts);
 
-    this.bucket = opts.bucket ?? opts.rootFolder;
+    let rootFolder = opts.bucket ?? opts.rootFolder;
+
+    // if rootFolder is not absolute, we put the bucket in the tmp folder
+    if (!isAbsolute(rootFolder)) {
+      const tmpDir = tmpdir();
+      rootFolder = join(tmpDir, rootFolder);
+    }
+    mkdirSync(rootFolder, { recursive: true });
+
+    this.bucket = rootFolder;
   }
   async write(filePath: string, fileReadable: Readable): Promise<string> {
     const path = join(this.bucket, filePath);
+
+    // ensure subfolder exists
+    await fs.mkdir(dirname(path), { recursive: true });
+
     await pipeline(fileReadable, createWriteStream(path));
 
     return filePath;
@@ -48,7 +60,10 @@ export class Storage extends AbstractStorage {
       if (this._debug) {
         this._logger.info({ err });
       }
-      return false;
+      if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+        return false;
+      }
+      throw err;
     }
   }
 
@@ -65,6 +80,8 @@ export class Storage extends AbstractStorage {
   async copy(filePath: string, destFilePath: string): Promise<string> {
     const path = join(this.bucket, filePath);
     const destPath = join(this.bucket, destFilePath);
+    // ensure subfolder exists
+    await fs.mkdir(dirname(destPath), { recursive: true });
     await fs.copyFile(path, destPath);
     return destFilePath;
   }
@@ -72,6 +89,8 @@ export class Storage extends AbstractStorage {
   async move(filePath: string, destFilePath: string): Promise<string> {
     const path = join(this.bucket, filePath);
     const destPath = join(this.bucket, destFilePath);
+    // ensure subfolder exists
+    await fs.mkdir(dirname(destPath), { recursive: true });
     try {
       await fs.rename(path, destPath);
     } catch (err) {
@@ -83,16 +102,5 @@ export class Storage extends AbstractStorage {
       }
     }
     return destFilePath;
-  }
-
-  static async getTmpSubFolder(subFolder?: string) {
-    if (!subFolder) {
-      subFolder = randomUUID();
-    }
-    const path = join(tmpdir(), subFolder);
-    await fs.mkdir(path, {
-      recursive: true,
-    });
-    return path;
   }
 }
