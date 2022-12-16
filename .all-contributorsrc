@@ -1,0 +1,30 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "fox1t",
+      "name": "Maksim Sinik",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1620916?v=4",
+      "profile": "https://maksim.dev",
+      "contributions": [
+        "code",
+        "test",
+        "doc",
+        "maintenance",
+        "ideas",
+        "mentoring"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "storagebus",
+  "projectOwner": "ducktors"
+}
