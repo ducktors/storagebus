@@ -11,16 +11,41 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "lint": "rome check .",
+    "build": "pnpm turbo build --color",
     "format": "rome format .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "commitlint": "commitlint",
+    "release": "changeset publish",
+    "commit": "npx git-cz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ducktors/storagebus.git"
   },
   "keywords": [],
   "devDependencies": {
-    "@changesets/cli": "^2.25.2",
+    "@changesets/changelog-github": "0.4.6",
+    "@changesets/cli": "2.24.3",
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
+    "@commitlint/lint": "^17.2.0",
+    "@commitlint/prompt": "^17.1.2",
+    "@cspotcode/source-map-support": "^0.7.0",
+    "@vitest/coverage-istanbul": "^0.24.5",
+    "commitizen": "^4.2.5",
+    "commitlint-config-cz": "^0.13.3",
+    "commitlint-plugin-function-rules": "^1.7.1",
+    "coveralls": "^3.1.1",
+    "cz-conventional-changelog": "^3.3.0",
     "husky": "^8.0.2",
     "lint-staged": "^13.0.4",
     "rome": "10.0.1",
     "turbo": "^1.6.3"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/ducktors/storagebus/issues"
+  },
+  "homepage": "https://github.com/ducktors/storagebus#readme"
 }

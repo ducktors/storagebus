@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  commitlint:
+    name: Commit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check commit message
+        uses: wagoid/commitlint-github-action@v5
+        with:
+          configFile: commitlint.config.js
+          failOnWarnings: false
+          helpURL: https://github.com/ducktors/storagebus#how-to-commit
+
+  build:
+    runs-on: ${{ matrix.os }}
+    name: Build
+    strategy:
+      matrix:
+        node-version: [16.x]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.14.2
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint code
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+
+  test:
+    runs-on: macos-latest
+    name: Test
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.14.2
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: pnpm turbo test:ci
+
+      - name: Copy json coverage report
+        run: |
+          mkdir -p coverage
+          cp ./packages/abstract/coverage/coverage-final.json ./coverage/coverage-abstract.json
+          cp ./packages/gcs/coverage/coverage-final.json ./coverage/coverage-gcs.json
+          cp ./packages/local/coverage/coverage-final.json ./coverage/coverage-local.json
+          cp ./packages/s3/coverage/coverage-final.json ./coverage/coverage-s3.json
+
+      - name: Merge json coverage reports
+        run: pnpm dlx nyc merge coverage coverage/merged-coverage.json
+
+      - name: Convert json coverage report to lcov
+        run: pnpm dlx nyc report --reporter=lcov --temp-directory=coverage
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./coverage/lcov.info
