@@ -1,0 +1,34 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.14.2
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Create Release Pull Request or Publish packages
+        id: changesets
+        uses: changesets/action@v1.4.1
+        with:
+          publish: pnpm release
+          commit: "chore(release): update monorepo packages versions"
+          title: "Upcoming Release Changes"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
