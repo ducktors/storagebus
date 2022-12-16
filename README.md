@@ -1,5 +1,7 @@
 # Storage🚌
 
+[![CI](https://github.com/ducktors/storagebus/actions/workflows/ci.yml/badge.svg)](https://github.com/ducktors/storagebus/actions/workflows/ci.yml) [![CodeQL](https://github.com/ducktors/storagebus/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ducktors/storagebus/actions/workflows/codeql-analysis.yml) [![OSSAR](https://github.com/ducktors/storagebus/actions/workflows/ossar-analysis.yml/badge.svg)](https://github.com/ducktors/storagebus/actions/workflows/ossar-analysis.yml)
+
 Storagebus is a storage abstraction layer for Node.js that removes any difference among multiple public cloud storage services and local filesystems. 
 
 ## Contribute to this project

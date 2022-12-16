@@ -9,7 +9,7 @@ export default async () => {
         junit: "junit.xml",
       },
       coverage: {
-        reporter: ["lcov", "html"],
+        reporter: ["json"],
         provider: "istanbul",
         include: ["src/**/*.{ts,tsx}"],
         exclude: [

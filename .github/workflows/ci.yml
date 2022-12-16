@@ -95,30 +95,22 @@ jobs:
       - name: Run tests
         run: pnpm turbo test:ci
 
-      - name: Coveralls abstract
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          base-path: packages/abstract
-          path-to-lcov: packages/abstract/coverage/lcov.info
+      - name: Copy json coverage report
+        run: |
+          mkdir -p coverage
+          cp ./packages/abstract/coverage/coverage-final.json ./coverage/coverage-abstract.json
+          cp ./packages/gcs/coverage/coverage-final.json ./coverage/coverage-gcs.json
+          cp ./packages/local/coverage/coverage-final.json ./coverage/coverage-local.json
+          cp ./packages/s3/coverage/coverage-final.json ./coverage/coverage-s3.json
 
-      - name: Coveralls gcs
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          base-path: packages/gcs
-          path-to-lcov: packages/gcs/coverage/lcov.info
+      - name: Merge json coverage reports
+        run: pnpm dlx nyc merge coverage coverage/merged-coverage.json
 
-      - name: Coveralls local
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          base-path: packages/local
-          path-to-lcov: packages/local/coverage/lcov.info
+      - name: Convert json coverage report to lcov
+        run: pnpm dlx nyc report --reporter=lcov --temp-directory=coverage
 
-      - name: Coveralls s3
+      - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          base-path: packages/s3
-          path-to-lcov: packages/s3/coverage/lcov.info
+          path-to-lcov: ./coverage/lcov.info
