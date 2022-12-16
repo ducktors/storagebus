@@ -7,6 +7,19 @@
   "commitConvention": "angular",
   "contributors": [
     {
+      "login": "fox1t",
+      "name": "Maksim Sinik",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1620916?v=4",
+      "profile": "https://maksim.dev",
+      "contributions": [
+        "code",
+        "test",
+        "ideas",
+        "maintenance",
+        "mentoring"
+      ]
+    },
+    {
       "login": "tehKapa",
       "name": "Matteo Vivona",
       "avatar_url": "https://avatars.githubusercontent.com/u/6388707?v=4",
