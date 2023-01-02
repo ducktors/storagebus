@@ -8,50 +8,56 @@ Storagebus is a storage abstraction layer for Node.js that removes any differenc
 
 You can use Storagebus with your filesystem, AWS and GCP:
 
-```
-const { Storage } = require('storage/local')
+```javascript
+const { Storage } = require("storage/local");
 // const { Storage } = require('storage/aws')
 // const { Storage } = require('storage/gcp')
-const { Readable } = require('node:stream')
+const { Readable } = require("node:stream");
 
 const storage = new Storage({
-  rootFolder: 'path/to/folder'
-})
+  rootFolder: "path/to/folder",
+});
 // const storage = new Storage({
-//  bucket: 'your-bucket';
-//  region: 'your region';
-//  accessKeyId: 'your-access-key';
-//  secretAccessKey: 'your-secret-access-key';
+//  bucket: 'your-aws-bucket';
+//  region: 'your-aws-region';
+//  accessKeyId: 'your-aws-access-key';
+//  secretAccessKey: 'your-aws-secret-access-key';
 // })
 // const storage = new Storage({
-//  bucket: 'your-bucket';
-//  projectId: 'your-project-id';
-//  clientEmail: 'your-client-email';
-//  privateKey: 'your-private-key';
+//  bucket: 'your-gcp-bucket';
+//  projectId: 'your-gcp-project-id';
+//  clientEmail: 'your-gcp-client-email';
+//  privateKey: 'your-gcp-private-key';
 // })
 
 async function main() {
   // Your readable stream
-  const readable = new Readable()
-  readable.push('Hello, world!')
+  const readable = new Readable();
+  readable.push("Hello, world!");
 
   // write a file
-  const writtenFileString = await storage.write('your-file.txt', readable)
+  const writtenFileString = await storage.write("your-file.txt", readable);
 
   // read a file from your storage
-  const fileReadable = await storage.read('your-file.txt')
+  const fileReadable = await storage.read("your-file.txt");
 
   // check for file existance in your storage
-  const exist = await storage.read('your-file.txt')
+  const exist = await storage.read("your-file.txt");
 
   // copy file
-  const copiedFileString = await storage.copy('your-file.txt', 'your-file-copy.txt')
+  const copiedFileString = await storage.copy(
+    "your-file.txt",
+    "your-file-copy.txt"
+  );
 
   // move a file
-  const movedFileString = await storage.move('your-file-copy.txt', 'copied/your-file-copy.txt')
+  const movedFileString = await storage.move(
+    "your-file-copy.txt",
+    "copied/your-file-copy.txt"
+  );
 
   // delete a file
-  await storage.remove('your-file.txt', 'your-file-copy.txt')
+  await storage.remove("your-file.txt", "your-file-copy.txt");
 }
 ```
 
