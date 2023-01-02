@@ -32,8 +32,7 @@ const storage = new Storage({
 
 async function main() {
   // Your readable stream
-  const readable = new Readable();
-  readable.push("Hello, world!");
+  const readable = Readable.from("Hello, world!");
 
   // write a file
   const writtenFileString = await storage.write("your-file.txt", readable);
@@ -53,11 +52,11 @@ async function main() {
   // move a file
   const movedFileString = await storage.move(
     "your-file-copy.txt",
-    "copied/your-file-copy.txt"
+    "moved/your-file-copy.txt"
   );
 
   // delete a file
-  await storage.remove("your-file.txt", "your-file-copy.txt");
+  await storage.remove("your-file.txt");
 }
 ```
 
