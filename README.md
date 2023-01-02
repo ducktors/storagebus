@@ -42,7 +42,7 @@ async function main() {
   const fileReadable = await storage.read("your-file.txt");
 
   // check for file existance in your storage
-  const exist = await storage.read("your-file.txt");
+  const exist = await storage.exists("your-file.txt");
 
   // copy file
   const copiedFileString = await storage.copy(
