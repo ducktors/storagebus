@@ -1,24 +1,82 @@
 # Storage🚌
+
 [![CI](https://github.com/ducktors/storagebus/actions/workflows/ci.yml/badge.svg)](https://github.com/ducktors/storagebus/actions/workflows/ci.yml) [![Coverage Status](https://coveralls.io/repos/github/ducktors/storagebus/badge.svg?branch=main)](https://coveralls.io/github/ducktors/storagebus?branch=main) [![CodeQL](https://github.com/ducktors/storagebus/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ducktors/storagebus/actions/workflows/codeql-analysis.yml) [![OSSAR](https://github.com/ducktors/storagebus/actions/workflows/ossar-analysis.yml/badge.svg)](https://github.com/ducktors/storagebus/actions/workflows/ossar-analysis.yml) [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section --> [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-) <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-Storagebus is a storage abstraction layer for Node.js that removes any difference among multiple public cloud storage services and local filesystems. 
+Storagebus is a storage abstraction layer for Node.js that removes any difference among multiple public cloud storage services and local filesystems.
+
+## Usage
+
+You can use Storagebus with your filesystem, AWS and GCP:
+
+```javascript
+const { Storage } = require("storage/local");
+// const { Storage } = require('storage/aws')
+// const { Storage } = require('storage/gcp')
+const { Readable } = require("node:stream");
+
+const storage = new Storage({
+  rootFolder: "path/to/folder",
+});
+// const storage = new Storage({
+//  bucket: 'your-aws-bucket';
+//  region: 'your-aws-region';
+//  accessKeyId: 'your-aws-access-key';
+//  secretAccessKey: 'your-aws-secret-access-key';
+// })
+// const storage = new Storage({
+//  bucket: 'your-gcp-bucket';
+//  projectId: 'your-gcp-project-id';
+//  clientEmail: 'your-gcp-client-email';
+//  privateKey: 'your-gcp-private-key';
+// })
+
+async function main() {
+  // Your readable stream
+  const readable = Readable.from("Hello, world!");
+
+  // write a file
+  const writtenFileString = await storage.write("your-file.txt", readable);
+
+  // read a file from your storage
+  const fileReadable = await storage.read("your-file.txt");
+
+  // check for file existance in your storage
+  const exist = await storage.exists("your-file.txt");
+
+  // copy file
+  const copiedFileString = await storage.copy(
+    "your-file.txt",
+    "your-file-copy.txt"
+  );
+
+  // move a file
+  const movedFileString = await storage.move(
+    "your-file-copy.txt",
+    "moved/your-file-copy.txt"
+  );
+
+  // delete a file
+  await storage.remove("your-file.txt");
+}
+```
 
 ## Contribute to this project
+
 1. Clone this repository
 
-    ```git clone git@github.com:github.com/ducktors/storagebus.git```
+   `git clone git@github.com:github.com/ducktors/storagebus.git`
 
 2. Move inside repository folder
 
-    ```cd storagebus```
+   `cd storagebus`
 
 3. Install dependencies
 
-    ```pnpm install```
+   `pnpm install`
 
 4. Run the project in development mode
 
-    ```pnpm dev```
+   `pnpm dev`
 
 ## How to commit
 
