@@ -29,6 +29,15 @@
         "security",
         "doc"
       ]
+    },
+    {
+      "login": "andrew-hu368",
+      "name": "Andrew Hu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45509582?v=4",
+      "profile": "https://github.com/andrew-hu368",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
