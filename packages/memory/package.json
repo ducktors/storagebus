@@ -1,5 +1,5 @@
 {
-  "name": "@ducktors/storagebus-gcs",
+  "name": "@ducktors/storagebus-memory",
   "version": "0.11.0",
   "description": "",
   "license": "MIT",
@@ -20,18 +20,13 @@
   "keywords": [],
   "dependencies": {
     "@ducktors/storagebus-abstract": "workspace:*",
-    "@google-cloud/storage": "^6.7.0",
-    "mime-types": "^2.1.35",
     "tslib": "^2.4.1"
   },
   "devDependencies": {
-    "@types/mime-types": "^2.1.1",
     "@types/node": "^16.18.3",
-    "@types/stream-buffers": "^3.0.4",
     "@vitest/coverage-istanbul": "^0.27.1",
     "fox1t-tsconfig": "^0.2.0",
     "rimraf": "^4.0.7",
-    "stream-buffers": "^3.0.2",
     "typescript": "^4.9.3",
     "vitest": "^0.27.1"
   }
