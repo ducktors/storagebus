@@ -1,5 +1,14 @@
 # @ducktors/storagebus-local
 
+## 0.12.1
+
+### Patch Changes
+
+- Updates deps
+
+- Updated dependencies []:
+  - @ducktors/storagebus-abstract@0.10.1
+
 ## 0.12.0
 
 ### Minor Changes
