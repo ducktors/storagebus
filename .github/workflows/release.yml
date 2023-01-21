@@ -26,6 +26,9 @@ jobs:
         with:
           version: 7
 
+      - name: Setup npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.DUCKTORS_NPM_TOKEN }}" > .npmrc
+
       - name: Get pnpm store directory
         id: pnpm-cache
         shell: bash
