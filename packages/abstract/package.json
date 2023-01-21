@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "^16.18.3",
-    "@vitest/coverage-istanbul": "^0.27.1",
+    "@vitest/coverage-istanbul": "^0.27.3",
     "fox1t-tsconfig": "^0.2.0",
     "rimraf": "^4.0.7",
     "typescript": "^4.9.4",

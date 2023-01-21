@@ -12,12 +12,13 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
+    "precommit": "pnpm install",
     "lint": "rome check .",
     "build": "pnpm turbo build --color",
     "format": "rome format --write .",
     "prepare": "husky install",
     "commitlint": "commitlint",
-    "commit": "cz",
+    "commit": "git add . && cz",
     "release": "changeset"
   },
   "repository": {
