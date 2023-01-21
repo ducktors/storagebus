@@ -18,7 +18,6 @@
     "format": "rome format --write .",
     "prepare": "husky install",
     "commitlint": "commitlint",
-    "commit": "git add . && cz",
     "release": "changeset"
   },
   "repository": {
@@ -29,15 +28,7 @@
   "devDependencies": {
     "@changesets/changelog-github": "0.4.8",
     "@changesets/cli": "2.26.0",
-    "@commitlint/cli": "^17.4.2",
-    "@commitlint/config-conventional": "^17.4.2",
-    "@commitlint/lint": "^17.4.2",
-    "@commitlint/prompt": "^17.4.2",
-    "commitizen": "^4.2.6",
-    "commitlint-config-cz": "^0.13.3",
-    "commitlint-plugin-function-rules": "^1.7.1",
     "coveralls": "^3.1.1",
-    "cz-conventional-changelog": "^3.3.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.0",
     "rome": "11.0.0",

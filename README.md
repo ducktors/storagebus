@@ -80,18 +80,6 @@ async function main() {
 
    `pnpm dev`
 
-## How to commit
-
-This repo uses [Semantic Release](https://github.com/semantic-release/semantic-release) with Conventional Commits.
-Releases are automatically created based on the type of commit message: feat for minor and fix for patch.
-
-```
-feat: new feature ---> 1.x.0
-fix: fix a bug ---> 1.0.x
-```
-
-You can simple use `pnpm commit` command.
-
 ## How to release
 
 The release is performed by the maintainers of the repository. New versions are managed via [changesets](https://github.com/changesets/changesets).

@@ -11,22 +11,6 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  commitlint:
-    name: Commit
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Check commit message
-        uses: wagoid/commitlint-github-action@v5
-        with:
-          configFile: commitlint.config.js
-          failOnWarnings: false
-          helpURL: https://github.com/ducktors/storagebus#how-to-commit
-
   build:
     runs-on: ${{ matrix.os }}
     name: Build
