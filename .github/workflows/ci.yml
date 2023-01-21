@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - main
-  push: 
+  push:
     branches:
       - main
 
@@ -39,6 +39,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: pnpm
+
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:
@@ -76,9 +78,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: pnpm
+
       - uses: pnpm/action-setup@v2
         with:
-          version: 7.14.2
+          version: 7
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -119,7 +123,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ./coverage/lcov.info
-          
+
       - name: CodeClimate
         uses: paambaati/codeclimate-action@v3.2.0
         env:

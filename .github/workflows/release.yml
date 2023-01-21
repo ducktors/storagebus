@@ -16,9 +16,15 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: pnpm
+
       - uses: pnpm/action-setup@v2
         with:
-          version: 7.14.2
+          version: 7
 
       - name: Get pnpm store directory
         id: pnpm-cache
