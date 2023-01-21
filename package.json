@@ -17,8 +17,8 @@
     "format": "rome format .",
     "prepare": "husky install",
     "commitlint": "commitlint",
-    "release": "changeset publish",
-    "commit": "npx git-cz"
+    "commit": "npx git-cz",
+    "release": "changeset"
   },
   "repository": {
     "type": "git",

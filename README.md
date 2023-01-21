@@ -90,6 +90,26 @@ feat: new feature ---> 1.x.0
 fix: fix a bug ---> 1.0.x
 ```
 
+## How to release
+
+The release is performed by the maintainers of the repository. New versions are managed via [changesets](https://github.com/changesets/changesets).
+
+To release a new version, simply choose which package to bump with `pnpm release` command:
+
+```
+$ pnpm release
+
+> @ducktors/storagebus@0.9.0 release /ducktors-workstation/storagebus
+> changeset
+
+🦋  Which packages would you like to include? …
+◯ unchanged packages
+  ◯ @ducktors/storagebus-abstract
+  ◯ @ducktors/storagebus-gcs
+  ◯ @ducktors/storagebus-local
+  ◯ @ducktors/storagebus-s3
+```
+
 ## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
