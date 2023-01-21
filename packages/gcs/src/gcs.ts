@@ -74,6 +74,7 @@ export class Storage extends AbstractStorage {
   async copy(key: string, destKey: string): Promise<string> {
     key = this.sanitize(key);
     const file = this.bucket.file(key);
+    destKey = this.sanitize(destKey);
     const destFile = this.bucket.file(destKey);
     await file.copy(destFile);
 

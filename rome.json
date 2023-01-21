@@ -21,6 +21,9 @@
       },
       "complexity": {
         "useSimplifiedLogicExpression": "off"
+      }, 
+      "suspicious": {
+        "noExplicitAny": "off"
       }
     }
   },
