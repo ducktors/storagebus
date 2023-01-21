@@ -17,7 +17,7 @@
     "format": "rome format --write .",
     "prepare": "husky install",
     "commitlint": "commitlint",
-    "commit": "npx git-cz",
+    "commit": "cz",
     "release": "changeset"
   },
   "repository": {

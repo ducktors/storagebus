@@ -90,6 +90,8 @@ feat: new feature ---> 1.x.0
 fix: fix a bug ---> 1.0.x
 ```
 
+You can simple use `pnpm commit` command.
+
 ## How to release
 
 The release is performed by the maintainers of the repository. New versions are managed via [changesets](https://github.com/changesets/changesets).
