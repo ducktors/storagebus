@@ -4,27 +4,13 @@ on:
   pull_request:
     branches:
       - main
-  push: 
+  push:
     branches:
       - main
 
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
 jobs:
-  commitlint:
-    name: Commit
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Check commit message
-        uses: wagoid/commitlint-github-action@v5
-        with:
-          configFile: commitlint.config.js
-          failOnWarnings: false
-          helpURL: https://github.com/ducktors/storagebus#how-to-commit
-
   build:
     runs-on: ${{ matrix.os }}
     name: Build
@@ -39,6 +25,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:
@@ -76,9 +63,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+
       - uses: pnpm/action-setup@v2
         with:
-          version: 7.14.2
+          version: 7
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -119,7 +107,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ./coverage/lcov.info
-          
+
       - name: CodeClimate
         uses: paambaati/codeclimate-action@v3.2.0
         env:

@@ -80,14 +80,24 @@ async function main() {
 
    `pnpm dev`
 
-## How to commit
+## How to release
 
-This repo uses [Semantic Release](https://github.com/semantic-release/semantic-release) with Conventional Commits.
-Releases are automatically created based on the type of commit message: feat for minor and fix for patch.
+The release is performed by the maintainers of the repository. New versions are managed via [changesets](https://github.com/changesets/changesets).
+
+To release a new version, simply choose which package to bump with `pnpm release` command:
 
 ```
-feat: new feature ---> 1.x.0
-fix: fix a bug ---> 1.0.x
+$ pnpm release
+
+> @ducktors/storagebus@0.9.0 release /ducktors-workstation/storagebus
+> changeset
+
+🦋  Which packages would you like to include? …
+◯ unchanged packages
+  ◯ @ducktors/storagebus-abstract
+  ◯ @ducktors/storagebus-gcs
+  ◯ @ducktors/storagebus-local
+  ◯ @ducktors/storagebus-s3
 ```
 
 ## Contributors
