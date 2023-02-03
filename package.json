@@ -17,7 +17,6 @@
     "build": "pnpm turbo build --color",
     "format": "rome format --write .",
     "prepare": "husky install",
-    "commitlint": "commitlint",
     "release": "changeset"
   },
   "repository": {
