@@ -1,4 +1,10 @@
-# Storagebus
+---
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/1620916/216589345-fb63dc6a-a052-440b-a26f-cc291a976b77.png">
+</p>
+
+---
 
 ![fox1t_disco_elysium_styled_storagebus_with_boxes_covered_by_clo_8b9e8a49-f59c-44a6-9c6e-58bdedc9ee3f](https://user-images.githubusercontent.com/1620916/216316357-92a5fe47-2adf-4e61-8a60-aaddf1ba8ad0.jpg)
 
