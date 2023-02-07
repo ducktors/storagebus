@@ -28,9 +28,6 @@ jobs:
         with:
           version: 7
 
-      - name: Setup npmrc
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.DUCKTORS_NPM_TOKEN }}" > .npmrc
-
       - name: Get pnpm store directory
         id: pnpm-cache
         shell: bash
@@ -53,8 +50,9 @@ jobs:
         uses: changesets/action@v1.4.1
         with:
           publish: pnpm release
-          commit: "chore(release): update monorepo packages versions"
+          commit: "Release: update monorepo packages versions"
           title: "Upcoming Release Changes"
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.DUCKTORS_NPM_TOKEN }}

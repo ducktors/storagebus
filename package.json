@@ -17,7 +17,7 @@
     "build": "pnpm turbo build --color",
     "format": "rome format --write .",
     "prepare": "husky install",
-    "release": "pnpm publish -r --access=public --no-git-checks"
+    "release": "changeset publish"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,6 @@
   "devDependencies": {
     "@changesets/changelog-github": "0.4.8",
     "@changesets/cli": "2.26.0",
-    "coveralls": "^3.1.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.0",
     "rome": "11.0.0",
