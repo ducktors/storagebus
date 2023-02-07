@@ -30,7 +30,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^13.1.0",
     "rome": "11.0.0",
-    "turbo": "^1.7.0"
+    "turbo": "^1.7.3"
   },
   "bugs": {
     "url": "https://github.com/ducktors/storagebus/issues"
