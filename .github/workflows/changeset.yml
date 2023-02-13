@@ -1,11 +1,9 @@
-name: Release
+name: Changeset
 
 on:
   push:
     branches:
       - main
-
-concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
