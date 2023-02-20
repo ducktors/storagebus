@@ -1,4 +1,4 @@
-name: Changeset
+name: Changesets
 
 on:
   push:
@@ -7,16 +7,10 @@ on:
 
 jobs:
   release:
+    name: Changesets
     runs-on: ubuntu-latest
-    name: Release
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
       - uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -43,14 +37,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Create Release Pull Request or Publish packages
-        id: changesets
-        uses: changesets/action@v1.4.1
+      - name: Create Release Pull Request
+        uses: changesets/action@v1
         with:
           publish: pnpm release
-          commit: "Release: update monorepo packages versions"
-          title: "Upcoming Release Changes"
           createGithubReleases: true
+          commit: "chore: version release"
+          title: "Version Release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.DUCKTORS_NPM_TOKEN }}
