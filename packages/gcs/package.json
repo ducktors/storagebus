@@ -20,7 +20,7 @@
   "keywords": [],
   "dependencies": {
     "@ducktors/storagebus-abstract": "workspace:*",
-    "@google-cloud/storage": "^6.7.0",
+    "@google-cloud/storage": "^6.9.2",
     "mime-types": "^2.1.35",
     "tslib": "^2.4.1"
   },
@@ -32,7 +32,7 @@
     "fox1t-tsconfig": "^0.2.0",
     "rimraf": "^4.1.2",
     "stream-buffers": "^3.0.2",
-    "typescript": "^4.9.3",
+    "typescript": "^4.9.5",
     "vitest": "^0.28.4"
   }
 }

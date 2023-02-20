@@ -17,7 +17,9 @@
     "build": "pnpm turbo build --color",
     "format": "rome format --write .",
     "prepare": "husky install",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "commitlint": "commitlint",
+    "commit": "npx git-cz"
   },
   "repository": {
     "type": "git",
@@ -34,9 +36,9 @@
     "@vitest/coverage-istanbul": "^0.28.4",
     "commitlint-plugin-function-rules": "^1.7.1",
     "husky": "^8.0.3",
-    "lint-staged": "^13.1.0",
+    "lint-staged": "^13.1.1",
     "rome": "11.0.0",
-    "turbo": "^1.8.1"
+    "turbo": "^1.7.3"
   },
   "bugs": {
     "url": "https://github.com/ducktors/storagebus/issues"
