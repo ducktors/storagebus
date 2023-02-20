@@ -1,5 +1,11 @@
 # @ducktors/storagebus-s3
 
+## 0.11.3
+
+### Patch Changes
+
+- 9b26cac: Update SDK
+
 ## 0.11.2
 
 ### Patch Changes
