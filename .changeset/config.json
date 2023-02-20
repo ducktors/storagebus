@@ -1,18 +1,15 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@2.1.0/schema.json",
-  "changelog": [
-    "@changesets/changelog-github",
-    {
-      "repo": "ducktors/storagebus"
-    }
-  ],
+  "$schema": "https://unpkg.com/@changesets/config@2.3.0/schema.json",
+  "changelog": "@changesets/cli/changelog",
   "commit": false,
+  "fixed": [],
   "linked": [],
-  "access": "restricted",
+  "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "snapshot": {
-    "useCalculatedVersion": true,
-    "prereleaseTemplate": "{tag}-{datetime}-{commit}"
+  "ignore": [],
+  "privatePackages": {
+    "version": true,
+    "tag": true
   }
 }

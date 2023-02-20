@@ -25,12 +25,18 @@
   },
   "keywords": [],
   "devDependencies": {
-    "@changesets/changelog-github": "0.4.8",
-    "@changesets/cli": "2.26.0",
+    "@changesets/changelog-github": "^0.4.8",
+    "@changesets/cli": "^2.26.0",
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
+    "@commitlint/lint": "^17.4.3",
+    "@commitlint/prompt": "^17.1.2",
+    "@vitest/coverage-istanbul": "^0.28.4",
+    "commitlint-plugin-function-rules": "^1.7.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.0",
     "rome": "11.0.0",
-    "turbo": "^1.7.3"
+    "turbo": "^1.8.1"
   },
   "bugs": {
     "url": "https://github.com/ducktors/storagebus/issues"
