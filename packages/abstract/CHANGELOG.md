@@ -1,5 +1,11 @@
 # @ducktors/storagebus-abstract
 
+## 0.10.3
+
+### Patch Changes
+
+- 41ed13e: chore: update tslib and cloud providers sdks
+
 ## 0.10.2
 
 ### Patch Changes
