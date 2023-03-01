@@ -20,9 +20,9 @@
   "keywords": [],
   "dependencies": {
     "@ducktors/storagebus-abstract": "workspace:*",
-    "@google-cloud/storage": "^6.9.2",
+    "@google-cloud/storage": "^6.9.3",
     "mime-types": "^2.1.35",
-    "tslib": "^2.4.1"
+    "tslib": "^2.5.0"
   },
   "devDependencies": {
     "@types/mime-types": "^2.1.1",

@@ -20,7 +20,7 @@
   "keywords": [],
   "dependencies": {
     "@ducktors/storagebus-abstract": "workspace:*",
-    "tslib": "^2.4.1"
+    "tslib": "^2.5.0"
   },
   "devDependencies": {
     "@types/node": "^18.14.2",
