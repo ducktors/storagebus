@@ -7,7 +7,7 @@ on:
 
 env:
   TURBO_API: https://eu.trrc.ducktors.dev
-  TURBO_TEAM: ducktors
+  TURBO_TEAM: team_ducktors
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
 
 concurrency:
