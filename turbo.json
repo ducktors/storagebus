@@ -5,7 +5,13 @@
       "outputs": [
         "dist/**"
       ],
-      "cache": true,
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "dev": {
+      "outputs": [],
+      "cache": false,
       "dependsOn": [
         "^build"
       ]
@@ -16,6 +22,10 @@
       "dependsOn": [
         "^build"
       ]
+    },
+    "format": {
+      "outputs": [],
+      "cache": false
     },
     "test": {
       "outputs": [],

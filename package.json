@@ -11,15 +11,18 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
-    "precommit": "pnpm install",
-    "lint": "rome check .",
-    "build": "pnpm turbo build --color --token=\"turbotoken-oss-europe1\"",
-    "format": "rome format --write .",
-    "prepare": "husky install",
-    "release": "changeset publish",
+    "build": "turbo build --color",
+    "commit": "npx git-cz",
     "commitlint": "commitlint",
-    "commit": "npx git-cz"
+    "dev": "turbo dev --color",
+    "format": "turbo format --color",
+    "lint": "turbo lint --color",
+    "precommit": "pnpm install",
+    "preinstall": "npx only-allow pnpm",
+    "prepare": "husky install",
+    "release": "pnpm build && changeset publish",
+    "test": "turbo run test",
+    "test:ci": "turbo run test:ci"
   },
   "repository": {
     "type": "git",

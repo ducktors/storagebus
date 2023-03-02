@@ -1,36 +1,28 @@
 {
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "space",
-    "lineWidth": 100,
-    "ignore": [
-      "**/dist/*",
-      "**/coverage/*"
-    ]
-  },
+  "$schema": "./node_modules/rome/configuration_schema.json",
   "linter": {
     "enabled": true,
     "ignore": [
-      "**/dist/*",
-      "**/coverage/*"
+      "dist"
     ],
     "rules": {
       "recommended": true,
-      "style": {
-        "noUnusedTemplateLiteral": "off"
-      },
-      "complexity": {
-        "useSimplifiedLogicExpression": "off"
-      }, 
       "suspicious": {
         "noExplicitAny": "off"
       }
     }
   },
+  "formatter": {
+    "enabled": true,
+    "ignore": [
+      "dist"
+    ],
+    "indentStyle": "space"
+  },
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "quoteProperties": "preserve"
+      "semicolons": "asNeeded"
     }
   }
 }
