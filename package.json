@@ -14,7 +14,7 @@
     "preinstall": "npx only-allow pnpm",
     "precommit": "pnpm install",
     "lint": "rome check .",
-    "build": "pnpm turbo build --color",
+    "build": "pnpm turbo build --color --token=\"turbotoken-oss-europe1\"",
     "format": "rome format --write .",
     "prepare": "husky install",
     "release": "changeset publish",
