@@ -11,7 +11,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "turbo build --color",
+    "build": "turbo build --color --token=\"turbotoken-oss-europe1\"",
     "commit": "npx git-cz",
     "commitlint": "commitlint",
     "dev": "turbo dev --color",

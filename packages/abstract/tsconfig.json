@@ -1,9 +1,5 @@
 {
-  "extends": "fox1t-tsconfig",
-  "compilerOptions": {
-    "outDir": "dist",
-    "esModuleInterop": true,
-  },
+  "extends": "@ducktors/tsconfig",
   "include": [
     "**/*.ts"
   ]

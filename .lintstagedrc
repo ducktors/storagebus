@@ -1,3 +1,0 @@
-{
-  "*": "rome check . && rome format ."
-}
