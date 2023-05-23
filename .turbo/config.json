@@ -1,4 +1,5 @@
 {
-  "teamId": "team_ducktors",
-  "apiUrl": "https://eu.trrc.ducktors.dev"
+  "teamid": "team_ducktors",
+  "apiurl": "https://eu.trrc.ducktors.dev",
+  "token": "turbotoken-oss-europe1"
 }

@@ -18,7 +18,7 @@ jobs:
 
       - uses: pnpm/action-setup@v2
         with:
-          version: 7
+          version: 8
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -36,7 +36,7 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      
+
       - name: Build
         run: pnpm build
 
@@ -45,8 +45,8 @@ jobs:
         with:
           publish: pnpm release
           createGithubReleases: true
-          commit: "chore: version release"
-          title: "Version Release"
+          commit: 'chore: version release'
+          title: 'Version Release'
         env:
           GITHUB_TOKEN: ${{ secrets.DUCKTORS_PAT }}
           NPM_TOKEN: ${{ secrets.DUCKTORS_NPM_TOKEN }}

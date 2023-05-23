@@ -11,7 +11,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "turbo build --color --token=\"turbotoken-oss-europe1\"",
+    "build": "turbo build --color",
     "commit": "npx git-cz",
     "commitlint": "commitlint",
     "dev": "turbo dev --color",
@@ -41,7 +41,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^13.1.2",
     "rome": "11.0.0",
-    "turbo": "^1.8.3"
+    "turbo": "^1.9.8"
   },
   "bugs": {
     "url": "https://github.com/ducktors/storagebus/issues"
