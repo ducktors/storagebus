@@ -33,7 +33,7 @@
     "@ducktors/tsconfig": "^0.1.1",
     "@types/mime-types": "^2.1.1",
     "@types/node": "^16.18.11",
-    "@vitest/coverage-istanbul": "^0.28.4",
+    "@vitest/coverage-istanbul": "^0.34.4",
     "aws-sdk-client-mock": "^2.0.1",
     "rimraf": "^5.0.1",
     "rome": "11.0.0",
