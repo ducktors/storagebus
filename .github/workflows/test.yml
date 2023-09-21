@@ -1,0 +1,86 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+
+env:
+  TURBO_API: https://eu.trrc.ducktors.dev
+  TURBO_TEAM: team_ducktors
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+        os: [ubuntu-latest, macos-latest]
+    name: Coverage
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@8ca2b8b2ece13480cda6dacd3511b49857a23c09 # v2.5.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - name: Use Node.js
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - uses: pnpm/action-setup@0b715c7ebbf3cf2174d1386336c5f6d3d8d5504a # v2.3.0
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: pnpm test:ci
+
+      - name: Copy json coverage report
+        run: |
+          mkdir -p coverage
+          cp ./packages/abstract/coverage/coverage-final.json ./coverage/coverage-abstract.json
+          cp ./packages/gcs/coverage/coverage-final.json ./coverage/coverage-gcs.json
+          cp ./packages/local/coverage/coverage-final.json ./coverage/coverage-local.json
+          cp ./packages/s3/coverage/coverage-final.json ./coverage/coverage-s3.json
+
+      - name: Merge json coverage reports
+        run: pnpm dlx nyc merge coverage coverage/merged-coverage.json
+
+      - name: Convert json coverage report to lcov
+        run: pnpm dlx nyc report --reporter=lcov --temp-directory=coverage
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@09b709cf6a16e30b0808ba050c7a6e8a5ef13f8d # master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./coverage/lcov.info
+
+      - name: CodeClimate
+        uses: paambaati/codeclimate-action@4cace242c6e0a2dd554bbb3cc12c58047d8af3e5 # v5.0.0
+        continue-on-error: true
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TEST_REPORTER_ID }}
+        with:
+          coverageLocations: ${{github.workspace}}/coverage/lcov.info:lcov
