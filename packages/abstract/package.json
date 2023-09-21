@@ -28,7 +28,7 @@
   "devDependencies": {
     "@ducktors/tsconfig": "^0.1.1",
     "@types/node": "^16.18.11",
-    "@vitest/coverage-istanbul": "^0.28.4",
+    "@vitest/coverage-istanbul": "^0.34.4",
     "rimraf": "^5.0.1",
     "rome": "11.0.0",
     "tsup": "^6.5.0",
