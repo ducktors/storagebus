@@ -1842,6 +1842,15 @@ packages:
       typescript: 4.9.5
     dev: true
 
+  /@ducktors/tsconfig@1.0.0(typescript@4.9.5):
+    resolution: {integrity: sha512-LmZNXZvGVnE+ITO3qj9MIlEkpVws3ZvgUK+eAAzkaiM2sIF/e41TvTtWG1jhMnzthTGhBb/pzKCGwgRK77a6SQ==}
+    peerDependencies:
+      typescript: ^5.2.2
+    dependencies:
+      fastify-tsconfig: 2.0.0
+      typescript: 4.9.5
+    dev: true
+
   /@esbuild/android-arm64@0.16.17:
     resolution: {integrity: sha512-MIGl6p5sc3RDTLLkYL1MyL8BMRN4tLMRCn+yRJJmEDvYZ2M7tmAf80hx1kbNEUX2KJ50RRtxZ4JHLvCfuB6kBg==}
     engines: {node: '>=12'}
