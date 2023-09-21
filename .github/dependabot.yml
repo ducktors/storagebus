@@ -22,3 +22,28 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "fix(docker)"
+
+  - package-ecosystem: npm
+    directory: /packages/abstract
+    schedule:
+      interval: daily
+
+  - package-ecosystem: npm
+    directory: /packages/gcs
+    schedule:
+      interval: daily
+
+  - package-ecosystem: npm
+    directory: /packages/local
+    schedule:
+      interval: daily
+
+  - package-ecosystem: npm
+    directory: /packages/memory
+    schedule:
+      interval: daily
+
+  - package-ecosystem: npm
+    directory: /packages/s3
+    schedule:
+      interval: daily
