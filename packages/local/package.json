@@ -26,7 +26,7 @@
     "tslib": "^2.5.0"
   },
   "devDependencies": {
-    "@ducktors/tsconfig": "^0.1.1",
+    "@ducktors/tsconfig": "^1.0.0",
     "@types/node": "^16.18.11",
     "@vitest/coverage-istanbul": "^0.34.4",
     "rimraf": "^5.0.1",
@@ -34,9 +34,5 @@
     "tsup": "^6.5.0",
     "typescript": "^4.9.5",
     "vitest": "^0.34.4"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "packageManager": "^pnpm@8.7.4"
+  }
 }

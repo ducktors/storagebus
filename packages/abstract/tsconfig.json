@@ -2,5 +2,6 @@
   "extends": "@ducktors/tsconfig",
   "include": [
     "**/*.ts"
-  ]
+  ],
+  "exclude": ["vitest.config.ts"]
 }

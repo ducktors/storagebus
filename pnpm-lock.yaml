@@ -55,8 +55,8 @@ importers:
         version: 2.5.0
     devDependencies:
       '@ducktors/tsconfig':
-        specifier: ^0.1.1
-        version: 0.1.1(typescript@4.9.5)
+        specifier: ^1.0.0
+        version: 1.0.0(typescript@4.9.5)
       '@types/node':
         specifier: ^16.18.11
         version: 16.18.14
@@ -95,8 +95,8 @@ importers:
         version: 2.5.0
     devDependencies:
       '@ducktors/tsconfig':
-        specifier: ^0.1.1
-        version: 0.1.1(typescript@4.9.5)
+        specifier: ^1.0.0
+        version: 1.0.0(typescript@4.9.5)
       '@types/mime-types':
         specifier: ^2.1.1
         version: 2.1.1
@@ -138,8 +138,8 @@ importers:
         version: 2.5.0
     devDependencies:
       '@ducktors/tsconfig':
-        specifier: ^0.1.1
-        version: 0.1.1(typescript@4.9.5)
+        specifier: ^1.0.0
+        version: 1.0.0(typescript@4.9.5)
       '@types/node':
         specifier: ^16.18.11
         version: 16.18.14
@@ -172,8 +172,8 @@ importers:
         version: 2.5.0
     devDependencies:
       '@ducktors/tsconfig':
-        specifier: ^0.1.1
-        version: 0.1.1(typescript@4.9.5)
+        specifier: ^1.0.0
+        version: 1.0.0(typescript@4.9.5)
       '@types/node':
         specifier: ^16.18.11
         version: 16.18.14
@@ -218,8 +218,8 @@ importers:
         version: 2.5.0
     devDependencies:
       '@ducktors/tsconfig':
-        specifier: ^0.1.1
-        version: 0.1.1(typescript@4.9.5)
+        specifier: ^1.0.0
+        version: 1.0.0(typescript@4.9.5)
       '@types/mime-types':
         specifier: ^2.1.1
         version: 2.1.1
@@ -1833,11 +1833,12 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@ducktors/tsconfig@0.1.1(typescript@4.9.5):
-    resolution: {integrity: sha512-ulzGFJSV46tCqQjyJoMkC7TfIyGRsJZk21wEe36nD4Zo0GIbBSbsgJU54c6R8Ik8a4T2jR8pQSeJptsRPPGtiQ==}
+  /@ducktors/tsconfig@1.0.0(typescript@4.9.5):
+    resolution: {integrity: sha512-LmZNXZvGVnE+ITO3qj9MIlEkpVws3ZvgUK+eAAzkaiM2sIF/e41TvTtWG1jhMnzthTGhBb/pzKCGwgRK77a6SQ==}
     peerDependencies:
-      typescript: ^4.9.5
+      typescript: ^5.2.2
     dependencies:
+      fastify-tsconfig: 2.0.0
       typescript: 4.9.5
     dev: true
 
@@ -3886,6 +3887,11 @@ packages:
     dependencies:
       strnum: 1.0.5
     dev: false
+
+  /fastify-tsconfig@2.0.0:
+    resolution: {integrity: sha512-pvYwdtbZUJr/aTD7ZE0rGlvtYpx7IThHKVLBoqCKmT3FJpwm23XA2+PDmq8ZzfqqG4ajpyrHd5bkIixcIFjPhQ==}
+    engines: {node: '>=18.0.0'}
+    dev: true
 
   /fastq@1.15.0:
     resolution: {integrity: sha512-wBrocU2LCXXa+lWBt8RoIRD89Fi8OdABODa/kEnyeyjS5aZO5/GNvI5sEINADqP/h8M29UHTHUb53sUu5Ihqdw==}
