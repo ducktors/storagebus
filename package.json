@@ -43,6 +43,10 @@
     "rome": "11.0.0",
     "turbo": "^1.10.14"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "^pnpm@8.7.4",
   "bugs": {
     "url": "https://github.com/ducktors/storagebus/issues"
   },
