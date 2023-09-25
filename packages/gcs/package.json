@@ -30,7 +30,7 @@
   "devDependencies": {
     "@ducktors/tsconfig": "^0.1.1",
     "@types/mime-types": "^2.1.1",
-    "@types/node": "^16.18.11",
+    "@types/node": "^18.17.19",
     "@types/stream-buffers": "^3.0.4",
     "@vitest/coverage-istanbul": "^0.34.4",
     "rimraf": "^5.0.1",
