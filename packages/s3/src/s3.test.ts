@@ -8,9 +8,9 @@ import {
   PutObjectCommand,
   UploadPartCommand,
 } from '@aws-sdk/client-s3'
+import { Storage as AbstractStorage } from '@ducktors/storagebus-abstract'
 import { mockClient } from 'aws-sdk-client-mock'
 import { beforeEach, expect, test, vi } from 'vitest'
-import { Storage as AbstractStorage } from '@ducktors/storagebus-abstract'
 
 import { Storage } from './s3'
 

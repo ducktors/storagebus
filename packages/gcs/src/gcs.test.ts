@@ -1,9 +1,9 @@
-import { Readable } from 'node:stream'
 import { randomUUID } from 'node:crypto'
+import { Readable } from 'node:stream'
 
-import streamBuffers from 'stream-buffers'
-import { test, expect, vi } from 'vitest'
 import { Storage as AbstractStorage } from '@ducktors/storagebus-abstract'
+import streamBuffers from 'stream-buffers'
+import { expect, test, vi } from 'vitest'
 
 import { Storage } from './gcs'
 
@@ -16,7 +16,10 @@ vi.mock('@google-cloud/storage', () => {
     }
 
     bucket(name: string) {
-      return this.buckets[name] || (this.buckets[name] = new MockBucket(name))
+      if (!this.buckets[name]) {
+        this.buckets[name] = new MockBucket(name)
+      }
+      return this.buckets[name]
     }
   }
 

@@ -5,15 +5,13 @@
   "license": "MIT",
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
   "private": false,
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --noEmit && tsup-node",
-    "format": "rome format --write .",
-    "lint": "rome check .",
+    "format": "biome format --write .",
+    "lint": "biome check .",
     "preinstall": "npx only-allow pnpm",
     "prepublish": "pnpm build",
     "test": "vitest run",
@@ -26,13 +24,13 @@
     "tslib": "^2.5.0"
   },
   "devDependencies": {
-    "@ducktors/tsconfig": "^0.1.1",
+    "@biomejs/biome": "^1.2.2",
+    "@ducktors/tsconfig": "^1.0.0",
     "@types/node": "^16.18.11",
     "@vitest/coverage-istanbul": "^0.34.4",
     "rimraf": "^5.0.1",
-    "rome": "11.0.0",
-    "tsup": "^6.5.0",
-    "typescript": "^4.9.5",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2",
     "vitest": "^0.34.4"
   }
 }

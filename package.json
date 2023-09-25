@@ -5,24 +5,21 @@
   "license": "MIT",
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
   "private": true,
-  "files": [
-    "dist"
-  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "turbo build --color",
+    "build": "turbo build",
     "commit": "npx git-cz",
     "commitlint": "commitlint",
-    "dev": "turbo dev --color",
-    "format": "turbo format --color",
-    "lint": "turbo lint --color",
+    "dev": "turbo dev",
+    "format": "turbo format",
+    "lint": "turbo lint",
     "precommit": "pnpm install",
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky install",
     "release": "pnpm build && changeset publish",
-    "test": "turbo run test",
-    "test:ci": "turbo run test:ci"
+    "test": "turbo test",
+    "test:ci": "turbo test:ci"
   },
   "repository": {
     "type": "git",
@@ -30,6 +27,7 @@
   },
   "keywords": [],
   "devDependencies": {
+    "@biomejs/biome": "^1.2.2",
     "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.2",
     "@commitlint/cli": "^17.7.1",
@@ -40,7 +38,6 @@
     "commitlint-plugin-function-rules": "^1.7.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.3.0",
-    "rome": "11.0.0",
     "turbo": "^1.10.14"
   },
   "bugs": {

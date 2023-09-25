@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto'
 import { Readable } from 'node:stream'
 
-import { expect, test } from 'vitest'
 import { Storage as AbstractStorage } from '@ducktors/storagebus-abstract'
+import { expect, test } from 'vitest'
 
 import { Storage } from './memory'
 

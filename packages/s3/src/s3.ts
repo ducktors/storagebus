@@ -1,23 +1,23 @@
 import { Readable } from 'node:stream'
 
 import {
+  CopyObjectCommand,
+  CopyObjectCommandInput,
   DeleteObjectCommand,
   DeleteObjectCommandInput,
   GetObjectCommand,
   GetObjectCommandInput,
   HeadObjectCommand,
   HeadObjectCommandInput,
-  CopyObjectCommand,
-  CopyObjectCommandInput,
   S3Client,
   ServerSideEncryption,
 } from '@aws-sdk/client-s3'
 import { Progress, Upload } from '@aws-sdk/lib-storage'
-import { lookup } from 'mime-types'
 import {
   AbstractStorageOptions,
   Storage as AbstractStorage,
 } from '@ducktors/storagebus-abstract'
+import { lookup } from 'mime-types'
 
 export type StorageOptions = {
   bucket: string
@@ -61,13 +61,13 @@ export class Storage extends AbstractStorage {
     fileReadable: Readable,
     opts?: WriteOpts,
   ): Promise<string> {
-    key = this.sanitize(key)
-    const mimeType = lookup(key)
+    const _key = this.sanitize(key)
+    const mimeType = lookup(_key)
 
     const upload = new Upload({
       client: this.client,
       params: {
-        Key: key,
+        Key: _key,
         Bucket: this.bucket,
         Body: fileReadable,
         ...(mimeType ? { ContentType: mimeType } : {}),
@@ -80,7 +80,7 @@ export class Storage extends AbstractStorage {
     }
 
     await upload.done()
-    return key
+    return _key
   }
 
   async exists(key: string): Promise<boolean> {
