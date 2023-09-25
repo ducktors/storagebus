@@ -8,6 +8,7 @@
   },
   "linter": {
     "enabled": true,
+    "ignore": ["dist"],
     "rules": {
       "recommended": true,
       "suspicious": {
@@ -16,6 +17,7 @@
     }
   },
   "formatter": {
+    "ignore": ["dist"],
     "enabled": true,
     "indentStyle": "space"
   },

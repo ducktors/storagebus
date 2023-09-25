@@ -167,19 +167,13 @@ jobs:
       - name: Run tests
         run: pnpm test:ci
 
-      - name: Copy json coverage report
+      - name: Copy c8 json coverage report
         run: |
-          mkdir -p coverage
-          cp ./packages/abstract/coverage/coverage-final.json ./coverage/coverage-abstract.json
-          cp ./packages/gcs/coverage/coverage-final.json ./coverage/coverage-gcs.json
-          cp ./packages/local/coverage/coverage-final.json ./coverage/coverage-local.json
-          cp ./packages/s3/coverage/coverage-final.json ./coverage/coverage-s3.json
+          mkdir -p coverage/tmp
+          cp -r ./packages/*/coverage/tmp/. coverage/tmp
 
       - name: Merge json coverage reports
-        run: pnpm dlx nyc merge coverage coverage/merged-coverage.json
-
-      - name: Convert json coverage report to lcov
-        run: pnpm dlx nyc report --reporter=lcov --temp-directory=coverage
+        run: pnpm dlx c8 report --reporter lcov --reporter text
 
       - name: Coveralls
         uses: coverallsapp/github-action@3dfc5567390f6fa9267c0ee9c251e4c8c3f18949 # master

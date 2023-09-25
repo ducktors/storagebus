@@ -1,1 +1,2 @@
-export { Storage } from './memory'
+export { Storage } from './memory.js'
+export type { StorageOptions } from './memory.js'

@@ -5,7 +5,8 @@ import {
   AbstractStorageOptions,
   Storage as AbstractStorage,
 } from '@ducktors/storagebus-abstract'
-import { type Bucket, Storage as GCS } from '@google-cloud/storage'
+import * as GCS from '@google-cloud/storage'
+import { type Bucket } from '@google-cloud/storage'
 import { lookup } from 'mime-types'
 
 export type StorageOptions = {
@@ -16,7 +17,7 @@ export type StorageOptions = {
 } & AbstractStorageOptions
 
 export class Storage extends AbstractStorage {
-  protected client: GCS
+  protected client: GCS.Storage
   protected bucket: Bucket
 
   constructor(opts: StorageOptions) {
@@ -24,9 +25,9 @@ export class Storage extends AbstractStorage {
 
     const { bucket, clientEmail, privateKey, projectId } = opts
     if (!(clientEmail && privateKey && projectId)) {
-      this.client = new GCS()
+      this.client = new GCS.Storage()
     } else {
-      this.client = new GCS({
+      this.client = new GCS.Storage({
         projectId,
         credentials: {
           client_email: clientEmail,

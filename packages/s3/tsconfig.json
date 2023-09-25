@@ -1,4 +1,14 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@ducktors/tsconfig",
-  "include": ["**/*.ts", "**/*.mts"]
+  "compilerOptions": {
+    "outDir": "dist",
+    "sourceMap": true
+  },
+  "include": ["src/**/*.ts"],
+  "references": [
+    {
+      "path": "../abstract/tsconfig.json"
+    }
+  ]
 }

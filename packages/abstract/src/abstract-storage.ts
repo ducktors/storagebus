@@ -1,13 +1,13 @@
 import { Readable } from 'node:stream'
 
-import { logger as defaultLogger } from './logger'
-import { sanitize } from './sanitize-key'
+import { logger as defaultLogger } from './logger.js'
+import { sanitize } from './sanitize-key.js'
 
 function isFunction(x: unknown): x is (x: string) => string {
   return Object.prototype.toString.call(x) === '[object Function]'
 }
 
-export interface AbstractStorageOptions {
+export interface StorageOptions {
   debug?: boolean
   logger?: typeof defaultLogger
   sanitizeKey?: ((key: string) => string) | boolean
@@ -18,7 +18,7 @@ export abstract class Storage {
   protected _logger: typeof defaultLogger
   protected sanitize: (key: string) => string
 
-  constructor(opts: AbstractStorageOptions = { logger: defaultLogger }) {
+  constructor(opts: StorageOptions = { logger: defaultLogger }) {
     const { debug, logger = defaultLogger, sanitizeKey = false } = opts
 
     this._logger = logger

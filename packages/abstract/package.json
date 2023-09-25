@@ -6,17 +6,24 @@
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
   "private": false,
   "files": ["dist"],
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./latin-chars.json": "./dist/latin-chars.json"
+  },
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc --noEmit && tsup-node && cp src/latin-chars.json dist/latin-chars.json",
+    "build": "rimraf dist && tsc && cp src/latin-chars.json dist/latin-chars.json",
     "format": "biome format --write .",
     "lint": "biome check .",
     "preinstall": "npx only-allow pnpm",
     "prepublish": "pnpm build",
-    "test": "vitest run",
-    "test:ci": "vitest run --reporter=junit --reporter=default --coverage",
-    "test:watch": "vitest --watch"
+    "test": "tsx --test ./test/*.ts",
+    "test:ci": "c8 --reporter lcov --reporter text tsx --test ./test/*.ts",
+    "test:watch": "tsx --watch --test ./test/*.ts"
   },
   "keywords": [],
   "dependencies": {
@@ -26,11 +33,10 @@
   "devDependencies": {
     "@biomejs/biome": "^1.2.2",
     "@ducktors/tsconfig": "^1.0.0",
-    "@types/node": "^16.18.11",
-    "@vitest/coverage-istanbul": "^0.34.4",
+    "@types/node": "^20.6.5",
+    "c8": "^8.0.1",
     "rimraf": "^5.0.1",
-    "tsup": "^7.2.0",
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.4"
+    "tsx": "^3.13.0",
+    "typescript": "^5.2.2"
   }
 }
