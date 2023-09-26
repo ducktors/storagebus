@@ -1,2 +1,2 @@
-export { Storage } from './s3'
-export type { WriteOpts } from './s3'
+export { Storage } from './s3.js'
+export type { StorageOptions, WriteOpts } from './s3.js'

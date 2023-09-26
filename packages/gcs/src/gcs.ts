@@ -1,11 +1,12 @@
 import { Readable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 
-import { type Bucket, Storage as GCS } from '@google-cloud/storage'
 import {
   AbstractStorageOptions,
   Storage as AbstractStorage,
 } from '@ducktors/storagebus-abstract'
+import * as GCS from '@google-cloud/storage'
+import { type Bucket } from '@google-cloud/storage'
 import { lookup } from 'mime-types'
 
 export type StorageOptions = {
@@ -16,7 +17,7 @@ export type StorageOptions = {
 } & AbstractStorageOptions
 
 export class Storage extends AbstractStorage {
-  protected client: GCS
+  protected client: GCS.Storage
   protected bucket: Bucket
 
   constructor(opts: StorageOptions) {
@@ -24,9 +25,9 @@ export class Storage extends AbstractStorage {
 
     const { bucket, clientEmail, privateKey, projectId } = opts
     if (!(clientEmail && privateKey && projectId)) {
-      this.client = new GCS()
+      this.client = new GCS.Storage()
     } else {
-      this.client = new GCS({
+      this.client = new GCS.Storage({
         projectId,
         credentials: {
           client_email: clientEmail,
@@ -39,9 +40,9 @@ export class Storage extends AbstractStorage {
   }
 
   async write(key: string, fileReadable: Readable): Promise<string> {
-    key = this.sanitize(key)
-    const file = this.bucket.file(key)
-    const mimeType = lookup(key)
+    const _key = this.sanitize(key)
+    const file = this.bucket.file(_key)
+    const mimeType = lookup(_key)
 
     await pipeline(
       fileReadable,
@@ -54,43 +55,43 @@ export class Storage extends AbstractStorage {
   }
 
   async exists(key: string): Promise<boolean> {
-    key = this.sanitize(key)
-    const file = this.bucket.file(key)
+    const _key = this.sanitize(key)
+    const file = this.bucket.file(_key)
     const [exists] = await file.exists()
 
     return exists
   }
 
   async read(key: string): Promise<Readable> {
-    key = this.sanitize(key)
-    if (!(await this.exists(key))) {
-      throw new Error(`Missing ${key} from ${this.bucket.name}`)
+    const _key = this.sanitize(key)
+    if (!(await this.exists(_key))) {
+      throw new Error(`Missing ${_key} from ${this.bucket.name}`)
     }
-    const file = this.bucket.file(key)
+    const file = this.bucket.file(_key)
     return file.createReadStream()
   }
 
   async remove(key: string): Promise<void> {
-    key = this.sanitize(key)
-    const file = this.bucket.file(key)
+    const _key = this.sanitize(key)
+    const file = this.bucket.file(_key)
     await file.delete({ ignoreNotFound: true })
   }
 
   async copy(key: string, destKey: string): Promise<string> {
-    key = this.sanitize(key)
-    const file = this.bucket.file(key)
-    destKey = this.sanitize(destKey)
-    const destFile = this.bucket.file(destKey)
+    const _key = this.sanitize(key)
+    const file = this.bucket.file(_key)
+    const _destKey = this.sanitize(destKey)
+    const destFile = this.bucket.file(_destKey)
     await file.copy(destFile)
 
     return destFile.name
   }
 
   async move(key: string, destKey: string): Promise<string> {
-    key = this.sanitize(key)
-    destKey = this.sanitize(destKey)
-    const file = this.bucket.file(key)
-    const destFile = this.bucket.file(destKey)
+    const _key = this.sanitize(key)
+    const _destKey = this.sanitize(destKey)
+    const file = this.bucket.file(_key)
+    const destFile = this.bucket.file(_destKey)
     await file.move(destFile)
 
     return destFile.name

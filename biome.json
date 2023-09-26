@@ -1,10 +1,14 @@
 {
-  "$schema": "./node_modules/rome/configuration_schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": {
+    "clientKind": "git",
+    "enabled": true,
+    "useIgnoreFile": true,
+    "root": "."
+  },
   "linter": {
     "enabled": true,
-    "ignore": [
-      "dist"
-    ],
+    "ignore": ["dist"],
     "rules": {
       "recommended": true,
       "suspicious": {
@@ -13,10 +17,8 @@
     }
   },
   "formatter": {
+    "ignore": ["dist"],
     "enabled": true,
-    "ignore": [
-      "dist"
-    ],
     "indentStyle": "space"
   },
   "javascript": {

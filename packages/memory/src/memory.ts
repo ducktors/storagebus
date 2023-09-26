@@ -16,46 +16,48 @@ export class Storage extends AbstractStorage {
   }
 
   async write(key: string, fileReadable: Readable): Promise<string> {
-    key = this.sanitize(key)
+    const _key = this.sanitize(key)
 
-    this.bucket.set(key, await this.toBuffer(fileReadable))
-    return key
+    this.bucket.set(_key, await this.toBuffer(fileReadable))
+    return _key
   }
 
   async exists(key: string): Promise<boolean> {
-    key = this.sanitize(key)
-    return this.bucket.has(key)
+    const _key = this.sanitize(key)
+    return this.bucket.has(_key)
   }
 
   async read(key: string): Promise<Readable> {
-    key = this.sanitize(key)
-    if (!(await this.exists(key))) {
-      throw new Error(`Missing ${key} from Storagebus Memory`)
+    const _key = this.sanitize(key)
+    if (!(await this.exists(_key))) {
+      throw new Error(`Missing ${_key} from Storagebus Memory`)
     }
 
-    return Readable.from(this.bucket.get(key)!)
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    return Readable.from(this.bucket.get(_key)!)
   }
 
   async remove(key: string): Promise<void> {
-    key = this.sanitize(key)
-    this.bucket.delete(key)
+    const _key = this.sanitize(key)
+    this.bucket.delete(_key)
   }
 
   async copy(key: string, destKey: string): Promise<string> {
-    key = this.sanitize(key)
-    const file = this.bucket.has(key)
+    const _key = this.sanitize(key)
+    const file = this.bucket.has(_key)
     if (!file) {
-      throw new Error(`Missing ${key} from Storagebus Memory`)
+      throw new Error(`Missing ${_key} from Storagebus Memory`)
     }
-    destKey = this.sanitize(destKey)
-    this.bucket.set(destKey, this.bucket.get(key)!)
-    return destKey
+    const _destKey = this.sanitize(destKey)
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    this.bucket.set(_destKey, this.bucket.get(_key)!)
+    return _destKey
   }
 
   async move(key: string, destKey: string): Promise<string> {
-    destKey = await this.copy(key, destKey)
+    const _destKey = await this.copy(key, destKey)
     await this.remove(key)
 
-    return destKey
+    return _destKey
   }
 }

@@ -6,7 +6,7 @@ import {
 } from 'node:fs'
 import fs from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join, isAbsolute, dirname } from 'node:path'
+import { dirname, isAbsolute, join } from 'node:path'
 import { Readable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 
