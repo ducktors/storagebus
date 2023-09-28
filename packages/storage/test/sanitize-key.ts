@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { sanitize } from '../src/sanitize-key.js'
 
-test('abstract sanitize key', async () => {
+test('@storagebus/storage sanitize key', async () => {
   await test('trying to sanitize values that are not strings, not numbers or empty strings results in an error', () => {
     // @ts-expect-error: testing wrong type
     assert.throws(() => sanitize(null), Error)

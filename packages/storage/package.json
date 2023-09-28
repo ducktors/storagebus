@@ -1,6 +1,6 @@
 {
-  "name": "@storagebus/memory",
-  "version": "0.12.2",
+  "name": "@storagebus/storage",
+  "version": "0.10.3",
   "description": "",
   "license": "MIT",
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
@@ -9,28 +9,29 @@
   "type": "commonjs",
   "exports": {
     ".": {
-      "import": "./dist/memory.js",
-      "require": "./dist/memory.js"
+      "import": "./dist/storage.js",
+      "require": "./dist/storage.js"
     },
     "./file": {
       "import": "./dist/file.js",
       "require": "./dist/file.js"
     }
   },
-  "main": "dist/index.js",
+  "main": "dist/storage.js",
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc && cp src/latin-chars.json dist/latin-chars.json",
     "format": "biome format --write .",
     "lint": "biome check .",
     "preinstall": "npx only-allow pnpm",
     "prepublish": "pnpm build",
-    "test": "tsx --test test/*.ts",
+    "test": "tsx --test ./test/*.ts",
     "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
     "test:watch": "tsx --watch --test ./test/*.ts"
   },
   "keywords": [],
   "dependencies": {
-    "@storagebus/storage": "workspace:*",
+    "@storagebus/file": "workspace:*",
+    "mime-types": "^2.1.35",
     "tslib": "^2.5.0"
   },
   "devDependencies": {

@@ -3,26 +3,30 @@ import { randomUUID } from 'node:crypto'
 import { Readable } from 'node:stream'
 import { test } from 'node:test'
 
-import { Storage as AbstractStorage } from '@ducktors/storagebus-abstract'
-import { Storage } from '../src/memory.js'
+import { Storage } from '@storagebus/storage'
+import { BusFile } from '@storagebus/storage/file'
+import { createStorage, Storage as MemoryStorage } from '../src/memory.js'
 
 test('memory', async () => {
-  const storage = new Storage({})
+  const storage = createStorage({})
 
-  const storageWithDebug = new Storage({
+  const storageWithDebug = createStorage({
     debug: true,
   })
 
-  await test('create storage instance', () => {
+  await test('create storage instance from the factory function', () => {
     assert.equal(storage instanceof Storage, true)
+    assert.equal(storage instanceof MemoryStorage, true)
   })
 
-  await test('storage instance extends from AbstractStorage', () => {
-    assert.equal(storage instanceof AbstractStorage, true)
+  await test('create storage instance from the Storage class', () => {
+    const storage = new MemoryStorage()
+    assert.equal(storage instanceof Storage, true)
+    assert.equal(storage instanceof MemoryStorage, true)
   })
 
   await test('create storage instance with custom sanitizeKey function', () => {
-    const storage = new Storage({
+    const storage = createStorage({
       sanitizeKey: (key) => key,
     })
 
@@ -31,7 +35,7 @@ test('memory', async () => {
 
   await test('create storage instance with wrong type for sanitizeKey param', () => {
     try {
-      new Storage({
+      createStorage({
         // @ts-expect-error: testing wrong type
         sanitizeKey: '',
       })
@@ -41,7 +45,7 @@ test('memory', async () => {
   })
 
   await test('create storage instance with default sanitize function', () => {
-    const storage = new Storage({
+    const storage = createStorage({
       sanitizeKey: true,
     })
     assert.equal(storage instanceof Storage, true)
@@ -61,47 +65,54 @@ test('memory', async () => {
     assert.equal(await storage.exists(key), true)
   })
 
-  await test('storage.read reads a file from Storagebus Memory', async () => {
+  await test('storage.file gets a File from Storagebus Memory', async () => {
     const key = randomUUID()
     await storage.write(key, Readable.from(key))
-    const file = await storage.read(key)
+    const file = await storage.file(key)
 
-    assert.equal(file instanceof Readable, true)
+    assert.equal(file instanceof BusFile, true)
   })
 
-  await test('storage.read throws on missing key', async () => {
+  await test('storage.file retruns an empty File on missing destination', async () => {
     const key = randomUUID()
+    const file = await storage.file(key)
 
-    await assert.rejects(
-      () => storage.read(key),
-      Error(`Missing ${key} from Storagebus Memory`),
-    )
+    assert.equal(file.size, 0)
   })
 
-  await test('storage.remove removes key from Storagebus Memory', async () => {
+  await test('storage.write(key, null) removes a File from Storage', async () => {
     const key = randomUUID()
     await storage.write(key, Readable.from(key))
-    await storage.remove(key)
+    await storage.write(key, null)
 
     assert.equal(await storage.exists(key), false)
   })
 
-  await test('storage.copy copy a file to new location', async () => {
+  await test('storage.write(File, File) copies a file to new destination', async () => {
     const key = randomUUID()
-    const objectKey = await storage.write(key, Readable.from(key))
-    const newKey = await storage.copy(objectKey, 'new-key')
+    await storage.write(key, Readable.from(key))
+    const file1 = await storage.file(key)
+    const file2 = await storage.write(await storage.file('new-key'), file1)
 
-    assert.equal(await storage.exists(objectKey), true)
-    assert.equal(await storage.exists(newKey), true)
+    assert.equal(await storage.exists(file1), true, 'file1 exists')
+    assert.equal(await storage.exists(file2), true, 'file2 exists')
   })
 
-  await test('storage.move moves a file to a new location', async () => {
+  await test('consumes multiple times a stream', async () => {
     const key = randomUUID()
-    const objectKey = await storage.write(key, Readable.from(key))
-    const newKey = await storage.move(objectKey, 'new-key')
+    await storage.write(key, Readable.from(key))
+    const file1 = await storage.file(key)
 
-    assert.equal(await storage.exists(objectKey), false)
-    assert.equal(await storage.exists(newKey), true)
+    let count = 0
+    for await (const chunk of await file1.stream()) {
+      count++
+      assert.equal(chunk.toString(), key)
+    }
+    for await (const chunk of await file1.stream()) {
+      count++
+      assert.equal(chunk.toString(), key)
+    }
+    assert.equal(count, 2)
   })
 
   await test('logs the error when in debug mode', async () => {
@@ -110,25 +121,5 @@ test('memory', async () => {
     } catch (err) {
       assert.deepEqual(err, {})
     }
-  })
-
-  await test('toBuffer returns a buffer from Readable with objectMode true', async () => {
-    const storage = new Storage({})
-    const buffer = await storage.toBuffer(
-      Readable.from('foo', { objectMode: true }),
-    )
-
-    assert.equal(buffer instanceof Buffer, true)
-    assert.equal(buffer.toString(), 'foo')
-  })
-
-  await test('toBuffer returns a buffer from Readable with objectMode false', async () => {
-    const storage = new Storage({})
-    const buffer = await storage.toBuffer(
-      Readable.from('foo', { objectMode: false }),
-    )
-
-    assert.equal(buffer instanceof Buffer, true)
-    assert.equal(buffer.toString(), 'foo')
   })
 })

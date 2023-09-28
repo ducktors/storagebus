@@ -4,13 +4,13 @@
   "compilerOptions": {
     "outDir": "dist",
     "sourceMap": true,
-    "lib": ["esnext"]
+    "declarationMap": true,
+    "composite": true,
+    "rootDir": "src",
+    "tsBuildInfoFile": "dist/tsconfig.build.tsbuildinfo"
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src", "src/**/*.json"],
   "references": [
-    {
-      "path": "../storage/tsconfig.json"
-    },
     {
       "path": "../file/tsconfig.json"
     }

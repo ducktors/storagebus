@@ -1,6 +1,6 @@
 {
-  "name": "@ducktors/storagebus-abstract",
-  "version": "0.10.3",
+  "name": "@storagebus/file",
+  "version": "0.1.0",
   "description": "",
   "license": "MIT",
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
@@ -9,14 +9,13 @@
   "type": "commonjs",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
-    },
-    "./latin-chars.json": "./dist/latin-chars.json"
+      "import": "./dist/file.js",
+      "require": "./dist/file.js"
+    }
   },
-  "main": "dist/index.js",
+  "main": "dist/file.js",
   "scripts": {
-    "build": "rimraf dist && tsc && cp src/latin-chars.json dist/latin-chars.json",
+    "build": "rimraf dist && tsc",
     "format": "biome format --write .",
     "lint": "biome check .",
     "preinstall": "npx only-allow pnpm",
