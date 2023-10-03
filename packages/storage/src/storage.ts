@@ -1,20 +1,9 @@
 import { Readable } from 'node:stream'
+import { BusFile, isBusFile } from '@storagebus/file'
 
 import { logger as defaultLogger } from './logger.js'
 import { sanitize } from './sanitize-key.js'
-import { BusFile, isBusFile } from '@storagebus/file'
-
-type createStream = () => Readable | Promise<Readable>
-
-export interface Driver {
-  set(destination: string, data: BusFile): Promise<string>
-  get(path: string): Promise<createStream | Buffer | string | null>
-  getMetadata(
-    path: string,
-  ): Promise<{ lastModified?: Date; type?: string; size?: number }>
-  has(path: string): Promise<boolean>
-  delete(path: string): Promise<void>
-}
+import { Driver } from './memory.js'
 
 function isFunction(x: unknown): x is (x: string) => string {
   return Object.prototype.toString.call(x) === '[object Function]'
@@ -66,6 +55,7 @@ export class Storage {
   async write(
     destination: string | BusFile,
     data: Readable | Buffer | string | null | BusFile,
+    contentType?: string,
   ): Promise<string> {
     const path = isBusFile(destination)
       ? destination.name
@@ -83,7 +73,7 @@ export class Storage {
         file = new BusFile(data, path)
       }
 
-      await this.#driver.set(path, file)
+      await this.#driver.set(path, file, contentType)
     }
 
     return path
@@ -92,20 +82,12 @@ export class Storage {
   async file(path: string): Promise<BusFile> {
     const destination = this.sanitize(path)
     const data = await this.#driver.get(destination)
-    const metadata = await this.#driver.getMetadata(destination)
+    const metadata = await this.#driver.metadata(destination)
 
     if (data === null) {
       return new BusFile(null, destination)
     }
 
     return new BusFile(data, destination, metadata)
-  }
-
-  async exists(key: string | BusFile): Promise<boolean> {
-    if (typeof key === 'string') {
-      return this.#driver.has(this.sanitize(key))
-    } else {
-      return this.#driver.has(this.sanitize(key.name))
-    }
   }
 }

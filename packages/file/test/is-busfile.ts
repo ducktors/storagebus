@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
-import { BusFile, isBusFile } from '../src/file.js'
+import { BusFile, isBusFile } from '@storagebus/file'
 
 test('@storagebus/file isBusFile', async () => {
   await test('isBusFile returns true for BusFile', () => {

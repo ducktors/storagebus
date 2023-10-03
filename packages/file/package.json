@@ -9,6 +9,7 @@
   "type": "commonjs",
   "exports": {
     ".": {
+      "typescript": "./src/file.ts",
       "import": "./dist/file.js",
       "require": "./dist/file.js"
     }
@@ -21,13 +22,13 @@
     "preinstall": "npx only-allow pnpm",
     "prepublish": "pnpm build",
     "test": "tsx --test ./test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
-    "test:watch": "tsx --watch --test ./test/*.ts"
+    "test:ci": "c8 --all --src dist --reporter lcov --reporter text tsx --test ./test/*.ts",
+    "test:watch": "tsx --conditions=typescript --watch --test ./test/*.ts"
   },
   "keywords": [],
   "dependencies": {
     "mime-types": "^2.1.35",
-    "tslib": "^2.5.0"
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.2.2",

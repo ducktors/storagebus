@@ -1,163 +1,219 @@
 import assert from 'node:assert/strict'
+import { randomUUID } from 'node:crypto'
+import { Readable } from 'node:stream'
 import { test } from 'node:test'
 
-import { Storage, Driver } from '../src/storage.js'
-import { BusFile } from '../src/file.js'
-import { Readable } from 'node:stream'
-
-function inMemoryDriver(): Driver {
-  const storage = new Map<string, BusFile>()
-  return {
-    async set(destination, data) {
-      storage.set(destination, data)
-      return destination
-    },
-    async get(path) {
-      return storage.get(path)?.buffer() ?? null
-    },
-    async has(path) {
-      return storage.has(path)
-    },
-    async getMetadata(path) {
-      const data = storage.get(path)
-
-      if (!data) {
-        return {}
-      }
-      return {
-        size: (await data.buffer()).length,
-      }
-    },
-    async delete(path) {
-      storage.delete(path)
-    },
-  }
-}
+import { Storage } from '@storagebus/storage'
+import { BusFile } from '@storagebus/storage/file'
+import { driver, createStorage } from '@storagebus/storage/memory'
 
 test('@storagebus/storage', async () => {
-  const storage = new Storage(inMemoryDriver())
-  await test('creates an instance of Storage', () => {
-    assert.equal(storage instanceof Storage, true)
-  })
+  await test('Constructor', async () => {
+    const storage = new Storage(driver())
 
-  await test('creates an instance of Storage in debug mode', () => {
-    const storage = new Storage(inMemoryDriver(), { debug: true })
-    // @ts-expect-error: testing wrong type
-    assert.equal(storage._debug, true)
-  })
+    await test('creates an instance of Storage', () => {
+      assert.equal(storage instanceof Storage, true)
+    })
 
-  await test('creates an instance of Storage with a custom logger', () => {
-    const storage = new Storage(inMemoryDriver(), {
-      debug: true,
+    await test('create storage instance from factory function', () => {
+      const storage = createStorage()
+      assert.equal(storage instanceof Storage, true)
+    })
+
+    await test('creates an instance of Storage in debug mode', () => {
+      const storage = new Storage(driver(), { debug: true })
       // @ts-expect-error: testing wrong type
-      logger: { info: 'foo' },
+      assert.equal(storage._debug, true)
     })
-    // @ts-expect-error: testing wrong type
-    assert.deepEqual(storage._logger, { info: 'foo' })
-  })
 
-  await test('creates an instance of Storage with a custom sanitizeKey function', () => {
-    const storage = new Storage(inMemoryDriver(), {
-      sanitizeKey: (key: string) => key,
-    })
-    assert.equal(storage instanceof Storage, true)
-  })
-
-  await test('creates storage instance with wrong type for sanitizeKey param', () => {
-    try {
-      new Storage(inMemoryDriver(), {
+    await test('creates an instance of Storage with a custom logger', () => {
+      const storage = new Storage(driver(), {
+        debug: true,
         // @ts-expect-error: testing wrong type
-        sanitizeKey: '',
+        logger: { info: 'foo' },
       })
-    } catch (err) {
-      assert.equal(err instanceof TypeError, true)
-    }
-  })
-
-  await test('creates storage instance with default sanitize function', () => {
-    const storage = new Storage(inMemoryDriver(), {
-      sanitizeKey: true,
+      // @ts-expect-error: testing wrong type
+      assert.deepEqual(storage._logger, { info: 'foo' })
     })
-    assert.equal(storage instanceof Storage, true)
-  })
 
-  await test('re-exports BusFile from @storagebus/file', () => {
-    const file = new BusFile('foo', 'bar')
-    assert.equal(file instanceof BusFile, true)
-  })
-
-  await test('write() returns the destination path', async () => {
-    const result = await storage.write('foo', 'bar')
-    assert.equal(result, 'foo')
-    assert.equal((await storage.file(result)) instanceof BusFile, true)
-  })
-
-  await test('write() returns the destination path with a custom sanitize function', async () => {
-    const storage = new Storage(inMemoryDriver(), {
-      sanitizeKey: (key: string) => 'key',
+    await test('creates an instance of Storage with a custom sanitizeKey function', () => {
+      const storage = new Storage(driver(), {
+        sanitizeKey: (key: string) => key,
+      })
+      assert.equal(storage instanceof Storage, true)
     })
-    const result = await storage.write('foo', 'bar')
-    assert.equal(result, 'key')
-    assert.equal((await storage.file(result)) instanceof BusFile, true)
+
+    await test('creates storage instance with wrong type for sanitizeKey param', () => {
+      try {
+        new Storage(driver(), {
+          // @ts-expect-error: testing wrong type
+          sanitizeKey: '',
+        })
+      } catch (err) {
+        assert.equal(err instanceof TypeError, true)
+      }
+    })
+
+    await test('creates storage instance with default sanitize function', () => {
+      const storage = new Storage(driver(), {
+        sanitizeKey: true,
+      })
+      assert.equal(storage instanceof Storage, true)
+    })
   })
 
-  await test('write() writes a BusFile', async () => {
-    const file = new BusFile('BusFile', 'BusFile')
-    const result = await storage.write(file, file)
-    assert.equal(result, 'BusFile')
-    assert.equal((await storage.file(result)) instanceof BusFile, true)
+  await test('Readable', async () => {
+    const filePath = randomUUID()
+    const fileContent = filePath.repeat(6 * 1024)
+
+    await writeTestSuite(filePath, fileContent, () =>
+      Readable.from(fileContent),
+    )
   })
 
-  await test('write() writes a Readable', async () => {
-    const fileName = 'Readable'
+  await test('Buffer', async () => {
+    const filePath = randomUUID()
+    const fileContent = filePath.repeat(6 * 1024)
+    const data = Buffer.from(fileContent)
 
-    const result = await storage.write(fileName, Readable.from(fileName))
-    assert.equal(result, 'Readable')
-    assert.equal((await storage.file(result)) instanceof BusFile, true)
+    await writeTestSuite(filePath, fileContent, data)
   })
 
-  await test('write() writes a Buffer', async () => {
-    const fileName = 'Buffer'
+  await test('string', async () => {
+    const filePath = randomUUID()
+    const fileContent = filePath.repeat(6 * 1024)
+    const data = fileContent
 
-    const result = await storage.write(fileName, Buffer.from(fileName))
-    assert.equal(result, 'Buffer')
-    assert.equal((await storage.file(result)) instanceof BusFile, true)
+    await writeTestSuite(filePath, fileContent, data)
   })
 
-  await test('write() writes a string', async () => {
-    const fileName = 'string'
+  await test('null', async () => {
+    const filePath = randomUUID()
+    const fileContent = null
+    const data = fileContent
 
-    const result = await storage.write(fileName, fileName)
-    assert.equal(result, 'string')
-    assert.equal((await storage.file(result)) instanceof BusFile, true)
+    await writeTestSuite(filePath, fileContent, data)
   })
 
-  await test('write() null creates an empty file', async () => {
-    const fileName = 'null'
+  await test('BusFile', async () => {
+    const filePath = randomUUID()
+    const fileContent = null
+    const data = new BusFile(null, filePath)
 
-    const result = await storage.write(fileName, null)
-    assert.equal(result, 'null')
-    const file = await storage.file(result)
-    assert.equal(file.size, 0)
+    await writeTestSuite(filePath, fileContent, data)
+
+    await test('storage.write accepts BusFile as destination', async () => {
+      const storage = new Storage(driver())
+      const result = await storage.write(
+        new BusFile(null, filePath),
+        Readable.from('foo'),
+      )
+
+      assert.equal(result, filePath, 'returns the path of the file')
+      const file = await storage.file(result)
+      assert.equal(file instanceof BusFile, true, 'returns a BusFile')
+      assert.equal(file.name, result, 'file.name is correct')
+      assert.equal(file.size, 3, 'file.size is correct')
+      assert.equal(file.type, '', 'file.mimetype is correct')
+      assert.equal(
+        file.lastModified instanceof Date || file.lastModified === undefined,
+        true,
+        'file.lastModified is correct',
+      )
+    })
   })
 
-  await test('exits() returns true if a file exits at the path', async () => {
-    const fileName = 'exists'
+  async function writeTestSuite(
+    filePath: string,
+    fileContent: string | null,
+    data: (() => Readable) | BusFile | Buffer | string | null,
+  ) {
+    await test('storage.write writes a content', async () => {
+      const storage = new Storage(driver())
+      const fileSize = fileContent?.length || 0
+      const result = await storage.write(
+        filePath,
+        data instanceof Function ? data() : data,
+      )
 
-    await storage.write(fileName, fileName)
-    assert.equal(await storage.exists(fileName), true)
-  })
+      assert.equal(result, filePath, 'returns the path of the file')
+      const file = await storage.file(result)
+      assert.equal(file instanceof BusFile, true, 'returns a BusFile')
+      assert.equal(file.name, result, 'file.name is correct')
+      assert.equal(file.size, fileSize, 'file.size is correct')
+      assert.equal(file.type, '', 'file.mimetype is correct')
+      assert.equal(
+        file.lastModified instanceof Date || file.lastModified === undefined,
+        true,
+        'file.lastModified is correct',
+      )
+    })
 
-  await test('exits() returns true if a BusFile exits', async () => {
-    const file = new BusFile('fileName', 'fileName')
+    await test('storage.file returns a BusFile with correct content', async () => {
+      const storage = new Storage(driver())
+      const result = await storage.write(
+        filePath,
+        data instanceof Function ? data() : data,
+      )
+      const file = await storage.file(result)
 
-    await storage.write(file.name, file)
-    assert.equal(await storage.exists(file), true)
-  })
+      const stream = await file.stream()
+      assert.equal(
+        stream instanceof Readable,
+        true,
+        'file.stream() returns a Readable',
+      )
 
-  await test('exits() returns false if a file does not exits at the path', async () => {
-    const fileName = 'does-not-exist'
+      const buffer = await file.buffer()
+      assert.equal(
+        buffer instanceof Buffer,
+        true,
+        'file.buffer() returns a Buffer',
+      )
 
-    assert.equal(await storage.exists(fileName), false)
-  })
+      const arrayBuffer = await file.arrayBuffer()
+      assert.equal(
+        arrayBuffer instanceof ArrayBuffer,
+        true,
+        'file.arrayBuffer() returns an ArrayBuffer',
+      )
+
+      const text = await file.text()
+      assert.equal(
+        typeof text === 'string',
+        true,
+        'file.text() returns a string',
+      )
+      assert.equal(
+        text,
+        fileContent === null ? '' : fileContent,
+        'the content of the file is correct',
+      )
+    })
+
+    await test('storage.file returns a BusFile that can be consumed multiple times', async () => {
+      const storage = new Storage(driver())
+      const result = await storage.write(
+        filePath,
+        data instanceof Function ? data() : data,
+      )
+      const file = await storage.file(result)
+
+      let consumedContent = ''
+
+      for await (const chunk of await file.stream()) {
+        consumedContent += chunk
+      }
+
+      for await (const chunk of await file.stream()) {
+        consumedContent += chunk
+      }
+
+      assert.equal(
+        consumedContent,
+        (fileContent || ('' as any)) + (fileContent || ('' as any)),
+        'the content of the file is correct',
+      )
+    })
+  }
 })

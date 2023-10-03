@@ -9,12 +9,19 @@
   "type": "commonjs",
   "exports": {
     ".": {
+      "typescript": "./src/storage.ts",
       "import": "./dist/storage.js",
       "require": "./dist/storage.js"
     },
     "./file": {
+      "typescript": "./src/file.ts",
       "import": "./dist/file.js",
       "require": "./dist/file.js"
+    },
+    "./memory": {
+      "typescript": "./src/memory.ts",
+      "import": "./dist/memory.js",
+      "require": "./dist/memory.js"
     }
   },
   "main": "dist/storage.js",
@@ -25,14 +32,14 @@
     "preinstall": "npx only-allow pnpm",
     "prepublish": "pnpm build",
     "test": "tsx --test ./test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
-    "test:watch": "tsx --watch --test ./test/*.ts"
+    "test:ci": "c8 --all --src dist --reporter lcov --reporter text tsx --test ./test/*.ts",
+    "test:watch": "tsx --conditions=typescript --watch --test ./test/*.ts"
   },
   "keywords": [],
   "dependencies": {
     "@storagebus/file": "workspace:*",
     "mime-types": "^2.1.35",
-    "tslib": "^2.5.0"
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.2.2",

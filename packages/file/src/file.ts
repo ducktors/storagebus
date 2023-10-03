@@ -1,14 +1,6 @@
 import { PassThrough, Readable } from 'node:stream'
 
-const kBuffer = Symbol('storagebus-buffer')
 const kBusFile = Symbol('storagebus-file')
-const kCreateStream = Symbol('storagebus-createStream')
-const kMetadata = Symbol('storagebus-metadata')
-const kLastModified = Symbol('storagebus-lastModified')
-const kName = Symbol('storagebus-name')
-const kSize = Symbol('storagebus-size')
-const kString = Symbol('storagebus-string')
-const kType = Symbol('storagebus-type')
 
 export function isBusFile(value: unknown): value is BusFile {
   return value instanceof BusFile || !!(value && (value as any)[kBusFile])
@@ -16,29 +8,80 @@ export function isBusFile(value: unknown): value is BusFile {
 
 type CreateStream = () => Readable | Promise<Readable>
 type GetMetadata = () => BusFileMetadata | Promise<BusFileMetadata>
+type GetMetadataOption = GetMetadata | undefined
+type LastModified = Date | undefined
+type Type = string | undefined
+type Size = number | undefined
 type BusFileMetadata = {
-  lastModified?: Date
-  type?: string
-  size?: number
+  lastModified?: LastModified
+  type?: Type
+  size?: Size
+}
+type Options = BusFileMetadata & { getMetadata?: GetMetadataOption }
+
+const isValidLastModified = (value: unknown): value is LastModified => {
+  if (value !== undefined && !(value instanceof Date)) {
+    throw new TypeError(
+      `"lastModified" argument must be a Date, found ${typeof value}`,
+    )
+  }
+  return true
+}
+
+const isValidSize = (value: unknown): value is Size => {
+  if (value !== undefined && typeof value !== 'number') {
+    throw new TypeError(
+      `"size" argument must be a number, found ${typeof value}`,
+    )
+  }
+  return true
+}
+
+const isValidType = (value: unknown): value is Type => {
+  if (value !== undefined && typeof value !== 'string') {
+    throw new TypeError(
+      `"type" argument must be a string, found ${typeof value}`,
+    )
+  }
+  return true
+}
+
+const isValidGetMetadataOption = (
+  value: unknown,
+): value is GetMetadataOption => {
+  if (value !== undefined && !(value instanceof Function)) {
+    throw new TypeError(
+      `"getMetadata" argument must be a function, found ${typeof value}`,
+    )
+  }
+  return true
+}
+
+function validateOptions(options: Options = {}) {
+  isValidLastModified(options.lastModified)
+  isValidSize(options.size)
+  isValidType(options.type)
+  isValidGetMetadataOption(options.getMetadata)
 }
 
 export class BusFile {
-  [kBuffer]: Buffer | null = null;
-  [kBusFile] = true;
-  [kCreateStream]: CreateStream;
-  [kLastModified]?: Date;
-  [kMetadata]: GetMetadata;
-  [kName]: string;
-  [kSize]?: number;
-  [kString]: string | null = null;
-  [kType]: string
+  [kBusFile] = true
+  #buffer: Buffer | null = null
+  #createStream: CreateStream
+  #lastModified?: Date
+  #metadata: GetMetadata
+  #name: string
+  #size?: number
+  #string: string | null = null
+  #type: string
 
   constructor(
     data: CreateStream | Buffer | string | null,
     name: string,
-    options?: BusFileMetadata & { getMetadata?: GetMetadata },
+    options?: Options,
   ) {
     const { getMetadata, ...metadata } = options || {}
+    validateOptions(options)
 
     if (!(typeof name === 'string')) {
       throw new TypeError(
@@ -46,76 +89,49 @@ export class BusFile {
       )
     }
 
-    if (
-      'lastModified' in metadata &&
-      !(metadata.lastModified instanceof Date)
-    ) {
-      throw new TypeError(
-        `"lastModified" argument must be a Date, found ${typeof metadata.lastModified}`,
-      )
-    }
-
-    if (getMetadata !== undefined && !(getMetadata instanceof Function)) {
-      throw new TypeError(
-        `"getMetadata" argument must be a function, found ${typeof getMetadata}`,
-      )
-    }
-
-    if ('size' in metadata && typeof metadata.size !== 'number') {
-      throw new TypeError(
-        `"size" argument must be a number, found ${typeof metadata.size}`,
-      )
-    }
-
-    if ('type' in metadata && typeof metadata.type !== 'string') {
-      throw new TypeError(
-        `"type" argument must be a string, found ${typeof metadata.type}`,
-      )
-    }
-
     if (data instanceof Function) {
-      this[kBuffer] = null
-      this[kCreateStream] = data
-      this[kSize] = metadata.size ?? undefined
-      this[kString] = null
+      this.#buffer = null
+      this.#createStream = data
+      this.#size = metadata.size ?? undefined
+      this.#string = null
     } else if (typeof data === 'string') {
-      this[kBuffer] = null
-      this[kCreateStream] = () => Readable.from(data)
-      this[kSize] = metadata.size ?? data.length
-      this[kString] = data
+      this.#buffer = null
+      this.#createStream = () => Readable.from(data)
+      this.#size = metadata.size ?? data.length
+      this.#string = data
     } else if (Buffer.isBuffer(data)) {
-      this[kBuffer] = data
-      this[kCreateStream] = () => Readable.from(data)
-      this[kSize] = metadata.size ?? data.length
-      this[kString] = null
+      this.#buffer = data
+      this.#createStream = () => Readable.from(data)
+      this.#size = metadata.size ?? data.length
+      this.#string = null
     } else if (data === null) {
-      this[kBuffer] = null
-      this[kCreateStream] = () => Readable.from(new PassThrough().end())
-      this[kSize] = 0
-      this[kString] = null
+      this.#buffer = null
+      this.#createStream = () => Readable.from(new PassThrough().end())
+      this.#size = 0
+      this.#string = null
     } else {
       throw new TypeError(
         `"data" argument must be null, a string, an instance of Buffer or a function returning a Readable, found ${typeof data}`,
       )
     }
 
-    this[kLastModified] = metadata.lastModified
-    this[kMetadata] = getMetadata ?? (() => metadata)
-    this[kName] = name
-    this[kType] = metadata.type ?? ''
+    this.#lastModified = metadata.lastModified
+    this.#metadata = getMetadata ?? (() => metadata)
+    this.#name = name
+    this.#type = metadata.type ?? ''
   }
 
   get name() {
-    return this[kName]
+    return this.#name
   }
   get lastModified() {
-    return this[kLastModified]
+    return this.#lastModified
   }
   get type() {
-    return this[kType]
+    return this.#type
   }
   get size() {
-    return this[kSize]
+    return this.#size
   }
 
   async arrayBuffer(): Promise<ArrayBuffer> {
@@ -124,35 +140,35 @@ export class BusFile {
   }
 
   async text(encoding: BufferEncoding = 'utf8'): Promise<string> {
-    if (this[kString]) {
-      return this[kString]
+    if (this.#string) {
+      return this.#string
     }
-    this[kString] = (await this.buffer()).toString(encoding)
-    return this[kString]
+    this.#string = (await this.buffer()).toString(encoding)
+    return this.#string
   }
 
   async buffer(): Promise<Buffer> {
-    if (this[kBuffer]) {
-      return this[kBuffer]
+    if (this.#buffer) {
+      return this.#buffer
     }
     const stream = await this.stream()
     const inputStream = stream.readableObjectMode
       ? Readable.from(stream, { objectMode: false })
       : stream
 
-    this[kBuffer] = Buffer.concat(await inputStream.toArray())
-    return this[kBuffer]
+    this.#buffer = Buffer.concat(await inputStream.toArray())
+    return this.#buffer
   }
 
   async stream() {
-    const metadata = await this[kMetadata]()
+    const metadata = await this.#metadata()
 
-    this[kLastModified] = metadata.lastModified
-    this[kType] = metadata.type ?? ''
-    this[kSize] = metadata.size ?? 0
-    this[kBuffer] = null
-    this[kString] = null
+    this.#lastModified = metadata.lastModified
+    this.#type = metadata.type ?? ''
+    this.#size = metadata.size ?? 0
+    this.#buffer = null
+    this.#string = null
 
-    return this[kCreateStream]()
+    return this.#createStream()
   }
 }
