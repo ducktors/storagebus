@@ -21,13 +21,12 @@
     "lint": "biome check .",
     "preinstall": "npx only-allow pnpm",
     "prepublish": "pnpm build",
-    "test": "tsx --test ./test/*.ts",
+    "test": "tsx --conditions=typescript --test ./test/*.ts",
     "test:ci": "c8 --all --src dist --reporter lcov --reporter text tsx --test ./test/*.ts",
     "test:watch": "tsx --conditions=typescript --watch --test ./test/*.ts"
   },
   "keywords": [],
   "dependencies": {
-    "mime-types": "^2.1.35",
     "tslib": "^2.6.2"
   },
   "devDependencies": {

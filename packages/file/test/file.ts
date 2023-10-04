@@ -8,10 +8,10 @@ test('@storagebus/file', async () => {
   await test(`creates new File instance from a '() => Readable' function`, async () => {
     const file = new BusFile(() => Readable.from('hello'), 'hello.txt')
 
-    assert.equal(file.name, 'hello.txt')
-    assert.equal(file.lastModified, undefined)
-    assert.equal(file.size, undefined)
-    assert.equal(file.type, '')
+    assert.equal(file.name, 'hello.txt', 'name is hello.txt')
+    assert.equal(file.lastModified, -1, 'lastModified is -1')
+    assert.equal(file.size, 0, 'size is 0')
+    assert.equal(file.type, 'text/plain', 'type is text/plain')
     assert.equal((await file.stream()) instanceof Readable, true)
     assert.equal(await file.text(), 'hello')
     assert.equal((await file.buffer()) instanceof Buffer, true)
@@ -22,10 +22,10 @@ test('@storagebus/file', async () => {
     const stream = Readable.from('hello', { objectMode: false })
     const file = new BusFile(() => stream, 'hello.txt')
 
-    assert.equal(file.name, 'hello.txt')
-    assert.equal(file.lastModified, undefined)
-    assert.equal(file.size, undefined)
-    assert.equal(file.type, '')
+    assert.equal(file.name, 'hello.txt', 'name is hello.txt')
+    assert.equal(file.lastModified, -1, 'lastModified is -1')
+    assert.equal(file.size, 0, 'size is 0')
+    assert.equal(file.type, 'text/plain', 'type is text/plain')
     assert.equal((await file.stream()) instanceof Readable, true)
     assert.equal(await file.text(), 'hello')
     assert.equal((await file.buffer()) instanceof Buffer, true)
@@ -35,10 +35,10 @@ test('@storagebus/file', async () => {
   await test('creates new File instance from a string', async () => {
     const file = new BusFile('hello', 'hello.txt')
 
-    assert.equal(file.name, 'hello.txt')
-    assert.equal(file.lastModified, undefined)
-    assert.equal(file.size, 5)
-    assert.equal(file.type, '')
+    assert.equal(file.name, 'hello.txt', 'name is hello.txt')
+    assert.equal(file.lastModified, -1, 'lastModified is -1')
+    assert.equal(file.size, 5, 'size is 5')
+    assert.equal(file.type, 'text/plain', 'type is text/plain')
     assert.equal((await file.stream()) instanceof Readable, true)
     assert.equal(await file.text(), 'hello')
     assert.equal((await file.buffer()) instanceof Buffer, true)
@@ -46,26 +46,26 @@ test('@storagebus/file', async () => {
   })
 
   await test('creates new File instance from a string with metadata', async () => {
-    const lastModified = new Date()
+    const lastModified = Date.now()
     const file = new BusFile('hello', 'hello.txt', {
       size: 5,
       lastModified,
-      type: 'text/plain',
+      type: 'application/json',
     })
 
-    assert.equal(file.name, 'hello.txt')
-    assert.equal(file.lastModified, lastModified)
-    assert.equal(file.size, 5)
-    assert.equal(file.type, 'text/plain')
+    assert.equal(file.name, 'hello.txt', 'name is hello.txt')
+    assert.equal(file.lastModified, lastModified, 'lastModified is correct')
+    assert.equal(file.size, 5, 'size is 5')
+    assert.equal(file.type, 'application/json', 'type is application/json')
   })
 
   await test('creates new File instance from a Buffer', async () => {
     const file = new BusFile(Buffer.from('hello'), 'hello.txt')
 
-    assert.equal(file.name, 'hello.txt')
-    assert.equal(file.lastModified, undefined)
-    assert.equal(file.size, 5)
-    assert.equal(file.type, '')
+    assert.equal(file.name, 'hello.txt', 'name is hello.txt')
+    assert.equal(file.lastModified, -1, 'lastModified is -1')
+    assert.equal(file.size, 5, 'size is 5')
+    assert.equal(file.type, 'text/plain', 'type is text/plain')
     assert.equal((await file.stream()) instanceof Readable, true)
     assert.equal(await file.text(), 'hello')
     assert.equal((await file.buffer()) instanceof Buffer, true)
@@ -73,26 +73,43 @@ test('@storagebus/file', async () => {
   })
 
   await test('creates new File instance from a Buffer with metadata', async () => {
-    const lastModified = new Date()
+    const lastModified = Date.now()
     const file = new BusFile(Buffer.from('hello'), 'hello.txt', {
       size: 5,
       lastModified,
-      type: 'text/plain',
+      type: 'application/json',
     })
 
-    assert.equal(file.name, 'hello.txt')
-    assert.equal(file.lastModified, lastModified)
-    assert.equal(file.size, 5)
-    assert.equal(file.type, 'text/plain')
+    assert.equal(file.name, 'hello.txt', 'name is hello.txt')
+    assert.equal(file.lastModified, lastModified, 'lastModified is correct')
+    assert.equal(file.size, 5, 'size is 5')
+    assert.equal(file.type, 'application/json', 'type is application/json')
   })
 
   await test('creates new File empty instance from null', async () => {
     const file = new BusFile(null, 'hello.txt')
 
-    assert.equal(file.name, 'hello.txt')
-    assert.equal(file.lastModified, undefined)
-    assert.equal(file.size, 0)
-    assert.equal(file.type, '')
+    assert.equal(file.name, 'hello.txt', 'name is hello.txt')
+    assert.equal(file.lastModified, -1, 'lastModified is -1')
+    assert.equal(file.size, 0, 'size is 0')
+    assert.equal(file.type, 'text/plain', 'type is text/plain')
+    assert.equal((await file.stream()) instanceof Readable, true)
+    assert.equal(await file.text(), '')
+    assert.equal((await file.buffer()) instanceof Buffer, true)
+    assert.equal((await file.arrayBuffer()) instanceof ArrayBuffer, true)
+  })
+
+  await test('default type is application/octet-stream', async () => {
+    const file = new BusFile(null, 'hello')
+
+    assert.equal(file.name, 'hello', 'name is hello')
+    assert.equal(file.lastModified, -1, 'lastModified is -1')
+    assert.equal(file.size, 0, 'size is 0')
+    assert.equal(
+      file.type,
+      'application/octet-stream',
+      'type is application/octet-stream',
+    )
     assert.equal((await file.stream()) instanceof Readable, true)
     assert.equal(await file.text(), '')
     assert.equal((await file.buffer()) instanceof Buffer, true)
@@ -182,15 +199,17 @@ test('@storagebus/file', async () => {
           // @ts-expect-error
           lastModified: {},
         }),
-      TypeError(`"lastModified" argument must be a Date, found ${typeof {}}`),
+      TypeError(`"lastModified" argument must be a number, found ${typeof {}}`),
     )
     assert.throws(
       () =>
         new BusFile(fileContent, fileName, {
           // @ts-expect-error
-          lastModified: 2,
+          lastModified: new Date(),
         }),
-      TypeError(`"lastModified" argument must be a Date, found ${typeof 2}`),
+      TypeError(
+        `"lastModified" argument must be a number, found ${typeof new Date()}`,
+      ),
     )
     assert.throws(
       () =>
@@ -199,7 +218,7 @@ test('@storagebus/file', async () => {
           lastModified: false,
         }),
       TypeError(
-        `"lastModified" argument must be a Date, found ${typeof false}`,
+        `"lastModified" argument must be a number, found ${typeof false}`,
       ),
     )
     assert.throws(
@@ -208,7 +227,9 @@ test('@storagebus/file', async () => {
           // @ts-expect-error
           lastModified: null,
         }),
-      TypeError(`"lastModified" argument must be a Date, found ${typeof null}`),
+      TypeError(
+        `"lastModified" argument must be a number, found ${typeof null}`,
+      ),
     )
   })
 
@@ -359,7 +380,7 @@ test('@storagebus/file', async () => {
   })
 
   await test('creating from function returning a Readable works as expected', async (t) => {
-    const lastModified = new Date()
+    const lastModified = Date.now()
     const fileContent = 'hello'
     const metadata = {
       lastModified,
@@ -401,7 +422,7 @@ test('@storagebus/file', async () => {
   })
 
   await test('creating from string works as expected', async (t) => {
-    const lastModified = new Date()
+    const lastModified = Date.now()
     const fileContent = 'hello'
     const metadata = {
       lastModified,
@@ -418,10 +439,14 @@ test('@storagebus/file', async () => {
     const bufferSpy = t.mock.method(file, 'buffer')
     const arrayBufferSpy = t.mock.method(file, 'arrayBuffer')
 
-    assert.equal(file.name, 'hello.txt')
-    assert.equal(file.lastModified, metadata.lastModified)
-    assert.equal(file.size, metadata.size)
-    assert.equal(file.type, metadata.type)
+    assert.equal(file.name, 'hello.txt', 'name is hello.txt')
+    assert.equal(
+      file.lastModified,
+      metadata.lastModified,
+      'lastModified is correct',
+    )
+    assert.equal(file.size, metadata.size, 'size is correct')
+    assert.equal(file.type, metadata.type, 'type is correct')
 
     const stream = await file.stream()
     const text = await file.text()
@@ -443,7 +468,7 @@ test('@storagebus/file', async () => {
   })
 
   await test('creating from Buffer works as expected', async (t) => {
-    const lastModified = new Date()
+    const lastModified = Date.now()
     const fileContent = 'hello'
     const metadata = {
       lastModified,
@@ -460,10 +485,14 @@ test('@storagebus/file', async () => {
     const bufferSpy = t.mock.method(file, 'buffer')
     const arrayBufferSpy = t.mock.method(file, 'arrayBuffer')
 
-    assert.equal(file.name, 'hello.txt')
-    assert.equal(file.lastModified, metadata.lastModified)
-    assert.equal(file.size, metadata.size)
-    assert.equal(file.type, metadata.type)
+    assert.equal(file.name, 'hello.txt', 'name is hello.txt')
+    assert.equal(
+      file.lastModified,
+      metadata.lastModified,
+      'lastModified is correct',
+    )
+    assert.equal(file.size, metadata.size, 'size is correct')
+    assert.equal(file.type, metadata.type, 'type is correct')
 
     const stream = await file.stream()
     const text = await file.text()
@@ -485,7 +514,7 @@ test('@storagebus/file', async () => {
   })
 
   await test('uses getMetadata after the file is consumed as stream', async (t) => {
-    const lastModified = new Date()
+    const lastModified = Date.now()
     const fileContent = 'hello'
     const metadata = {
       lastModified,
@@ -497,9 +526,9 @@ test('@storagebus/file', async () => {
     })
     const streamSpy = t.mock.method(file, 'stream')
 
-    assert.equal(file.lastModified, undefined)
-    assert.equal(file.size, undefined)
-    assert.equal(file.type, '')
+    assert.equal(file.lastModified, -1, 'lastModified is -1')
+    assert.equal(file.size, 0, 'size is 0')
+    assert.equal(file.type, 'text/plain', 'type is text/plain')
 
     await file.stream()
 
@@ -510,21 +539,21 @@ test('@storagebus/file', async () => {
   })
 
   await test('uses getMetadata after the file is consumed as buffer', async (t) => {
-    const lastModified = new Date()
+    const lastModified = Date.now()
     const fileContent = 'hello'
     const metadata = {
       lastModified,
       size: fileContent.length,
       type: 'text/plain',
     }
-    const file = new BusFile(() => Readable.from(fileContent), 'hello.txt', {
+    const file = new BusFile(() => Readable.from(fileContent), 'hello', {
       getMetadata: () => metadata,
     })
     const streamSpy = t.mock.method(file, 'stream')
 
-    assert.equal(file.lastModified, undefined)
-    assert.equal(file.size, undefined)
-    assert.equal(file.type, '')
+    assert.equal(file.lastModified, -1, 'lastModified is -1')
+    assert.equal(file.size, 0, 'size is 0')
+    assert.equal(file.type, 'application/octet-stream')
 
     await file.buffer()
 
@@ -535,21 +564,21 @@ test('@storagebus/file', async () => {
   })
 
   await test('uses getMetadata after the file is consumed as string', async (t) => {
-    const lastModified = new Date()
+    const lastModified = Date.now()
     const fileContent = 'hello'
     const metadata = {
       lastModified,
       size: fileContent.length,
       type: 'text/plain',
     }
-    const file = new BusFile(() => Readable.from(fileContent), 'hello.txt', {
+    const file = new BusFile(() => Readable.from(fileContent), 'hello', {
       getMetadata: () => metadata,
     })
     const streamSpy = t.mock.method(file, 'stream')
 
-    assert.equal(file.lastModified, undefined)
-    assert.equal(file.size, undefined)
-    assert.equal(file.type, '')
+    assert.equal(file.lastModified, -1, 'lastModified is -1')
+    assert.equal(file.size, 0, 'size is 0')
+    assert.equal(file.type, 'application/octet-stream')
 
     await file.text()
 

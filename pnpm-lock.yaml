@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
 
   .:
@@ -43,9 +47,6 @@ importers:
 
   packages/file:
     dependencies:
-      mime-types:
-        specifier: ^2.1.35
-        version: 2.1.35
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -139,6 +140,9 @@ importers:
       c8:
         specifier: ^8.0.1
         version: 8.0.1
+      mitata:
+        specifier: ^0.1.6
+        version: 0.1.6
       rimraf:
         specifier: ^5.0.1
         version: 5.0.1
@@ -4763,6 +4767,10 @@ packages:
     engines: {node: '>=16 || 14 >=14.17'}
     dev: true
 
+  /mitata@0.1.6:
+    resolution: {integrity: sha512-VKQ0r3jriTOU9E2Z+mwbZrUmbg4Li4QyFfi7kfHKl6reZhGzL0AYlu3wE0VPXzIwA5xnFzmEQoBwCcNT8stUkA==}
+    dev: true
+
   /mixme@0.5.5:
     resolution: {integrity: sha512-/6IupbRx32s7jjEwHcycXikJwFD5UujbVNuJFkeKLYje+92OvtuPniF6JhnFm5JCTDUhS+kYK3W/4BWYQYXz7w==}
     engines: {node: '>= 8.0.0'}
@@ -6364,7 +6372,3 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false

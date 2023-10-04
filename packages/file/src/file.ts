@@ -1,4 +1,5 @@
 import { PassThrough, Readable } from 'node:stream'
+import { mime } from './mime/mime.js'
 
 const kBusFile = Symbol('storagebus-file')
 
@@ -9,20 +10,20 @@ export function isBusFile(value: unknown): value is BusFile {
 type CreateStream = () => Readable | Promise<Readable>
 type GetMetadata = () => BusFileMetadata | Promise<BusFileMetadata>
 type GetMetadataOption = GetMetadata | undefined
-type LastModified = Date | undefined
+type LastModified = number | undefined
 type Type = string | undefined
 type Size = number | undefined
-type BusFileMetadata = {
+export type BusFileMetadata = {
   lastModified?: LastModified
   type?: Type
   size?: Size
 }
-type Options = BusFileMetadata & { getMetadata?: GetMetadataOption }
+export type Options = BusFileMetadata & { getMetadata?: GetMetadataOption }
 
 const isValidLastModified = (value: unknown): value is LastModified => {
-  if (value !== undefined && !(value instanceof Date)) {
+  if (value !== undefined && typeof value !== 'number') {
     throw new TypeError(
-      `"lastModified" argument must be a Date, found ${typeof value}`,
+      `"lastModified" argument must be a number, found ${typeof value}`,
     )
   }
   return true
@@ -57,6 +58,20 @@ const isValidGetMetadataOption = (
   return true
 }
 
+function getType(type: BusFileMetadata['type'], name?: string): string {
+  return type ?? mime.getType(name) ?? 'application/octet-stream'
+}
+
+function getlastModified(
+  lastModified: BusFileMetadata['lastModified'],
+): number {
+  return lastModified || -1
+}
+
+function getSize(size: BusFileMetadata['size'], dataLength?: number): number {
+  return size ?? dataLength ?? 0
+}
+
 function validateOptions(options: Options = {}) {
   isValidLastModified(options.lastModified)
   isValidSize(options.size)
@@ -68,10 +83,10 @@ export class BusFile {
   [kBusFile] = true
   #buffer: Buffer | null = null
   #createStream: CreateStream
-  #lastModified?: Date
+  #lastModified: number
   #metadata: GetMetadata
   #name: string
-  #size?: number
+  #size: number
   #string: string | null = null
   #type: string
 
@@ -92,22 +107,22 @@ export class BusFile {
     if (data instanceof Function) {
       this.#buffer = null
       this.#createStream = data
-      this.#size = metadata.size ?? undefined
+      this.#size = getSize(metadata.size)
       this.#string = null
     } else if (typeof data === 'string') {
       this.#buffer = null
       this.#createStream = () => Readable.from(data)
-      this.#size = metadata.size ?? data.length
+      this.#size = getSize(metadata.size, data.length)
       this.#string = data
     } else if (Buffer.isBuffer(data)) {
       this.#buffer = data
       this.#createStream = () => Readable.from(data)
-      this.#size = metadata.size ?? data.length
+      this.#size = getSize(metadata.size, data.length)
       this.#string = null
     } else if (data === null) {
       this.#buffer = null
       this.#createStream = () => Readable.from(new PassThrough().end())
-      this.#size = 0
+      this.#size = getSize(0)
       this.#string = null
     } else {
       throw new TypeError(
@@ -115,22 +130,23 @@ export class BusFile {
       )
     }
 
-    this.#lastModified = metadata.lastModified
-    this.#metadata = getMetadata ?? (() => metadata)
     this.#name = name
-    this.#type = metadata.type ?? ''
+
+    this.#lastModified = getlastModified(metadata.lastModified)
+    this.#metadata = getMetadata ?? (() => metadata)
+    this.#type = getType(metadata.type, name)
   }
 
-  get name() {
+  get name(): string {
     return this.#name
   }
-  get lastModified() {
+  get lastModified(): number {
     return this.#lastModified
   }
-  get type() {
+  get type(): string {
     return this.#type
   }
-  get size() {
+  get size(): number {
     return this.#size
   }
 
@@ -160,12 +176,12 @@ export class BusFile {
     return this.#buffer
   }
 
-  async stream() {
+  async stream(): Promise<Readable> {
     const metadata = await this.#metadata()
 
-    this.#lastModified = metadata.lastModified
-    this.#type = metadata.type ?? ''
-    this.#size = metadata.size ?? 0
+    this.#lastModified = getlastModified(metadata.lastModified)
+    this.#type = getType(metadata.type, this.#name)
+    this.#size = getSize(metadata.size)
     this.#buffer = null
     this.#string = null
 
