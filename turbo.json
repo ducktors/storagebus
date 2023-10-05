@@ -5,11 +5,6 @@
       "outputs": ["dist/**"],
       "dependsOn": ["^build"]
     },
-    "dev": {
-      "outputs": [],
-      "cache": false,
-      "dependsOn": ["^build"]
-    },
     "lint": {
       "outputs": [],
       "cache": false
@@ -21,7 +16,12 @@
     "test": {
       "outputs": [],
       "cache": false,
-      "dependsOn": ["^build"]
+      "dependsOn": []
+    },
+    "test:watch": {
+      "outputs": [],
+      "cache": false,
+      "dependsOn": []
     },
     "test:ci": {
       "outputs": [],

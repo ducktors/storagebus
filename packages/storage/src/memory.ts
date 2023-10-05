@@ -1,15 +1,13 @@
-import {
-  StorageOptions,
-  Storage as StorageBus,
-} from '@storagebus/storage'
+import { StorageOptions, Storage as StorageBus } from '@storagebus/storage'
 import { BusFile } from './file.js'
 import { Readable } from 'node:stream'
+import { Options } from '@storagebus/file'
 
 export type { StorageOptions }
 
 type createStream = () => Readable | Promise<Readable>
 interface StorageObject {
-  lastModified: Date
+  lastModified: number
   size: number
   data: Buffer
   type: string
@@ -18,9 +16,7 @@ interface StorageObject {
 export interface Driver {
   set(destination: string, data: BusFile, contentType?: string): Promise<string>
   get(path: string): Promise<createStream | Buffer | string | null>
-  metadata(
-    path: string,
-  ): Promise<{ lastModified?: Date; type?: string; size?: number }>
+  metadata(path: string): Promise<Options>
   delete(path: string): Promise<void>
 }
 
@@ -30,7 +26,7 @@ export function driver(): Driver {
     async set(destination, data, contentType) {
       const buffer = await data.buffer()
       storage.set(destination, {
-        lastModified: new Date(),
+        lastModified: Date.now(),
         size: buffer.length,
         data: buffer,
         type: contentType || '',

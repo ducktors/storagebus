@@ -8,6 +8,7 @@ import { Driver } from './memory.js'
 function isFunction(x: unknown): x is (x: string) => string {
   return Object.prototype.toString.call(x) === '[object Function]'
 }
+export { type Driver }
 
 function isReadable(obj: unknown): obj is Readable {
   return (

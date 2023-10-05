@@ -22,6 +22,16 @@
       "typescript": "./src/memory.ts",
       "import": "./dist/memory.js",
       "require": "./dist/memory.js"
+    },
+    "./driver": {
+      "typescript": "./src/memory.ts",
+      "import": "./dist/memory.js",
+      "require": "./dist/memory.js"
+    },
+    "./compliance-test": {
+      "typescript": "./src/compliance-test.ts",
+      "import": "./dist/compliance-test.js",
+      "require": "./dist/compliance-test.js"
     }
   },
   "main": "dist/storage.js",
@@ -31,7 +41,7 @@
     "lint": "biome check .",
     "preinstall": "npx only-allow pnpm",
     "prepublish": "pnpm build",
-    "test": "tsx --test ./test/*.ts",
+    "test": "tsx --conditions=typescript --test ./test/*.ts",
     "test:ci": "c8 --all --src dist --reporter lcov --reporter text tsx --test ./test/*.ts",
     "test:watch": "tsx --conditions=typescript --watch --test ./test/*.ts"
   },
