@@ -1,7 +1,8 @@
-import { StorageOptions, Storage as StorageBus } from '@storagebus/storage'
-import { BusFile } from './file.js'
+import { BusFileMetadata } from '@storagebus/file'
+import { ENOENT } from '@storagebus/file/errors'
 import { Readable } from 'node:stream'
-import { Options } from '@storagebus/file'
+import { StorageOptions, Storage as StorageBus } from './storage.js'
+import { BusFile } from './file.js'
 
 export type { StorageOptions }
 
@@ -14,27 +15,33 @@ interface StorageObject {
 }
 
 export interface Driver {
-  set(destination: string, data: BusFile, contentType?: string): Promise<string>
-  get(path: string): Promise<createStream | Buffer | string | null>
-  metadata(path: string): Promise<Options>
+  set(data: BusFile): Promise<string>
+  get(path: string): Promise<createStream | Buffer | string>
+  metadata(path: string): Promise<BusFileMetadata>
   delete(path: string): Promise<void>
 }
 
 export function driver(): Driver {
   const storage = new Map<string, StorageObject>()
   return {
-    async set(destination, data, contentType) {
-      const buffer = await data.buffer()
-      storage.set(destination, {
+    async set(file) {
+      const buffer = await file.buffer()
+      storage.set(file.name, {
         lastModified: Date.now(),
         size: buffer.length,
         data: buffer,
-        type: contentType || '',
+        type: file.type,
       })
-      return destination
+      return file.name
     },
     async get(path) {
-      return storage.get(path)?.data ?? null
+      return () => {
+        const buffer = storage.get(path)?.data
+        if (!buffer) {
+          throw new ENOENT(path)
+        }
+        return Readable.from(buffer)
+      }
     },
     async metadata(path) {
       const data = storage.get(path)
@@ -45,7 +52,6 @@ export function driver(): Driver {
       return {
         size: data.size,
         lastModified: data.lastModified,
-        getMetdata: () => data,
       }
     },
     async delete(path) {

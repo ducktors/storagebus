@@ -1,4 +1,4 @@
-import { PassThrough, Readable } from 'node:stream'
+import { Readable } from 'node:stream'
 import { mime } from './mime/mime.js'
 
 const kBusFile = Symbol('storagebus-file')
@@ -68,8 +68,8 @@ function getlastModified(
   return lastModified || -1
 }
 
-function getSize(size: BusFileMetadata['size'], dataLength?: number): number {
-  return size ?? dataLength ?? 0
+function getSize(size: BusFileMetadata['size']): number {
+  return size ?? 0
 }
 
 function validateOptions(options: Options = {}) {
@@ -81,17 +81,15 @@ function validateOptions(options: Options = {}) {
 
 export class BusFile {
   [kBusFile] = true
-  #buffer: Buffer | null = null
   #createStream: CreateStream
   #lastModified: number
   #metadata: GetMetadata
   #name: string
   #size: number
-  #string: string | null = null
   #type: string
 
   constructor(
-    data: CreateStream | Buffer | string | null,
+    data: CreateStream | Buffer | string,
     name: string,
     options?: Options,
   ) {
@@ -105,28 +103,14 @@ export class BusFile {
     }
 
     if (data instanceof Function) {
-      this.#buffer = null
       this.#createStream = data
       this.#size = getSize(metadata.size)
-      this.#string = null
-    } else if (typeof data === 'string') {
-      this.#buffer = null
+    } else if (typeof data === 'string' || Buffer.isBuffer(data)) {
       this.#createStream = () => Readable.from(data)
-      this.#size = getSize(metadata.size, data.length)
-      this.#string = data
-    } else if (Buffer.isBuffer(data)) {
-      this.#buffer = data
-      this.#createStream = () => Readable.from(data)
-      this.#size = getSize(metadata.size, data.length)
-      this.#string = null
-    } else if (data === null) {
-      this.#buffer = null
-      this.#createStream = () => Readable.from(new PassThrough().end())
-      this.#size = getSize(0)
-      this.#string = null
+      this.#size = getSize(data.length)
     } else {
       throw new TypeError(
-        `"data" argument must be null, a string, an instance of Buffer or a function returning a Readable, found ${typeof data}`,
+        `"data" argument must be a string, an instance of Buffer or a function returning a Readable, found ${typeof data}`,
       )
     }
 
@@ -156,24 +140,16 @@ export class BusFile {
   }
 
   async text(encoding: BufferEncoding = 'utf8'): Promise<string> {
-    if (this.#string) {
-      return this.#string
-    }
-    this.#string = (await this.buffer()).toString(encoding)
-    return this.#string
+    return (await this.buffer()).toString(encoding)
   }
 
   async buffer(): Promise<Buffer> {
-    if (this.#buffer) {
-      return this.#buffer
-    }
     const stream = await this.stream()
     const inputStream = stream.readableObjectMode
       ? Readable.from(stream, { objectMode: false })
       : stream
 
-    this.#buffer = Buffer.concat(await inputStream.toArray())
-    return this.#buffer
+    return Buffer.concat(await inputStream.toArray())
   }
 
   async stream(): Promise<Readable> {
@@ -182,8 +158,6 @@ export class BusFile {
     this.#lastModified = getlastModified(metadata.lastModified)
     this.#type = getType(metadata.type, this.#name)
     this.#size = getSize(metadata.size)
-    this.#buffer = null
-    this.#string = null
 
     return this.#createStream()
   }

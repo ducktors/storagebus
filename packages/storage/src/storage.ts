@@ -62,19 +62,23 @@ export class Storage {
       ? destination.name
       : this.sanitize(destination)
 
+    if (typeof path !== 'string' || path.length === 0) {
+      throw new TypeError('Invalid destination: must be a non-empty string.')
+    }
     if (data === null) {
       await this.#driver.delete(path)
     } else {
-      let file: BusFile
+      let _data: (() => Readable | Promise<Readable>) | Buffer | string
       if (isBusFile(data)) {
-        file = data
+        _data = () => data.stream()
       } else if (isReadable(data)) {
-        file = new BusFile(() => data, path)
+        _data = () => data
       } else {
-        file = new BusFile(data, path)
+        _data = data
       }
 
-      await this.#driver.set(path, file, contentType)
+      const file = new BusFile(_data, path, { type: contentType })
+      await this.#driver.set(file)
     }
 
     return path
@@ -85,10 +89,8 @@ export class Storage {
     const data = await this.#driver.get(destination)
     const metadata = await this.#driver.metadata(destination)
 
-    if (data === null) {
-      return new BusFile(null, destination)
-    }
+    const getMetadata = this.#driver.metadata.bind(this.#driver, destination)
 
-    return new BusFile(data, destination, metadata)
+    return new BusFile(data, destination, { ...metadata, getMetadata })
   }
 }

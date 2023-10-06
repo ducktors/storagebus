@@ -12,6 +12,11 @@
       "typescript": "./src/file.ts",
       "import": "./dist/file.js",
       "require": "./dist/file.js"
+    },
+    "./errors": {
+      "typescript": "./src/errors.ts",
+      "import": "./dist/errors.js",
+      "require": "./dist/errors.js"
     }
   },
   "main": "dist/file.js",

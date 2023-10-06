@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto'
 import assert from 'node:assert'
 import { Readable } from 'node:stream'
 import { test } from 'node:test'
+import { ENOENT } from '@storagebus/file/errors'
 
 export async function complianceTest(storage: Storage) {
   await test('Readable', async () => {
@@ -35,13 +36,15 @@ export async function complianceTest(storage: Storage) {
     const fileContent = null
     const data = fileContent
 
-    await _complianceTest(storage, filePath, fileContent, data)
+    await _complianceTest(storage, filePath, fileContent, data, true)
   })
 
   await test('BusFile', async () => {
     const filePath = randomUUID()
-    const fileContent = null
-    const data = new BusFile(null, filePath)
+    const fileContent = ''
+
+    await storage.write(filePath, fileContent)
+    const data = await storage.file(filePath)
 
     await _complianceTest(storage, filePath, fileContent, data)
   })
@@ -52,6 +55,7 @@ async function _complianceTest(
   filePath: string,
   fileContent: string | null,
   data: (() => Readable) | BusFile | Buffer | string | null,
+  testingNull = false,
 ) {
   await test('storage.write writes a content', async () => {
     const fileSize = fileContent?.length || 0
@@ -74,12 +78,13 @@ async function _complianceTest(
   })
 
   await test('storage.write accepts BusFile as destination', async () => {
+    const destinationFilePath = randomUUID()
     const result = await storage.write(
-      new BusFile(null, filePath),
+      await storage.file(destinationFilePath),
       Readable.from('foo'),
     )
 
-    assert.equal(result, filePath, 'returns the path of the file')
+    assert.equal(result, destinationFilePath, 'returns the path of the file')
     const file = await storage.file(result)
     assert.equal(file instanceof BusFile, true, 'returns a BusFile')
     assert.equal(file.name, result, 'file.name is correct')
@@ -99,34 +104,61 @@ async function _complianceTest(
     )
     const file = await storage.file(result)
 
-    const stream = await file.stream()
-    assert.equal(
-      stream instanceof Readable,
-      true,
-      'file.stream() returns a Readable',
-    )
+    if (testingNull) {
+      assert.rejects(
+        file.stream(),
+        new ENOENT(filePath),
+        'file.stream() throws ENOENT',
+      )
 
-    const buffer = await file.buffer()
-    assert.equal(
-      buffer instanceof Buffer,
-      true,
-      'file.buffer() returns a Buffer',
-    )
+      assert.rejects(
+        file.buffer(),
+        new ENOENT(filePath),
+        'file.buffer() throws ENOENT',
+      )
 
-    const arrayBuffer = await file.arrayBuffer()
-    assert.equal(
-      arrayBuffer instanceof ArrayBuffer,
-      true,
-      'file.arrayBuffer() returns an ArrayBuffer',
-    )
+      assert.rejects(
+        file.arrayBuffer(),
+        new ENOENT(filePath),
+        'file.arrayBuffer() throws ENOENT',
+      )
 
-    const text = await file.text()
-    assert.equal(typeof text === 'string', true, 'file.text() returns a string')
-    assert.equal(
-      text,
-      fileContent === null ? '' : fileContent,
-      'the content of the file is correct',
-    )
+      assert.rejects(
+        file.text(),
+        new ENOENT(filePath),
+        'file.text() throws ENOENT',
+      )
+    } else {
+      const stream = await file.stream()
+      assert.equal(
+        stream instanceof Readable,
+        true,
+        'file.stream() returns a Readable',
+      )
+
+      const buffer = await file.buffer()
+      assert.equal(
+        buffer instanceof Buffer,
+        true,
+        'file.buffer() returns a Buffer',
+      )
+
+      const arrayBuffer = await file.arrayBuffer()
+      assert.equal(
+        arrayBuffer instanceof ArrayBuffer,
+        true,
+        'file.arrayBuffer() returns an ArrayBuffer',
+      )
+
+      const text = await file.text()
+      assert.equal(
+        typeof text === 'string',
+        true,
+        'file.text() returns a string',
+      )
+
+      assert.equal(text, fileContent, 'the content of the file is correct')
+    }
   })
 
   await test('storage.file returns a BusFile that can be consumed multiple times', async () => {
@@ -136,20 +168,28 @@ async function _complianceTest(
     )
     const file = await storage.file(result)
 
-    let consumedContent = ''
+    if (testingNull) {
+      assert.rejects(
+        file.stream(),
+        new ENOENT(filePath),
+        'file.stream() throws ENOENT',
+      )
+    } else {
+      let consumedContent = ''
 
-    for await (const chunk of await file.stream()) {
-      consumedContent += chunk
+      for await (const chunk of await file.stream()) {
+        consumedContent += chunk
+      }
+
+      for await (const chunk of await file.stream()) {
+        consumedContent += chunk
+      }
+
+      assert.equal(
+        consumedContent,
+        (fileContent || ('' as any)) + (fileContent || ('' as any)),
+        'the content of the file is correct',
+      )
     }
-
-    for await (const chunk of await file.stream()) {
-      consumedContent += chunk
-    }
-
-    assert.equal(
-      consumedContent,
-      (fileContent || ('' as any)) + (fileContent || ('' as any)),
-      'the content of the file is correct',
-    )
   })
 }

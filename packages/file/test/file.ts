@@ -86,32 +86,19 @@ test('@storagebus/file', async () => {
     assert.equal(file.type, 'application/json', 'type is application/json')
   })
 
-  await test('creates new File empty instance from null', async () => {
-    const file = new BusFile(null, 'hello.txt')
-
-    assert.equal(file.name, 'hello.txt', 'name is hello.txt')
-    assert.equal(file.lastModified, -1, 'lastModified is -1')
-    assert.equal(file.size, 0, 'size is 0')
-    assert.equal(file.type, 'text/plain', 'type is text/plain')
-    assert.equal((await file.stream()) instanceof Readable, true)
-    assert.equal(await file.text(), '')
-    assert.equal((await file.buffer()) instanceof Buffer, true)
-    assert.equal((await file.arrayBuffer()) instanceof ArrayBuffer, true)
-  })
-
   await test('default type is application/octet-stream', async () => {
-    const file = new BusFile(null, 'hello')
+    const file = new BusFile('hello', 'hello')
 
     assert.equal(file.name, 'hello', 'name is hello')
     assert.equal(file.lastModified, -1, 'lastModified is -1')
-    assert.equal(file.size, 0, 'size is 0')
+    assert.equal(file.size, 5, 'size is 5')
     assert.equal(
       file.type,
       'application/octet-stream',
       'type is application/octet-stream',
     )
     assert.equal((await file.stream()) instanceof Readable, true)
-    assert.equal(await file.text(), '')
+    assert.equal(await file.text(), 'hello')
     assert.equal((await file.buffer()) instanceof Buffer, true)
     assert.equal((await file.arrayBuffer()) instanceof ArrayBuffer, true)
   })
@@ -122,7 +109,7 @@ test('@storagebus/file', async () => {
         // @ts-expect-error
         new BusFile({}, 'hello.txt'),
       TypeError(
-        `"data" argument must be null, a string, an instance of Buffer or a function returning a Readable, found ${typeof {}}`,
+        `"data" argument must be a string, an instance of Buffer or a function returning a Readable, found ${typeof {}}`,
       ),
     )
     assert.throws(
@@ -130,7 +117,7 @@ test('@storagebus/file', async () => {
         // @ts-expect-error
         new BusFile(2, 'hello.txt'),
       TypeError(
-        `"data" argument must be null, a string, an instance of Buffer or a function returning a Readable, found ${typeof 2}`,
+        `"data" argument must be a string, an instance of Buffer or a function returning a Readable, found ${typeof 2}`,
       ),
     )
     assert.throws(
@@ -138,7 +125,7 @@ test('@storagebus/file', async () => {
         // @ts-expect-error
         new BusFile(false, 'hello.txt'),
       TypeError(
-        `"data" argument must be null, a string, an instance of Buffer or a function returning a Readable, found ${typeof false}`,
+        `"data" argument must be a string, an instance of Buffer or a function returning a Readable, found ${typeof false}`,
       ),
     )
     assert.throws(
@@ -146,7 +133,7 @@ test('@storagebus/file', async () => {
         // @ts-expect-error
         new BusFile(undefined, 'hello.txt'),
       TypeError(
-        `"data" argument must be null, a string, an instance of Buffer or a function returning a Readable, found ${typeof undefined}`,
+        `"data" argument must be a string, an instance of Buffer or a function returning a Readable, found ${typeof undefined}`,
       ),
     )
   })
@@ -415,7 +402,7 @@ test('@storagebus/file', async () => {
     assert.equal(buffer.toString('utf8'), fileContent)
     assert.equal(new TextDecoder('utf-8').decode(arrayBuffer), fileContent)
 
-    assert.equal(streamSpy.mock.calls.length, 2, 'stream called twice')
+    assert.equal(streamSpy.mock.calls.length, 4, 'stream called 4 times')
     assert.equal(textSpy.mock.calls.length, 1, 'text called once')
     assert.equal(bufferSpy.mock.calls.length, 3, 'buffer called thrice')
     assert.equal(arrayBufferSpy.mock.calls.length, 1, 'arrayBuffer called once')
@@ -461,7 +448,7 @@ test('@storagebus/file', async () => {
     assert.equal(buffer.toString('utf8'), fileContent)
     assert.equal(new TextDecoder('utf-8').decode(arrayBuffer), fileContent)
 
-    assert.equal(streamSpy.mock.calls.length, 2, 'stream called twice')
+    assert.equal(streamSpy.mock.calls.length, 4, 'stream called 4 times')
     assert.equal(textSpy.mock.calls.length, 1, 'text called once')
     assert.equal(bufferSpy.mock.calls.length, 3, 'buffer called thrice')
     assert.equal(arrayBufferSpy.mock.calls.length, 1, 'arrayBuffer called once')
@@ -507,7 +494,7 @@ test('@storagebus/file', async () => {
     assert.equal(buffer.toString('utf8'), fileContent)
     assert.equal(new TextDecoder('utf-8').decode(arrayBuffer), fileContent)
 
-    assert.equal(streamSpy.mock.calls.length, 2, 'stream called once')
+    assert.equal(streamSpy.mock.calls.length, 4, 'stream called 4 times')
     assert.equal(textSpy.mock.calls.length, 1, 'text called once')
     assert.equal(bufferSpy.mock.calls.length, 3, 'buffer called thrice')
     assert.equal(arrayBufferSpy.mock.calls.length, 1, 'arrayBuffer called once')
@@ -597,8 +584,8 @@ test('@storagebus/file', async () => {
     await file.text()
     await file.text()
 
-    assert.equal(streamSpy.mock.calls.length, 1, 'stream() called once')
-    assert.equal(textSpy.mock.calls.length, 2, 'text() called twice')
+    assert.equal(streamSpy.mock.calls.length, 2, 'stream called twice')
+    assert.equal(textSpy.mock.calls.length, 2, 'text called twice')
   })
 
   await test('buffer() uses cached buffer if present', async (t) => {
@@ -610,8 +597,8 @@ test('@storagebus/file', async () => {
     await file.buffer()
     await file.buffer()
 
-    assert.equal(streamSpy.mock.calls.length, 1, 'stream() called once')
-    assert.equal(bufferSpy.mock.calls.length, 2, 'buffer() called twice')
+    assert.equal(streamSpy.mock.calls.length, 2, 'stream called twice')
+    assert.equal(bufferSpy.mock.calls.length, 2, 'buffer called twice')
   })
 
   await test('consume stream multiple times', async () => {
