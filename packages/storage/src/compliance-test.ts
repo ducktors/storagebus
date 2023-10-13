@@ -36,7 +36,7 @@ export async function complianceTest(storage: Storage) {
     const fileContent = null
     const data = fileContent
 
-    await _complianceTest(storage, filePath, fileContent, data, true)
+    await _complianceTest(storage, filePath, fileContent, data)
   })
 
   await test('BusFile', async () => {
@@ -54,15 +54,11 @@ async function _complianceTest(
   storage: Storage,
   filePath: string,
   fileContent: string | null,
-  data: (() => Readable) | BusFile | Buffer | string | null,
-  testingNull = false,
+  data: (() => Readable | Promise<Readable>) | BusFile | Buffer | string | null,
 ) {
   await test('storage.write writes a content', async () => {
     const fileSize = fileContent?.length || 0
-    const result = await storage.write(
-      filePath,
-      data instanceof Function ? data() : data,
-    )
+    const result = await storage.write(filePath, data)
 
     assert.equal(result, filePath, 'returns the path of the file')
     const file = await storage.file(result)
@@ -81,7 +77,7 @@ async function _complianceTest(
     const destinationFilePath = randomUUID()
     const result = await storage.write(
       await storage.file(destinationFilePath),
-      Readable.from('foo'),
+      () => Readable.from('foo'),
     )
 
     assert.equal(result, destinationFilePath, 'returns the path of the file')
@@ -98,32 +94,29 @@ async function _complianceTest(
   })
 
   await test('storage.file returns a BusFile with correct content', async () => {
-    const result = await storage.write(
-      filePath,
-      data instanceof Function ? data() : data,
-    )
+    const result = await storage.write(filePath, data)
     const file = await storage.file(result)
 
-    if (testingNull) {
-      assert.rejects(
+    if (fileContent === null) {
+      await assert.rejects(
         file.stream(),
         new ENOENT(filePath),
         'file.stream() throws ENOENT',
       )
 
-      assert.rejects(
+      await assert.rejects(
         file.buffer(),
         new ENOENT(filePath),
         'file.buffer() throws ENOENT',
       )
 
-      assert.rejects(
+      await assert.rejects(
         file.arrayBuffer(),
         new ENOENT(filePath),
         'file.arrayBuffer() throws ENOENT',
       )
 
-      assert.rejects(
+      await assert.rejects(
         file.text(),
         new ENOENT(filePath),
         'file.text() throws ENOENT',
@@ -162,13 +155,10 @@ async function _complianceTest(
   })
 
   await test('storage.file returns a BusFile that can be consumed multiple times', async () => {
-    const result = await storage.write(
-      filePath,
-      data instanceof Function ? data() : data,
-    )
+    const result = await storage.write(filePath, data)
     const file = await storage.file(result)
 
-    if (testingNull) {
+    if (fileContent === null) {
       assert.rejects(
         file.stream(),
         new ENOENT(filePath),

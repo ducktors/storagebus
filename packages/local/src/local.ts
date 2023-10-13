@@ -1,62 +1,78 @@
-import {
-  createReadStream,
-  createWriteStream,
-  mkdirSync,
-  existsSync,
-  statSync,
-} from 'node:fs'
-import { mkdir, unlink } from 'node:fs/promises'
+import { createReadStream, createWriteStream } from 'node:fs'
+
+import { mkdir, unlink, stat } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { pipeline } from 'node:stream/promises'
 
 import {
-  StorageOptions as AbstractStorageOptions,
+  StorageOptions as StorageBusOptions,
   Storage as StorageBus,
   Driver,
 } from '@storagebus/storage'
+import { ENOENT } from '@storagebus/storage/file'
+import { once } from 'node:stream'
 
 export type StorageOptions = {
   root: string
-} & AbstractStorageOptions
+} & StorageBusOptions
 
 function driver(root: string): Driver {
-  mkdirSync(root, { recursive: true })
-
   return {
-    async set(destination, data) {
-      const path = join(root, destination)
+    async set(file) {
+      const path = join(root, file.name)
+      try {
+        await pipeline(await file.stream(), createWriteStream(path))
+      } catch (error: any) {
+        if (error.code === 'ENOENT') {
+          const folder = dirname(path)
+          await mkdir(folder, { recursive: true })
+        }
+        await pipeline(await file.stream(), createWriteStream(path))
+      }
 
-      await mkdir(dirname(path), { recursive: true })
-      await pipeline(await data.stream(), createWriteStream(path))
-      return destination
+      return path
     },
     async get(destination) {
-      const exists = await this.has(destination)
       const path = join(root, destination)
 
-      if (!exists) {
-        return null
+      return async () => {
+        try {
+          const fileStream = createReadStream(path)
+          await once(fileStream, 'open')
+          return fileStream
+        } catch (error: any) {
+          if (error.code === 'ENOENT') {
+            throw new ENOENT(destination)
+          }
+          throw error
+        }
       }
-      return () => createReadStream(path)
     },
-    async has(destination) {
-      const path = join(root, destination)
-      return existsSync(path)
-    },
-    async getMetadata(destination) {
+    async metadata(destination) {
       try {
-        const stats = statSync(join(root, destination))
+        const path = join(root, destination)
+        const stats = await stat(path)
+
         return {
           size: stats.size,
-          lastModified: stats.mtime,
+          lastModified: stats.mtime.getTime(),
         }
       } catch (error) {
-        return {}
+        return {
+          size: 0,
+          lastModified: -1,
+        }
       }
     },
     async delete(destination) {
       const path = join(root, destination)
-      await unlink(path)
+      try {
+        await unlink(path)
+      } catch (error: any) {
+        if (error.code !== 'ENOENT') {
+          throw error
+        }
+      }
     },
   }
 }
@@ -67,6 +83,7 @@ export function createStorage(opts: StorageOptions) {
 
 export class Storage extends StorageBus {
   constructor(opts: StorageOptions) {
-    super(driver(opts.root), opts)
+    const { root, ...options } = opts
+    super(driver(root), options)
   }
 }

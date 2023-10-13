@@ -10,13 +10,7 @@ function isFunction(x: unknown): x is (x: string) => string {
 }
 export { type Driver }
 
-function isReadable(obj: unknown): obj is Readable {
-  return (
-    obj instanceof Readable &&
-    typeof (obj as any)._read === 'function' &&
-    typeof (obj as any)._readableState === 'object'
-  )
-}
+type Data = (() => Readable | Promise<Readable>) | Buffer | string | BusFile
 
 export interface StorageOptions {
   debug?: boolean
@@ -55,7 +49,7 @@ export class Storage {
 
   async write(
     destination: string | BusFile,
-    data: Readable | Buffer | string | null | BusFile,
+    data: Data | null,
     contentType?: string,
   ): Promise<string> {
     const path = isBusFile(destination)
@@ -63,16 +57,27 @@ export class Storage {
       : this.sanitize(destination)
 
     if (typeof path !== 'string' || path.length === 0) {
-      throw new TypeError('Invalid destination: must be a non-empty string.')
+      throw new TypeError(
+        'Invalid destination: must be a non-empty string or BusFile.',
+      )
+    }
+    if (
+      typeof data !== 'string' &&
+      !Buffer.isBuffer(data) &&
+      !isBusFile(data) &&
+      typeof data !== 'function' &&
+      data !== null
+    ) {
+      throw new TypeError(
+        'Invalid data: must be a string, Buffer, Readable, BusFile or null.',
+      )
     }
     if (data === null) {
       await this.#driver.delete(path)
     } else {
-      let _data: (() => Readable | Promise<Readable>) | Buffer | string
+      let _data: Data
       if (isBusFile(data)) {
         _data = () => data.stream()
-      } else if (isReadable(data)) {
-        _data = () => data
       } else {
         _data = data
       }
