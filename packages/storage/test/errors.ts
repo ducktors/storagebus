@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { ENOENT } from '@storagebus/file/errors'
+import { ENOENT } from '@storagebus/storage/errors'
 
 test('@storagebus/file errors', async () => {
   await test('ENOENT has the correct code and message', () => {

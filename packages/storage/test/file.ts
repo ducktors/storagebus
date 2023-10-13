@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { Readable } from 'node:stream'
 
-import { BusFile } from '@storagebus/file'
+import { BusFile } from '@storagebus/storage/file'
 
 test('@storagebus/file', async () => {
   await test(`creates new File instance from a '() => Readable' function`, async () => {

@@ -1,5 +1,5 @@
 import { Readable } from 'node:stream'
-import { BusFile, isBusFile } from '@storagebus/file'
+import { BusFile, isBusFile } from './file.js'
 
 import { logger as defaultLogger } from './logger.js'
 import { sanitize } from './sanitize-key.js'

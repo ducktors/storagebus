@@ -9,10 +9,5 @@
     "rootDir": "src",
     "tsBuildInfoFile": "dist/tsconfig.build.tsbuildinfo"
   },
-  "include": ["src", "src/**/*.json"],
-  "references": [
-    {
-      "path": "../file/tsconfig.json"
-    }
-  ]
+  "include": ["src", "src/**/*.json"]
 }

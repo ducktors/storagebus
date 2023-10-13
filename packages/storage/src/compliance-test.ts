@@ -1,10 +1,11 @@
-import type { Storage } from '@storagebus/storage'
-import { BusFile } from '@storagebus/storage/file'
 import { randomUUID } from 'node:crypto'
 import assert from 'node:assert'
 import { Readable } from 'node:stream'
 import { test } from 'node:test'
-import { ENOENT } from '@storagebus/file/errors'
+
+import type { Storage } from './storage.js'
+import { ENOENT } from './errors.js'
+import { BusFile } from './file.js'
 
 export async function complianceTest(storage: Storage) {
   await test('Readable', async () => {

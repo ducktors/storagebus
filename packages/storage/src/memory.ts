@@ -1,8 +1,7 @@
-import { BusFileMetadata } from '@storagebus/file'
-import { ENOENT } from '@storagebus/file/errors'
 import { Readable } from 'node:stream'
+import { BusFileMetadata, BusFile } from './file.js'
+import { ENOENT } from './errors.js'
 import { StorageOptions, Storage as StorageBus } from './storage.js'
-import { BusFile } from './file.js'
 
 export type { StorageOptions }
 
