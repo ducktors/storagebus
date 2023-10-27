@@ -27,7 +27,7 @@
   "keywords": [],
   "dependencies": {
     "@ducktors/storagebus-abstract": "workspace:*",
-    "@google-cloud/storage": "^6.9.3",
+    "@google-cloud/storage": "^7.4.0",
     "mime-types": "^2.1.35",
     "tslib": "^2.5.0"
   },
