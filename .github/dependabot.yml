@@ -5,6 +5,10 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 0
+    assignees:
+      - "matteovivona"
+    reviewers:
+      - "matteovivona"
     commit-message:
       prefix: "fix(deps)"
       prefix-development: "chore(deps):"
@@ -15,6 +19,10 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "chore(actions)"
+    assignees:
+      - "matteovivona"
+    reviewers:
+      - "matteovivona"
 
   - package-ecosystem: "docker"
     directory: "/"
@@ -22,28 +30,67 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "fix(docker)"
+    assignees:
+      - "matteovivona"
+    reviewers:
+      - "matteovivona"
 
   - package-ecosystem: npm
     directory: /packages/abstract
     schedule:
       interval: daily
+    assignees:
+      - "matteovivona"
+    reviewers:
+      - "fox1t"
+    commit-message:
+      prefix: "fix(deps)"
+      prefix-development: "chore(deps):"
 
   - package-ecosystem: npm
     directory: /packages/gcs
     schedule:
       interval: daily
+    assignees:
+      - "matteovivona"
+    reviewers:
+      - "fox1t"
+    commit-message:
+      prefix: "fix(deps)"
+      prefix-development: "chore(deps):"
 
   - package-ecosystem: npm
     directory: /packages/local
     schedule:
       interval: daily
+    assignees:
+      - "matteovivona"
+    reviewers:
+      - "fox1t"
+    commit-message:
+      prefix: "fix(deps)"
+      prefix-development: "chore(deps):"
 
   - package-ecosystem: npm
     directory: /packages/memory
     schedule:
       interval: daily
+    assignees:
+      - "matteovivona"
+    reviewers:
+      - "fox1t"
+    commit-message:
+      prefix: "fix(deps)"
+      prefix-development: "chore(deps):"
 
   - package-ecosystem: npm
     directory: /packages/s3
     schedule:
       interval: daily
+    assignees:
+      - "matteovivona"
+    reviewers:
+      - "fox1t"
+    commit-message:
+      prefix: "fix(deps)"
+      prefix-development: "chore(deps):"
