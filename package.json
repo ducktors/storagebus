@@ -40,6 +40,9 @@
     "lint-staged": "^13.3.0",
     "turbo": "^1.10.14"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "bugs": {
     "url": "https://github.com/ducktors/storagebus/issues"
   },
