@@ -1,5 +1,5 @@
 {
   "teamid": "team_ducktors",
-  "apiurl": "turbo.ducktors.dev",
+  "apiurl": "https://turbo.ducktors.dev",
   "token": "turbotoken-oss"
 }
