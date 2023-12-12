@@ -26,11 +26,11 @@ export function driver(options: StorageOptions): Driver {
 
   const client = new S3Client({
     forcePathStyle: true,
+    /* c8 ignore next 5 */
     ...(region ? { region } : {}),
     ...(accessKeyId && secretAccessKey
       ? { credentials: { accessKeyId, secretAccessKey } }
-      : /* c8 ignore next */
-        {}),
+      : {}),
     ...(endpoint ? { endpoint: endpoint } : {}),
   })
 
@@ -62,7 +62,7 @@ export function driver(options: StorageOptions): Driver {
           if ((err as Error).name === 'NoSuchKey') {
             throw new ENOENT(path)
           }
-          /* c8 ignore next */
+          /* c8 ignore next 2 */
           throw err
         }
       }

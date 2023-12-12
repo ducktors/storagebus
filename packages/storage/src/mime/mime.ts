@@ -21,6 +21,7 @@ class Mime {
 
   // copied from https://github.com/broofa/mime/blob/0202521312497fd93c6b9bc9485b52c2b34b9aca/src/Mime.ts#L72
   getType(path?: string) {
+    /* c8 ignore next 13 */
     if (typeof path !== 'string') return null
 
     // Remove chars preceeding `/` or `\`

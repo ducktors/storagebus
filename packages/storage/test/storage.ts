@@ -64,4 +64,34 @@ test('@storagebus/storage', async () => {
     const storage = new Storage(driver())
     await complianceTest(storage)
   })
+
+  await test('throws when a POJO is passed as data to write method', async () => {
+    const storage = new Storage(driver())
+    await assert.rejects(
+      () => storage.write('foo', { foo: 'bar' } as any),
+      (err) => {
+        if (!(err instanceof TypeError)) return false
+        assert.strictEqual(
+          err.message,
+          'Invalid data: must be a string, Buffer, Readable, BusFile or null.',
+        )
+        return true
+      },
+    )
+  })
+
+  await test('throws when an empty strng is passed as destination to write method', async () => {
+    const storage = new Storage(driver())
+    await assert.rejects(
+      () => storage.write('', 'bar'),
+      (err) => {
+        if (!(err instanceof TypeError)) return false
+        assert.strictEqual(
+          err.message,
+          'Invalid destination: must be a non-empty string or BusFile.',
+        )
+        return true
+      },
+    )
+  })
 })

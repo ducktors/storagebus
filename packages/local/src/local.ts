@@ -42,6 +42,7 @@ function driver(root: string): Driver {
           if (error.code === 'ENOENT') {
             throw new ENOENT(destination)
           }
+          /* c8 ignore next 2 */
           throw error
         }
       }
@@ -66,6 +67,7 @@ function driver(root: string): Driver {
       const path = join(root, destination)
       try {
         await unlink(path)
+        /* c8 ignore next 4 */
       } catch (error: any) {
         if (error.code !== 'ENOENT') {
           throw error

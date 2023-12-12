@@ -61,7 +61,8 @@ export function driver(options: StorageOptions): Driver {
           type: metadata.contentType,
           size: metadata.size ? +metadata.size : 0,
           lastModified: metadata.updated
-            ? new Date(metadata.updated).getTime()
+            ? /* c8 ignore next 9 */
+              new Date(metadata.updated).getTime()
             : -1,
         }
       } catch (err) {

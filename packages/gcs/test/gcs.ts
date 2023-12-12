@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { Readable, Writable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import { test } from 'node:test'
-import { createStorage } from '@storagebus/gcs'
+import { Storage, createStorage } from '@storagebus/gcs'
 import { complianceTest } from '@storagebus/storage/compliance-test'
 
 test('GCS', async (t) => {
@@ -139,110 +139,18 @@ test('GCS', async (t) => {
     assert.equal((file.getMetadata as any).mock.calls.length, 1)
   })
 
+  await test('storage constructor accepts parameters', () => {
+    const storage = createStorage({
+      clientEmail: 'foobar',
+      privateKey: 'foo',
+      projectId: 'bar',
+      bucket: 'test',
+    })
+    assert.equal(storage instanceof Storage, true)
+  })
+
   await t.test('Compliance test', async (t) => {
     const storage = createStorage({ bucket: 'storagebus-test' })
     await complianceTest(storage)
   })
-
-  // const bucket = randomUUID()
-
-  // const { Storage } = await import('../src/gcs.js')
-  // // console.log('Storage', Storage)
-  // const storage = new Storage({ bucket })
-
-  // await test('storage is instance of Storage', () => {
-  //   assert.equal(storage instanceof Storage, true)
-  // })
-
-  // await test('storage instance extends from AbstractStorage', () => {
-  //   assert.equal(storage instanceof AbstractStorage, true)
-  // })
-
-  // await test('storage constructor accepts parameters', () => {
-  //   const storage = new Storage({
-  //     clientEmail: 'foobar',
-  //     privateKey: 'foo',
-  //     projectId: 'bar',
-  //     bucket,
-  //   })
-  //   assert.equal(storage instanceof Storage, true)
-  //   assert.equal(storage instanceof AbstractStorage, true)
-  // })
-
-  // await test('storage.write a Readable to GCS bucket', async () => {
-  //   const key = randomUUID()
-  //   await storage.write(key, Readable.from(key))
-
-  //   assert.equal(await storage.exists(key), true)
-  // })
-
-  // await test('storage.read reads a file from GCS bucket', async () => {
-  //   const key = randomUUID()
-  //   await storage.write(key, Readable.from(key))
-  //   const file = await storage.read(key)
-
-  //   assert.equal(file instanceof Readable, true)
-  // })
-
-  // await test('storage.read throws on missing key', async () => {
-  //   const key = randomUUID()
-
-  //   await assert.rejects(() => storage.read(key), Error)
-  // })
-
-  // await test('storage.remove removes key from gcs bucket', async () => {
-  //   const key = randomUUID()
-  //   await storage.write(key, Readable.from(key))
-  //   await storage.remove(key)
-
-  //   assert.equal(await storage.exists(key), false)
-  // })
-
-  // await test('storage.copy copy a file to new location', async () => {
-  //   const key = randomUUID()
-  //   const objectKey = await storage.write(key, Readable.from(key))
-  //   const newKey = await storage.copy(objectKey, 'new-key')
-
-  //   assert.equal(await storage.exists(objectKey), true)
-  //   assert.equal(await storage.exists(newKey), true)
-  // })
-
-  // await test('storage.copy copy a file with ContentType set to new location', async () => {
-  //   const key = `${randomUUID()}.jpeg`
-  //   const objectKey = await storage.write(key, Readable.from(key))
-  //   const newKey = await storage.copy(objectKey, 'new-key.jpeg')
-
-  //   assert.equal(await storage.exists(objectKey), true)
-  //   assert.equal(await storage.exists(newKey), true)
-  // })
-
-  // await test('storage.move moves a file to a new location', async () => {
-  //   const key = randomUUID()
-
-  //   const objectKey = await storage.write(key, Readable.from(key))
-  //   const newKey = await storage.move(objectKey, 'new-key')
-
-  //   assert.equal(await storage.exists(objectKey), false)
-  //   assert.equal(await storage.exists(newKey), true)
-  // })
-
-  // await test('toBuffer returns a buffer from Readable with objectMode true', async () => {
-  //   const storage = new Storage({ bucket })
-  //   const buffer = await storage.toBuffer(
-  //     Readable.from('foo', { objectMode: true }),
-  //   )
-
-  //   assert.equal(buffer instanceof Buffer, true)
-  //   assert.equal(buffer.toString(), 'foo')
-  // })
-
-  // await test('toBuffer returns a buffer from Readable with objectMode false', async () => {
-  //   const storage = new Storage({ bucket })
-  //   const buffer = await storage.toBuffer(
-  //     Readable.from('foo', { objectMode: false }),
-  //   )
-
-  //   assert.equal(buffer instanceof Buffer, true)
-  //   assert.equal(buffer.toString(), 'foo')
-  // })
 })
