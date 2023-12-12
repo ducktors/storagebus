@@ -44,8 +44,6 @@
   "main": "dist/storage.js",
   "scripts": {
     "build": "rimraf dist && tsc && cp src/latin-chars.json dist/latin-chars.json",
-    "format": "biome format --write .",
-    "lint": "biome check .",
     "preinstall": "npx only-allow pnpm",
     "prepublish": "pnpm build",
     "test": "tsx --conditions=typescript --test ./test/*.ts",

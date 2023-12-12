@@ -8,8 +8,8 @@ import {
 } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'
 import {
-  StorageOptions as StorageBusOptions,
   Driver,
+  StorageOptions as StorageBusOptions,
 } from '@storagebus/storage'
 import { ENOENT } from '@storagebus/storage/errors'
 

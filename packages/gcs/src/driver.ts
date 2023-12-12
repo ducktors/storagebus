@@ -1,10 +1,10 @@
 import { pipeline } from 'node:stream/promises'
 
-import {
-  StorageOptions as StorageBusOptions,
-  Driver,
-} from '@storagebus/storage'
 import * as GCS from '@google-cloud/storage'
+import {
+  Driver,
+  StorageOptions as StorageBusOptions,
+} from '@storagebus/storage'
 import { ENOENT } from '@storagebus/storage/errors'
 
 export type StorageOptions = {

@@ -1,8 +1,8 @@
-import { complianceTest } from '@storagebus/storage/compliance-test'
-import { createStorage } from '@storagebus/s3'
 import assert from 'node:assert/strict'
 import { tmpdir } from 'node:os'
 import { test } from 'node:test'
+import { createStorage } from '@storagebus/s3'
+import { complianceTest } from '@storagebus/storage/compliance-test'
 import S3erver from 's3rver'
 
 const accessKeyId = 'S3RVER'

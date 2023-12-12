@@ -1,11 +1,11 @@
-import { bench, run } from './runner.mjs'
-import { join, dirname } from 'node:path'
-import { tmpdir } from 'node:os'
 import { randomUUID } from 'node:crypto'
 import { createReadStream, createWriteStream, writeFile } from 'node:fs'
-import { pipeline } from 'node:stream/promises'
-import { Readable } from 'node:stream'
 import { mkdir } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { dirname, join } from 'node:path'
+import { Readable } from 'node:stream'
+import { pipeline } from 'node:stream/promises'
+import { bench, run } from './runner.mjs'
 
 const root = join(tmpdir(), randomUUID())
 const shortStringPaths = []

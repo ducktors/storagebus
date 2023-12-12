@@ -2,8 +2,8 @@ import { Readable } from 'node:stream'
 import { BusFile, isBusFile } from './file.js'
 
 import { logger as defaultLogger } from './logger.js'
-import { sanitize } from './sanitize-key.js'
 import { Driver } from './memory.js'
+import { sanitize } from './sanitize-key.js'
 
 function isFunction(x: unknown): x is (x: string) => string {
   return Object.prototype.toString.call(x) === '[object Function]'

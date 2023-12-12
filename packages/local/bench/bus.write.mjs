@@ -1,9 +1,9 @@
+import { randomUUID } from 'node:crypto'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { createStorage } from '../dist/local.js'
 // https://github.com/oven-sh/bun/blob/main/bench/snippets/write.bun.js
 import { bench, run } from './runner.mjs'
-import { createStorage } from '../dist/local.js'
-import { join } from 'node:path'
-import { tmpdir } from 'node:os'
-import { randomUUID } from 'node:crypto'
 
 const storage = createStorage({ root: join(tmpdir(), randomUUID()) })
 const shortStringPaths = []

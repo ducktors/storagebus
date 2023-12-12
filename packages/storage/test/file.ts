@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
-import { test } from 'node:test'
 import { Readable } from 'node:stream'
+import { test } from 'node:test'
 
 import { BusFile } from '@storagebus/storage/file'
 

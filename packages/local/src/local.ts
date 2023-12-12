@@ -1,14 +1,14 @@
+import { createReadStream, createWriteStream } from 'node:fs'
+import { mkdir, stat, unlink } from 'node:fs/promises'
+import { dirname, join } from 'node:path'
+import { once } from 'node:stream'
+import { pipeline } from 'node:stream/promises'
 import {
-  StorageOptions as StorageBusOptions,
-  Storage as StorageBus,
   Driver,
+  Storage as StorageBus,
+  StorageOptions as StorageBusOptions,
 } from '@storagebus/storage'
 import { ENOENT } from '@storagebus/storage/errors'
-import { createReadStream, createWriteStream } from 'node:fs'
-import { mkdir, unlink, stat } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
-import { pipeline } from 'node:stream/promises'
-import { once } from 'node:stream'
 
 export type StorageOptions = {
   root: string

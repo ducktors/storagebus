@@ -1,13 +1,13 @@
-import { Storage } from '@storagebus/storage'
-import { complianceTest } from '@storagebus/storage/compliance-test'
-import { createStorage, Storage as LocalStorage } from '@storagebus/local'
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
 import { mkdtemp, stat } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { test } from 'node:test'
 import { Readable } from 'node:stream'
+import { test } from 'node:test'
+import { Storage as LocalStorage, createStorage } from '@storagebus/local'
+import { Storage } from '@storagebus/storage'
+import { complianceTest } from '@storagebus/storage/compliance-test'
 
 test('local', async () => {
   await test('Storage constructor accepts the root parameter', async () => {

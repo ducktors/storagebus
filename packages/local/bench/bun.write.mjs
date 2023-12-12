@@ -1,9 +1,9 @@
-// https://github.com/oven-sh/bun/blob/main/bench/snippets/write.bun.js
-import { bench, run } from './runner.mjs'
-import { join, dirname } from 'node:path'
-import { tmpdir } from 'node:os'
 import { randomUUID } from 'node:crypto'
 import { mkdir } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { dirname, join } from 'node:path'
+// https://github.com/oven-sh/bun/blob/main/bench/snippets/write.bun.js
+import { bench, run } from './runner.mjs'
 
 const root = join(tmpdir(), randomUUID())
 

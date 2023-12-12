@@ -3,7 +3,7 @@ import { test } from 'node:test'
 
 import { Storage } from '@storagebus/storage'
 import { complianceTest } from '@storagebus/storage/compliance-test'
-import { driver, createStorage } from '@storagebus/storage/memory'
+import { createStorage, driver } from '@storagebus/storage/memory'
 
 test('@storagebus/storage', async () => {
   await test('Constructor', async () => {

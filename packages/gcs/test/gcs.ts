@@ -1,9 +1,9 @@
-import { createStorage } from '@storagebus/gcs'
-import { complianceTest } from '@storagebus/storage/compliance-test'
-import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { Readable, Writable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
+import { test } from 'node:test'
+import { createStorage } from '@storagebus/gcs'
+import { complianceTest } from '@storagebus/storage/compliance-test'
 
 test('GCS', async (t) => {
   const GCS =
