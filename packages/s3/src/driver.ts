@@ -48,7 +48,6 @@ export function driver(options: StorageOptions): Driver {
       await upload.done()
       return data.name
     },
-
     async get(path) {
       return async () => {
         try {
@@ -89,7 +88,6 @@ export function driver(options: StorageOptions): Driver {
         }
       }
     },
-
     async delete(path) {
       await client.send(
         new DeleteObjectCommand({
