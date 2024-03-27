@@ -1,5 +1,5 @@
 {
-  "name": "@ducktors/storagebus-s3",
+  "name": "@storagebus/s3",
   "version": "0.11.4",
   "description": "",
   "license": "MIT",
@@ -11,39 +11,35 @@
   "type": "commonjs",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "typescript": "./src/s3.ts",
+      "import": "./dist/s3.js",
+      "require": "./dist/s3.js"
     }
   },
   "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && tsc",
-    "format": "biome format --write .",
-    "lint": "biome check .",
     "preinstall": "npx only-allow pnpm",
     "prepublish": "pnpm build",
-    "test": "tsx --test test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
-    "test:watch": "tsx --watch --test ./test/*.ts"
+    "test": "tsx --conditions=typescript --test test/*.ts",
+    "test:ci": "c8 --all --src dist --reporter lcov --reporter text tsx --test ./test/*.ts",
+    "test:watch": "tsx --conditions=typescript --watch --test ./test/*.ts"
   },
   "keywords": [],
   "dependencies": {
-    "@aws-sdk/abort-controller": "^3.272.0",
-    "@aws-sdk/client-s3": "^3.281.0",
-    "@aws-sdk/lib-storage": "^3.281.0",
-    "@ducktors/storagebus-abstract": "workspace:*",
-    "mime-types": "^2.1.35",
-    "tslib": "^2.5.0"
+    "@aws-sdk/client-s3": "^3.470.0",
+    "@aws-sdk/lib-storage": "^3.470.0",
+    "@storagebus/storage": "workspace:*",
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.2.2",
+    "@biomejs/biome": "^1.4.1",
     "@ducktors/tsconfig": "^1.0.0",
-    "@types/mime-types": "^2.1.1",
-    "@types/node": "^20.6.5",
-    "aws-sdk-client-mock": "^2.0.1",
+    "@types/node": "^20.10.4",
     "c8": "^8.0.1",
-    "rimraf": "^5.0.1",
-    "tsx": "^3.13.0",
-    "typescript": "^5.2.2"
+    "rimraf": "^5.0.5",
+    "s3rver": "^3.7.1",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.3"
   }
 }

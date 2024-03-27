@@ -7,10 +7,8 @@
     "root": "."
   },
   "linter": {
-    "enabled": true,
     "ignore": ["dist"],
     "rules": {
-      "recommended": true,
       "suspicious": {
         "noExplicitAny": "off"
       }
@@ -18,7 +16,7 @@
   },
   "formatter": {
     "ignore": ["dist"],
-    "enabled": true,
+    "formatWithErrors": true,
     "indentStyle": "space"
   },
   "javascript": {

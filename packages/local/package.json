@@ -1,41 +1,43 @@
 {
-  "name": "@ducktors/storagebus-local",
+  "name": "@storagebus/local",
   "version": "0.12.3",
   "description": "",
   "license": "MIT",
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
   "private": false,
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "type": "commonjs",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "typescript": "./src/local.ts",
+      "import": "./dist/local.js",
+      "require": "./dist/local.js"
     }
   },
-  "main": "dist/index.js",
+  "main": "dist/local.js",
   "scripts": {
     "build": "rimraf dist && tsc",
-    "format": "biome format --write .",
-    "lint": "biome check .",
     "preinstall": "npx only-allow pnpm",
     "prepublish": "pnpm build",
-    "test": "tsx --test test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
-    "test:watch": "tsx --watch --test ./test/*.ts"
+    "test": "tsx --conditions=typescript --test test/*.ts",
+    "test:ci": "c8 --all --src dist --reporter lcov --reporter text tsx --test ./test/*.ts",
+    "test:watch": "tsx --conditions=typescript --watch --test ./test/*.ts"
   },
   "keywords": [],
   "dependencies": {
-    "@ducktors/storagebus-abstract": "workspace:*",
-    "tslib": "^2.5.0"
+    "@storagebus/storage": "workspace:*",
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.2.2",
+    "@biomejs/biome": "^1.4.1",
     "@ducktors/tsconfig": "^1.0.0",
-    "@types/node": "^20.6.5",
+    "@types/node": "^20.10.4",
     "c8": "^8.0.1",
-    "rimraf": "^5.0.1",
-    "tsx": "^3.13.0",
-    "typescript": "^5.2.2"
+    "mitata": "^0.1.6",
+    "rimraf": "^5.0.5",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.3"
   }
 }
