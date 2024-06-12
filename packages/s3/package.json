@@ -41,7 +41,7 @@
     "@types/mime-types": "^2.1.1",
     "@types/node": "^20.6.5",
     "aws-sdk-client-mock": "^2.0.1",
-    "c8": "^8.0.1",
+    "c8": "^10.1.1",
     "rimraf": "^5.0.1",
     "tsx": "^3.13.0",
     "typescript": "^5.2.2"
