@@ -1,46 +1,43 @@
 {
-  "name": "@ducktors/storagebus-gcs",
+  "name": "@storagebus/gcs",
   "version": "0.11.4",
   "description": "",
   "license": "MIT",
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
   "private": false,
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "type": "commonjs",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "typescript": "./src/gcs.ts",
+      "import": "./dist/gcs.js",
+      "require": "./dist/gcs.js"
     }
   },
   "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && tsc",
-    "format": "biome format --write .",
-    "lint": "biome check .",
     "preinstall": "npx only-allow pnpm",
     "prepublish": "pnpm build",
-    "test": "tsx --test test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
-    "test:watch": "tsx --watch --test ./test/*.ts"
+    "test": "tsx --trace-warnings --conditions=typescript --test test/*.ts",
+    "test:ci": "c8 --all --src dist --reporter lcov --reporter text tsx --test ./test/*.ts",
+    "test:watch": "tsx --conditions=typescript --watch --test ./test/*.ts"
   },
   "keywords": [],
   "dependencies": {
-    "@ducktors/storagebus-abstract": "workspace:*",
-    "@google-cloud/storage": "^6.9.3",
-    "mime-types": "^2.1.35",
-    "tslib": "^2.5.0"
+    "@google-cloud/storage": "^7.7.0",
+    "@storagebus/storage": "workspace:*",
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.2.2",
+    "@biomejs/biome": "^1.4.1",
     "@ducktors/tsconfig": "^1.0.0",
-    "@types/mime-types": "^2.1.1",
-    "@types/node": "^20.6.5",
-    "@types/stream-buffers": "^3.0.4",
+    "@types/node": "^20.10.4",
     "c8": "^8.0.1",
-    "rimraf": "^5.0.1",
-    "stream-buffers": "^3.0.2",
-    "tsx": "^3.13.0",
-    "typescript": "^5.2.2"
+    "rimraf": "^5.0.5",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.3"
   }
 }

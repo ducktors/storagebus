@@ -3,12 +3,14 @@
   "extends": "@ducktors/tsconfig",
   "compilerOptions": {
     "outDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "removeComments": false
   },
   "include": ["src/**/*.ts"],
+
   "references": [
     {
-      "path": "../abstract/tsconfig.json"
+      "path": "../storage/tsconfig.json"
     }
   ]
 }

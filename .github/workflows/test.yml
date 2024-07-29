@@ -65,7 +65,7 @@ jobs:
           cp -r ./packages/*/coverage/tmp/. coverage/tmp
 
       - name: Merge json coverage reports
-        run: pnpm dlx c8 report --reporter lcov --reporter text --extension ts
+        run: pnpm dlx c8 report --reporter lcov --reporter text
 
       - name: Coveralls
         uses: coverallsapp/github-action@643bc377ffa44ace6394b2b5d0d3950076de9f63 # master
