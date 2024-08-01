@@ -192,7 +192,7 @@ test('local', async () => {
       'EXDEV: cross-device link not permitted',
     )
     exDevError.code = 'EXDEV'
-    renameSpy.mock.mockImplementationOnce(function () {
+    renameSpy.mock.mockImplementationOnce(() => {
       throw exDevError
     })
 
@@ -215,7 +215,7 @@ test('local', async () => {
     )
     exDevError.code = 'EXDEV'
 
-    renameSpy.mock.mockImplementationOnce(function () {
+    renameSpy.mock.mockImplementationOnce(() => {
       throw exDevError
     })
 
@@ -233,7 +233,7 @@ test('local', async () => {
     const storage = new Storage({ bucket: randomUUID() })
     const renameSpy = t.mock.method(fs, 'rename')
 
-    renameSpy.mock.mockImplementationOnce(function () {
+    renameSpy.mock.mockImplementationOnce(() => {
       throw new Error('Generic error')
     })
 
@@ -251,7 +251,7 @@ test('local', async () => {
     const storage = new Storage({ bucket: randomUUID() })
     const renameSpy = t.mock.method(fs, 'rename')
 
-    renameSpy.mock.mockImplementationOnce(function () {
+    renameSpy.mock.mockImplementationOnce(() => {
       throw new Error('Generic error')
     })
 

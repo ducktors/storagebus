@@ -1,8 +1,8 @@
 import { Readable } from 'node:stream'
 
 import {
-  AbstractStorageOptions,
   Storage as AbstractStorage,
+  type AbstractStorageOptions,
 } from '@ducktors/storagebus-abstract'
 
 export type StorageOptions = AbstractStorageOptions
