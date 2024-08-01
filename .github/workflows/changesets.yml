@@ -12,6 +12,7 @@ jobs:
   release:
     name: Changesets
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@0d381219ddf674d61a7572ddd19d7941e271515c # v2.9.0
@@ -56,8 +57,6 @@ jobs:
           createGithubReleases: true
           commit: 'chore: version release'
           title: 'Version Release'
-        env:
-          GITHUB_TOKEN: ${{ secrets.DUCKTORS_PAT }}
         env:
           GITHUB_TOKEN: ${{ secrets.DUCKTORS_PAT }}
           NPM_TOKEN: ${{ secrets.DUCKTORS_NPM_TOKEN }}
