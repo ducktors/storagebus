@@ -35,7 +35,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.2.2",
     "@ducktors/tsconfig": "^1.0.0",
-    "@types/node": "^20.14.13",
+    "@types/node": "^22.0.2",
     "c8": "^8.0.1",
     "rimraf": "^5.0.10",
     "tsx": "^3.13.0",
