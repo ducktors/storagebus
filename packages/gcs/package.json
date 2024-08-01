@@ -37,7 +37,7 @@
     "@biomejs/biome": "^1.2.2",
     "@ducktors/tsconfig": "^1.0.0",
     "@types/mime-types": "^2.1.1",
-    "@types/node": "^20.14.13",
+    "@types/node": "^22.0.2",
     "@types/stream-buffers": "^3.0.4",
     "c8": "^8.0.1",
     "rimraf": "^5.0.10",
