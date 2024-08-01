@@ -53,3 +53,5 @@ junit.xml
 
 # Misc
 .DS_Store
+.turbo/cookies
+.turbo/daemon

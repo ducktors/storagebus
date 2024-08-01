@@ -8,7 +8,7 @@ test('abstract sanitize key', async () => {
     assert.throws(() => sanitize(null), Error)
     // @ts-expect-error: testing wrong type
     assert.throws(() => sanitize(undefined), Error)
-    assert.throws(() => sanitize(NaN), Error)
+    assert.throws(() => sanitize(Number.NaN), Error)
     assert.throws(() => sanitize(''), Error)
     // @ts-expect-error: testing wrong type
     assert.throws(() => sanitize({}), Error)

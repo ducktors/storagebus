@@ -1,12 +1,12 @@
-import { Readable } from 'node:stream'
+import type { Readable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 
 import {
-  AbstractStorageOptions,
   Storage as AbstractStorage,
+  type AbstractStorageOptions,
 } from '@ducktors/storagebus-abstract'
 import * as GCS from '@google-cloud/storage'
-import { type Bucket } from '@google-cloud/storage'
+import type { Bucket } from '@google-cloud/storage'
 import { lookup } from 'mime-types'
 
 export type StorageOptions = {

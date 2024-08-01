@@ -7,12 +7,12 @@ import {
 import fs from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, isAbsolute, join } from 'node:path'
-import { Readable } from 'node:stream'
+import type { Readable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 
 import {
-  AbstractStorageOptions,
   Storage as AbstractStorage,
+  type AbstractStorageOptions,
 } from '@ducktors/storagebus-abstract'
 
 // taken from https://github.com/sindresorhus/type-fest/blob/main/source/require-exactly-one.d.ts

@@ -5,9 +5,7 @@
   "license": "MIT",
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
   "private": false,
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "type": "commonjs",
   "exports": {
     ".": {
@@ -30,19 +28,19 @@
   "dependencies": {
     "@ducktors/storagebus-abstract": "workspace:*",
     "@google-cloud/storage": "^6.9.3",
-    "mime-types": "^2.1.35",
-    "tslib": "^2.5.0"
+    "mime-types": "catalog:prodDeps",
+    "tslib": "catalog:prodDeps"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.2.2",
-    "@ducktors/tsconfig": "^1.0.0",
+    "@biomejs/biome": "catalog:devDeps",
+    "@ducktors/tsconfig": "catalog:devDeps",
     "@types/mime-types": "^2.1.1",
-    "@types/node": "^20.14.13",
+    "@types/node": "catalog:devDeps",
     "@types/stream-buffers": "^3.0.4",
-    "c8": "^8.0.1",
-    "rimraf": "^5.0.10",
+    "c8": "catalog:devDeps",
+    "rimraf": "catalog:devDeps",
     "stream-buffers": "^3.0.2",
-    "tsx": "^3.13.0",
-    "typescript": "^5.2.2"
+    "tsx": "catalog:devDeps",
+    "typescript": "catalog:devDeps"
   }
 }
