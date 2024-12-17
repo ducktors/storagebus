@@ -31,7 +31,7 @@ jobs:
         run: rm tsconfig.json || true # https://github.com/wagoid/commitlint-github-action/issues/560#issuecomment-1277659864
 
       - name: Check commit message
-        uses: wagoid/commitlint-github-action@3d28780bbf0365e29b144e272b2121204d5be5f3 # v6.1.2
+        uses: wagoid/commitlint-github-action@0184f5a228ee06430bb9e67d65f73a1a6767496a # v6.2.0
         with:
           configFile: commitlint.config.cjs
           failOnWarnings: false
