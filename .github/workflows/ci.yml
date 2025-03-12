@@ -12,8 +12,14 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   commitlint:
+    permissions:
+      contents: read  # for actions/checkout to fetch code
+      pull-requests: read  # for wagoid/commitlint-github-action to get commits in PR
     name: Commit
     runs-on: ubuntu-latest
     steps:
