@@ -67,6 +67,7 @@ test('GCS', async (t) => {
         return readable
       }
 
+      // biome-ignore lint/correctness/noUnusedFunctionParameters: TBD
       createWriteStream({ contentType }: { contentType: string }) {
         // if (!this.bucket.files[this.path]) {
         //   throw new Error(`File ${this.path} does not exist`);
