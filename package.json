@@ -1,7 +1,7 @@
 {
   "name": "@ducktors/storagebus",
   "version": "0.9.0",
-  "description": "",
+  "description": "Storage abstraction library for Node.js",
   "license": "MIT",
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
   "private": true,
@@ -14,32 +14,33 @@
     "dev": "turbo dev",
     "format": "turbo format",
     "lint": "turbo lint",
+    "lint:fix": "biome check --write .",
     "precommit": "pnpm install",
     "preinstall": "npx only-allow pnpm",
-    "prepare": "husky install",
+    "prepare": "husky || true",
     "release": "pnpm build && changeset publish",
     "test": "turbo test",
     "test:ci": "turbo test:ci"
   },
-  "packageManager": "pnpm@9.6.0",
+  "packageManager": "pnpm@10.18.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ducktors/storagebus.git"
   },
   "keywords": [],
   "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
-    "@changesets/changelog-github": "^0.4.8",
-    "@changesets/cli": "^2.27.7",
-    "@commitlint/cli": "^17.8.1",
-    "@commitlint/config-conventional": "^17.8.1",
-    "@commitlint/lint": "^17.8.1",
-    "@commitlint/prompt": "^17.8.1",
-    "@vitest/coverage-istanbul": "^0.28.5",
-    "commitlint-plugin-function-rules": "^1.7.1",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.3.0",
-    "turbo": "^1.13.4"
+    "@biomejs/biome": "catalog:devDeps",
+    "@changesets/changelog-github": "^0.5.2",
+    "@changesets/cli": "^2.29.8",
+    "@commitlint/cli": "^20.2.0",
+    "@commitlint/config-conventional": "^20.2.0",
+    "@commitlint/lint": "^20.2.0",
+    "@commitlint/prompt": "^20.2.0",
+    "@vitest/coverage-istanbul": "^4.0.15",
+    "commitlint-plugin-function-rules": "^4.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "turbo": "^2.6.3"
   },
   "bugs": {
     "url": "https://github.com/ducktors/storagebus/issues"
