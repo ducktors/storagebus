@@ -1,5 +1,11 @@
 # @ducktors/storagebus-s3
 
+## 0.12.0
+
+### Minor Changes
+
+- f3ced7f: Added destBucket option to copy API for S3
+
 ## 0.11.4
 
 ### Patch Changes
