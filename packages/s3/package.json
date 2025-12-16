@@ -1,11 +1,13 @@
 {
   "name": "@ducktors/storagebus-s3",
-  "version": "0.11.4",
+  "version": "0.12.0",
   "description": "",
   "license": "MIT",
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
   "private": false,
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "type": "commonjs",
   "exports": {
     ".": {
