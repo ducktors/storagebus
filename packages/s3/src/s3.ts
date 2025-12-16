@@ -126,11 +126,11 @@ export class Storage extends AbstractStorage {
   async copy(
     key: string,
     destKey: string,
-    opts?: EntryptionOptions,
+    opts?: EntryptionOptions & { destBucket?: string },
   ): Promise<string> {
     const mimeType = lookup(key)
     const copyParams: CopyObjectCommandInput = {
-      Bucket: this.bucket,
+      Bucket: opts?.destBucket ?? this.bucket,
       CopySource: `${this.bucket}/${this.sanitize(key)}`,
       Key: this.sanitize(destKey),
       ...(mimeType ? { ContentType: mimeType } : {}),
