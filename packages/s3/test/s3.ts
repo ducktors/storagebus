@@ -180,6 +180,25 @@ test('s3', async (t) => {
     assert.equal(await storage.exists(newKey), true)
   })
 
+  await test('storage.copy copy a file to new location in another bucket', async () => {
+    const key = randomUUID()
+    const destBucket = 'test-dest-bucket'
+    const objectKey = await storage.write(key, Readable.from(key))
+    const newKey = await storage.copy(objectKey, 'new-key', { destBucket })
+
+    const destStorage = new Storage({
+      bucket: destBucket,
+      accessKeyId,
+      secretAccessKey,
+      region,
+    })
+
+    mockClient((destStorage as any).client)
+
+    assert.equal(await storage.exists(objectKey), true)
+    assert.equal(await destStorage.exists(newKey), true)
+  })
+
   await test('storage.move moves a file to a new location', async () => {
     const key = randomUUID()
 
