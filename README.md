@@ -13,7 +13,7 @@
 [![storagebus-gcs](https://img.shields.io/npm/v/@ducktors/storagebus-gcs?label=storagebus-gcs)](https://www.npmjs.com/package/@ducktors/storagebus-gcs)
 [![storagebus-s3](https://img.shields.io/npm/v/@ducktors/storagebus-s3?label=storagebus-s3)](https://www.npmjs.com/package/@ducktors/storagebus-s3)
 [![storagebus-memory](https://img.shields.io/npm/v/@ducktors/storagebus-memory?label=storagebus-memory)](https://www.npmjs.com/package/@ducktors/storagebus-memory) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Storagebus is a storage abstraction layer for Node.js that removes any difference among multiple public cloud storage services and local filesystems.
@@ -120,9 +120,10 @@ $ pnpm release
 <table>
   <tbody>
     <tr>
-      <td align="center"><a href="https://maksim.dev"><img src="https://avatars.githubusercontent.com/u/1620916?v=4?s=100" width="100px;" alt="Maksim Sinik"/><br /><sub><b>Maksim Sinik</b></sub></a><br /><a href="https://github.com/ducktors/storagebus/commits?author=fox1t" title="Code">💻</a> <a href="https://github.com/ducktors/storagebus/commits?author=fox1t" title="Tests">⚠️</a> <a href="#ideas-fox1t" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-fox1t" title="Maintenance">🚧</a> <a href="#mentoring-fox1t" title="Mentoring">🧑‍🏫</a></td>
-      <td align="center"><a href="http://matteovivona.it"><img src="https://avatars.githubusercontent.com/u/6388707?v=4?s=100" width="100px;" alt="Matteo Vivona"/><br /><sub><b>Matteo Vivona</b></sub></a><br /><a href="#infra-tehKapa" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#security-tehKapa" title="Security">🛡️</a> <a href="https://github.com/ducktors/storagebus/commits?author=tehKapa" title="Documentation">📖</a></td>
-      <td align="center"><a href="https://github.com/andrew-hu368"><img src="https://avatars.githubusercontent.com/u/45509582?v=4?s=100" width="100px;" alt="Andrew Hu"/><br /><sub><b>Andrew Hu</b></sub></a><br /><a href="https://github.com/ducktors/storagebus/commits?author=andrew-hu368" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://maksim.dev"><img src="https://avatars.githubusercontent.com/u/1620916?v=4?s=100" width="100px;" alt="Maksim Sinik"/><br /><sub><b>Maksim Sinik</b></sub></a><br /><a href="https://github.com/ducktors/storagebus/commits?author=fox1t" title="Code">💻</a> <a href="https://github.com/ducktors/storagebus/commits?author=fox1t" title="Tests">⚠️</a> <a href="#ideas-fox1t" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-fox1t" title="Maintenance">🚧</a> <a href="#mentoring-fox1t" title="Mentoring">🧑‍🏫</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://matteovivona.it"><img src="https://avatars.githubusercontent.com/u/6388707?v=4?s=100" width="100px;" alt="Matteo Vivona"/><br /><sub><b>Matteo Vivona</b></sub></a><br /><a href="#infra-tehKapa" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#security-tehKapa" title="Security">🛡️</a> <a href="https://github.com/ducktors/storagebus/commits?author=tehKapa" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/andrew-hu368"><img src="https://avatars.githubusercontent.com/u/45509582?v=4?s=100" width="100px;" alt="Andrew Hu"/><br /><sub><b>Andrew Hu</b></sub></a><br /><a href="https://github.com/ducktors/storagebus/commits?author=andrew-hu368" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/fooddilsn"><img src="https://avatars.githubusercontent.com/u/29302520?v=4?s=100" width="100px;" alt="Alessandro Di Dio"/><br /><sub><b>Alessandro Di Dio</b></sub></a><br /><a href="https://github.com/ducktors/storagebus/commits?author=fooddilsn" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
