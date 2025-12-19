@@ -4,6 +4,11 @@
   "description": "",
   "license": "MIT",
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ducktors/storagebus",
+    "directory": "packages/local"
+  },
   "private": false,
   "files": [
     "dist"
