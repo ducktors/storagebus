@@ -1,5 +1,13 @@
 # @ducktors/storagebus-s3
 
+## 0.12.1
+
+### Patch Changes
+
+- 4ae248d: Update readme and test changeset release
+- Updated dependencies [4ae248d]
+  - @ducktors/storagebus-abstract@0.10.4
+
 ## 0.12.0
 
 ### Minor Changes
