@@ -21,7 +21,7 @@
     "test": "turbo test",
     "test:ci": "turbo test:ci"
   },
-  "packageManager": "pnpm@9.6.0",
+  "packageManager": "pnpm@10.18.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ducktors/storagebus.git"
