@@ -1,9 +1,14 @@
 {
   "name": "@ducktors/storagebus-local",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "description": "",
   "license": "MIT",
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ducktors/storagebus",
+    "directory": "packages/local"
+  },
   "private": false,
   "files": [
     "dist"
@@ -21,7 +26,6 @@
     "format": "biome format --write .",
     "lint": "biome check .",
     "preinstall": "npx only-allow pnpm",
-    "prepublish": "pnpm build",
     "test": "tsx --test test/*.ts",
     "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
     "test:watch": "tsx --watch --test ./test/*.ts"

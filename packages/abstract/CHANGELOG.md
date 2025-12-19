@@ -1,5 +1,11 @@
 # @ducktors/storagebus-abstract
 
+## 0.10.4
+
+### Patch Changes
+
+- 4ae248d: Update readme and test changeset release
+
 ## 0.10.3
 
 ### Patch Changes
