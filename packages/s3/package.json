@@ -25,6 +25,7 @@
     "build": "rimraf dist && tsc",
     "format": "biome format --write .",
     "lint": "biome check .",
+    "lint:fix": "biome check . --write",
     "preinstall": "npx only-allow pnpm",
     "test": "tsx --test test/*.ts",
     "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
@@ -42,7 +43,7 @@
   "devDependencies": {
     "@biomejs/biome": "catalog:devDeps",
     "@ducktors/tsconfig": "catalog:devDeps",
-    "@types/mime-types": "^2.1.1",
+    "@types/mime-types": "catalog:devDeps",
     "@types/node": "catalog:devDeps",
     "aws-sdk-client-mock": "^2.0.1",
     "c8": "catalog:devDeps",

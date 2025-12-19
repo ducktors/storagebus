@@ -6,108 +6,96 @@ import { test } from 'node:test'
 import { Storage as AbstractStorage } from '@ducktors/storagebus-abstract'
 import streamBuffers from 'stream-buffers'
 
-test('GCS', async (t) => {
-  const { default: GCS } = await import('@google-cloud/storage')
+import { Storage } from '../src/gcs.js'
 
-  t.mock.getter(GCS, 'Storage', () => {
-    class MockStorage {
-      buckets: { [name: string]: MockBucket }
+// Mock classes defined outside test to avoid ESM mocking issues
+class MockFile {
+  name: string
+  contents: Buffer
+  metadata: any
+  bucket: MockBucket
 
-      constructor() {
-        this.buckets = {}
-      }
+  constructor(path: string, bucket: MockBucket) {
+    this.name = path
+    this.contents = Buffer.alloc(0)
+    this.metadata = {}
+    this.bucket = bucket
+  }
 
-      bucket(name: string) {
-        if (!this.buckets[name]) {
-          this.buckets[name] = new MockBucket(name)
-        }
-        return this.buckets[name]
-      }
+  get() {
+    return [this, this.metadata]
+  }
+
+  exists() {
+    return this.bucket.files[this.name] ? [true] : [false]
+  }
+
+  createReadStream() {
+    const readable = new streamBuffers.ReadableStreamBuffer()
+    readable.put(this.contents)
+    readable.stop()
+    return readable
+  }
+
+  createWriteStream(_opts?: { contentType?: string }) {
+    const writable = new streamBuffers.WritableStreamBuffer()
+    writable.on('finish', () => {
+      this.contents = writable.getContents() as Buffer
+    })
+    this.bucket.files[this.name] = this
+    return writable
+  }
+
+  async delete({ ignoreNotFound }: { ignoreNotFound: true }) {
+    if (!(ignoreNotFound || this.bucket.files[this.name])) {
+      throw new Error(`File ${this.name} does not exist`)
     }
+    this.bucket.files[this.name] = undefined
+  }
 
-    class MockBucket {
-      name: string
-      files: { [path: string]: MockFile | undefined }
+  async copy(destFile: MockFile) {
+    destFile.contents = this.contents
+    destFile.metadata = this.metadata
+    this.bucket.files[destFile.name] = destFile
+  }
 
-      constructor(name: string) {
-        this.name = name
-        this.files = {}
-      }
+  async move(destFile: MockFile) {
+    destFile.contents = this.contents
+    destFile.metadata = this.metadata
+    this.bucket.files[destFile.name] = destFile
+    this.bucket.files[this.name] = undefined
+  }
+}
 
-      file(path: string) {
-        return new MockFile(path, this)
-      }
-    }
+class MockBucket {
+  name: string
+  files: { [path: string]: MockFile | undefined }
 
-    class MockFile {
-      name: string
-      contents: Buffer
-      metadata: any
-      bucket: MockBucket
+  constructor(name: string) {
+    this.name = name
+    this.files = {}
+  }
 
-      constructor(path: string, bucket: MockBucket) {
-        this.name = path
-        this.contents = Buffer.alloc(0)
-        this.metadata = {}
-        this.bucket = bucket
-      }
+  file(path: string) {
+    return new MockFile(path, this)
+  }
+}
 
-      get() {
-        return [this, this.metadata]
-      }
+test('GCS', async () => {
+  const bucketName = randomUUID()
 
-      exists() {
-        return this.bucket.files[this.name] ? [true] : [false]
-      }
-
-      createReadStream() {
-        const readable = new streamBuffers.ReadableStreamBuffer()
-        readable.put(this.contents)
-        readable.stop()
-        return readable
-      }
-
-      createWriteStream({ contentType }: { contentType: string }) {
-        // if (!this.bucket.files[this.path]) {
-        //   throw new Error(`File ${this.path} does not exist`);
-        // }
-        const writable = new streamBuffers.WritableStreamBuffer()
-        writable.on('finish', () => {
-          this.contents = writable.getContents() as Buffer
-        })
-        this.bucket.files[this.name] = this
-        return writable
-      }
-
-      async delete({ ignoreNotFound }: { ignoreNotFound: true }) {
-        if (!(ignoreNotFound || this.bucket.files[this.name])) {
-          throw new Error(`File ${this.name} does not exist`)
-        }
-        this.bucket.files[this.name] = undefined
-      }
-
-      async copy(destFile: MockFile) {
-        destFile.contents = this.contents
-        destFile.metadata = this.metadata
-        this.bucket.files[destFile.name] = destFile
-      }
-
-      async move(destFile: MockFile) {
-        destFile.contents = this.contents
-        destFile.metadata = this.metadata
-        this.bucket.files[destFile.name] = destFile
-        this.bucket.files[this.name] = undefined
-      }
-    }
-
-    return MockStorage
+  // Create storage instance with dummy credentials to avoid ADC lookup
+  const storage = new Storage({
+    bucket: bucketName,
+    clientEmail: 'test@test.iam.gserviceaccount.com',
+    privateKey:
+      '-----BEGIN RSA PRIVATE KEY-----\nMIIBOgIBAAJBALRiMLAHudeSA2ai3ebt\n-----END RSA PRIVATE KEY-----',
+    projectId: 'test-project',
   })
 
-  const bucket = randomUUID()
-
-  const { Storage } = await import('../src/gcs.js')
-  // console.log('Storage', Storage)
-  const storage = new Storage({ bucket })
+  // Mock the bucket at instance level (similar to S3 tests)
+  const mockBucket = new MockBucket(bucketName)
+  ;(storage as any).bucket = mockBucket
 
   await test('storage is instance of Storage', () => {
     assert.equal(storage instanceof Storage, true)
@@ -122,7 +110,7 @@ test('GCS', async (t) => {
       clientEmail: 'foobar',
       privateKey: 'foo',
       projectId: 'bar',
-      bucket,
+      bucket: bucketName,
     })
     assert.equal(storage instanceof Storage, true)
     assert.equal(storage instanceof AbstractStorage, true)
@@ -186,7 +174,6 @@ test('GCS', async (t) => {
   })
 
   await test('toBuffer returns a buffer from Readable with objectMode true', async () => {
-    const storage = new Storage({ bucket })
     const buffer = await storage.toBuffer(
       Readable.from('foo', { objectMode: true }),
     )
@@ -196,7 +183,6 @@ test('GCS', async (t) => {
   })
 
   await test('toBuffer returns a buffer from Readable with objectMode false', async () => {
-    const storage = new Storage({ bucket })
     const buffer = await storage.toBuffer(
       Readable.from('foo', { objectMode: false }),
     )
