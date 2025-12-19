@@ -14,7 +14,7 @@
     "dev": "turbo dev",
     "format": "turbo format",
     "lint": "turbo lint",
-    "lint:fix": "biome check --write .",
+    "lint:fix": "turbo lint:fix",
     "precommit": "pnpm install",
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky || true",

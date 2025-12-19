@@ -25,6 +25,7 @@
     "build": "rimraf dist && tsc",
     "format": "biome format --write .",
     "lint": "biome check .",
+    "lint:fix": "biome check . --write",
     "preinstall": "npx only-allow pnpm",
     "test": "tsx --test test/*.ts",
     "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",

@@ -88,7 +88,8 @@ test('GCS', async () => {
   const storage = new Storage({
     bucket: bucketName,
     clientEmail: 'test@test.iam.gserviceaccount.com',
-    privateKey: '-----BEGIN RSA PRIVATE KEY-----\nMIIBOgIBAAJBALRiMLAHudeSA2ai3ebt\n-----END RSA PRIVATE KEY-----',
+    privateKey:
+      '-----BEGIN RSA PRIVATE KEY-----\nMIIBOgIBAAJBALRiMLAHudeSA2ai3ebt\n-----END RSA PRIVATE KEY-----',
     projectId: 'test-project',
   })
 
