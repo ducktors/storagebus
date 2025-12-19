@@ -1,5 +1,13 @@
 # @ducktors/storagebus-local
 
+## 0.12.4
+
+### Patch Changes
+
+- 4ae248d: Update readme and test changeset release
+- Updated dependencies [4ae248d]
+  - @ducktors/storagebus-abstract@0.10.4
+
 ## 0.12.3
 
 ### Patch Changes
