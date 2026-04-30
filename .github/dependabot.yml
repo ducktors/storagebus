@@ -5,6 +5,11 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 0
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+      semver-minor-days: 3
+      semver-patch-days: 3
     assignees:
       - "matteovivona"
     reviewers:
@@ -17,6 +22,11 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+      semver-minor-days: 3
+      semver-patch-days: 3
     commit-message:
       prefix: "chore(actions)"
     assignees:
@@ -28,6 +38,11 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+      semver-minor-days: 3
+      semver-patch-days: 3
     commit-message:
       prefix: "fix(docker)"
     assignees:
@@ -39,6 +54,11 @@ updates:
     directory: /packages/abstract
     schedule:
       interval: daily
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+      semver-minor-days: 3
+      semver-patch-days: 3
     assignees:
       - "matteovivona"
     reviewers:
@@ -51,6 +71,11 @@ updates:
     directory: /packages/gcs
     schedule:
       interval: daily
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+      semver-minor-days: 3
+      semver-patch-days: 3
     assignees:
       - "matteovivona"
     reviewers:
@@ -63,6 +88,11 @@ updates:
     directory: /packages/local
     schedule:
       interval: daily
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+      semver-minor-days: 3
+      semver-patch-days: 3
     assignees:
       - "matteovivona"
     reviewers:
@@ -75,6 +105,11 @@ updates:
     directory: /packages/memory
     schedule:
       interval: daily
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+      semver-minor-days: 3
+      semver-patch-days: 3
     assignees:
       - "matteovivona"
     reviewers:
@@ -87,6 +122,11 @@ updates:
     directory: /packages/s3
     schedule:
       interval: daily
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+      semver-minor-days: 3
+      semver-patch-days: 3
     assignees:
       - "matteovivona"
     reviewers:
