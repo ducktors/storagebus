@@ -1,5 +1,5 @@
 {
-  "name": "@ducktors/storagebus-gcs",
+  "name": "@storagebus/gcs",
   "version": "0.11.5",
   "description": "",
   "license": "MIT",
@@ -16,26 +16,28 @@
   "type": "commonjs",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "types": "./dist/gcs.d.ts",
+      "typescript": "./src/gcs.ts",
+      "import": "./dist/gcs.js",
+      "require": "./dist/gcs.js"
     }
   },
-  "main": "dist/index.js",
+  "main": "dist/gcs.js",
+  "types": "dist/gcs.d.ts",
   "scripts": {
     "build": "rimraf dist && tsc",
     "format": "biome format --write .",
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
     "preinstall": "npx only-allow pnpm",
-    "test": "tsx --test test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
-    "test:watch": "tsx --watch --test ./test/*.ts"
+    "test": "tsx --conditions=typescript --test test/*.ts",
+    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --conditions=typescript --test ./test/*.ts",
+    "test:watch": "tsx --conditions=typescript --watch --test ./test/*.ts"
   },
   "keywords": [],
   "dependencies": {
-    "@ducktors/storagebus-abstract": "workspace:*",
+    "@storagebus/storage": "workspace:*",
     "@google-cloud/storage": "^6.9.3",
-    "mime-types": "catalog:prodDeps",
     "tslib": "catalog:prodDeps"
   },
   "devDependencies": {
@@ -43,10 +45,8 @@
     "@ducktors/tsconfig": "catalog:devDeps",
     "@types/mime-types": "catalog:devDeps",
     "@types/node": "catalog:devDeps",
-    "@types/stream-buffers": "^3.0.4",
     "c8": "catalog:devDeps",
     "rimraf": "catalog:devDeps",
-    "stream-buffers": "^3.0.2",
     "tsx": "catalog:devDeps",
     "typescript": "catalog:devDeps"
   }

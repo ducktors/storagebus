@@ -1,5 +1,5 @@
 {
-  "name": "@ducktors/storagebus-s3",
+  "name": "@storagebus/s3",
   "version": "0.12.1",
   "description": "",
   "license": "MIT",
@@ -16,28 +16,29 @@
   "type": "commonjs",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "types": "./dist/s3.d.ts",
+      "typescript": "./src/s3.ts",
+      "import": "./dist/s3.js",
+      "require": "./dist/s3.js"
     }
   },
-  "main": "dist/index.js",
+  "main": "dist/s3.js",
+  "types": "dist/s3.d.ts",
   "scripts": {
     "build": "rimraf dist && tsc",
     "format": "biome format --write .",
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
     "preinstall": "npx only-allow pnpm",
-    "test": "tsx --test test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
-    "test:watch": "tsx --watch --test ./test/*.ts"
+    "test": "tsx --conditions=typescript --test test/*.ts",
+    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --conditions=typescript --test ./test/*.ts",
+    "test:watch": "tsx --conditions=typescript --watch --test ./test/*.ts"
   },
   "keywords": [],
   "dependencies": {
-    "@aws-sdk/abort-controller": "^3.272.0",
     "@aws-sdk/client-s3": "^3.281.0",
     "@aws-sdk/lib-storage": "^3.281.0",
-    "@ducktors/storagebus-abstract": "workspace:*",
-    "mime-types": "catalog:prodDeps",
+    "@storagebus/storage": "workspace:*",
     "tslib": "catalog:prodDeps"
   },
   "devDependencies": {
@@ -45,7 +46,6 @@
     "@ducktors/tsconfig": "catalog:devDeps",
     "@types/mime-types": "catalog:devDeps",
     "@types/node": "catalog:devDeps",
-    "aws-sdk-client-mock": "^2.0.1",
     "c8": "catalog:devDeps",
     "rimraf": "catalog:devDeps",
     "tsx": "catalog:devDeps",

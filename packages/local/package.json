@@ -1,5 +1,5 @@
 {
-  "name": "@ducktors/storagebus-local",
+  "name": "@storagebus/local",
   "version": "0.12.4",
   "description": "",
   "license": "MIT",
@@ -16,24 +16,27 @@
   "type": "commonjs",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "types": "./dist/local.d.ts",
+      "typescript": "./src/local.ts",
+      "import": "./dist/local.js",
+      "require": "./dist/local.js"
     }
   },
-  "main": "dist/index.js",
+  "main": "dist/local.js",
+  "types": "dist/local.d.ts",
   "scripts": {
     "build": "rimraf dist && tsc",
     "format": "biome format --write .",
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
     "preinstall": "npx only-allow pnpm",
-    "test": "tsx --test test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
-    "test:watch": "tsx --watch --test ./test/*.ts"
+    "test": "tsx --conditions=typescript --test test/*.ts",
+    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --conditions=typescript --test ./test/*.ts",
+    "test:watch": "tsx --conditions=typescript --watch --test ./test/*.ts"
   },
   "keywords": [],
   "dependencies": {
-    "@ducktors/storagebus-abstract": "workspace:*",
+    "@storagebus/storage": "workspace:*",
     "tslib": "catalog:prodDeps"
   },
   "devDependencies": {
@@ -41,6 +44,7 @@
     "@ducktors/tsconfig": "catalog:devDeps",
     "@types/node": "catalog:devDeps",
     "c8": "catalog:devDeps",
+    "mitata": "^0.1.6",
     "rimraf": "catalog:devDeps",
     "tsx": "catalog:devDeps",
     "typescript": "catalog:devDeps"

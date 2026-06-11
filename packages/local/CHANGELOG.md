@@ -1,4 +1,4 @@
-# @ducktors/storagebus-local
+# @storagebus/local
 
 ## 0.12.4
 
@@ -6,7 +6,7 @@
 
 - 4ae248d: Update readme and test changeset release
 - Updated dependencies [4ae248d]
-  - @ducktors/storagebus-abstract@0.10.4
+  - @storagebus/storage@0.10.4
 
 ## 0.12.3
 
@@ -14,7 +14,7 @@
 
 - 41ed13e: chore: update tslib and cloud providers sdks
 - Updated dependencies [41ed13e]
-  - @ducktors/storagebus-abstract@0.10.3
+  - @storagebus/storage@0.10.3
 
 ## 0.12.2
 
@@ -23,7 +23,7 @@
 - [#8](https://github.com/ducktors/storagebus/pull/8) [`e36e9d7`](https://github.com/ducktors/storagebus/commit/e36e9d74183b5a1c3fc9920236854abfc6006c45) Thanks [@matteovivona](https://github.com/matteovivona)! - Update vitest/coverage-istanbul on local and abstract package
 
 - Updated dependencies [[`e36e9d7`](https://github.com/ducktors/storagebus/commit/e36e9d74183b5a1c3fc9920236854abfc6006c45)]:
-  - @ducktors/storagebus-abstract@0.10.2
+  - @storagebus/storage@0.10.2
 
 ## 0.12.1
 
@@ -32,13 +32,13 @@
 - Updates deps
 
 - Updated dependencies []:
-  - @ducktors/storagebus-abstract@0.10.1
+  - @storagebus/storage@0.10.1
 
 ## 0.12.0
 
 ### Minor Changes
 
-- make storagebus-local dropin replacement for s3 and gcs
+- make @storagebus/local dropin replacement for s3 and gcs
 
 ## 0.11.0
 
@@ -55,4 +55,4 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @ducktors/storagebus-abstract@0.10.0
+  - @storagebus/storage@0.10.0

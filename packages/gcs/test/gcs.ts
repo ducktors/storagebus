@@ -1,193 +1,144 @@
 import assert from 'node:assert/strict'
-import { randomUUID } from 'node:crypto'
-import { Readable } from 'node:stream'
+import { Readable, Writable } from 'node:stream'
+import { pipeline } from 'node:stream/promises'
 import { test } from 'node:test'
+import { createStorage, Storage } from '@storagebus/gcs'
+import { complianceTest } from '@storagebus/storage/compliance-test'
 
-import { Storage as AbstractStorage } from '@ducktors/storagebus-abstract'
-import streamBuffers from 'stream-buffers'
-
-import { Storage } from '../src/gcs.js'
-
-// Mock classes defined outside test to avoid ESM mocking issues
-class MockFile {
+class MockedFile {
   name: string
-  contents: Buffer
-  metadata: any
-  bucket: MockBucket
+  #content = Buffer.from('')
+  #type = 'application/octet-stream'
+  #files: Map<string, MockedFile>
+  #deleted: Set<string>
 
-  constructor(path: string, bucket: MockBucket) {
+  constructor(
+    path: string,
+    files: Map<string, MockedFile>,
+    deleted: Set<string>,
+  ) {
     this.name = path
-    this.contents = Buffer.alloc(0)
-    this.metadata = {}
-    this.bucket = bucket
+    this.#files = files
+    this.#deleted = deleted
   }
 
-  get() {
-    return [this, this.metadata]
-  }
+  createWriteStream({ contentType }: { contentType?: string } = {}) {
+    this.#type = contentType ?? this.#type
+    const chunks: Buffer[] = []
 
-  exists() {
-    return this.bucket.files[this.name] ? [true] : [false]
+    return new Writable({
+      write: (chunk, _encoding, next) => {
+        chunks.push(Buffer.from(chunk))
+        next()
+      },
+      final: (next) => {
+        this.#content = Buffer.concat(chunks)
+        this.#deleted.delete(this.name)
+        this.#files.set(this.name, this)
+        next()
+      },
+    })
   }
 
   createReadStream() {
-    const readable = new streamBuffers.ReadableStreamBuffer()
-    readable.put(this.contents)
-    readable.stop()
-    return readable
+    return Readable.from(this.#content)
   }
 
-  createWriteStream(_opts?: { contentType?: string }) {
-    const writable = new streamBuffers.WritableStreamBuffer()
-    writable.on('finish', () => {
-      this.contents = writable.getContents() as Buffer
-    })
-    this.bucket.files[this.name] = this
-    return writable
+  async delete() {
+    this.#deleted.add(this.name)
+    this.#files.delete(this.name)
   }
 
-  async delete({ ignoreNotFound }: { ignoreNotFound: true }) {
-    if (!(ignoreNotFound || this.bucket.files[this.name])) {
-      throw new Error(`File ${this.name} does not exist`)
-    }
-    this.bucket.files[this.name] = undefined
+  async exists() {
+    return [this.#files.has(this.name)]
   }
 
-  async copy(destFile: MockFile) {
-    destFile.contents = this.contents
-    destFile.metadata = this.metadata
-    this.bucket.files[destFile.name] = destFile
-  }
-
-  async move(destFile: MockFile) {
-    destFile.contents = this.contents
-    destFile.metadata = this.metadata
-    this.bucket.files[destFile.name] = destFile
-    this.bucket.files[this.name] = undefined
+  async getMetadata() {
+    return [
+      {
+        name: this.name,
+        contentType: this.#type,
+        size: this.#content.length,
+      },
+    ]
   }
 }
 
-class MockBucket {
-  name: string
-  files: { [path: string]: MockFile | undefined }
+class MockedBucket {
+  name = ''
+  #files = new Map<string, MockedFile>()
+  #deleted = new Set<string>()
 
-  constructor(name: string) {
-    this.name = name
-    this.files = {}
+  constructor(name?: string) {
+    if (name) {
+      this.name = name
+    }
   }
 
   file(path: string) {
-    return new MockFile(path, this)
+    if (this.#deleted.has(path)) {
+      return new MockedFile(path, this.#files, this.#deleted)
+    }
+
+    const existing = this.#files.get(path)
+    if (existing) {
+      return existing
+    }
+
+    const file = new MockedFile(path, this.#files, this.#deleted)
+    this.#files.set(path, file)
+    return file
   }
 }
 
-test('GCS', async () => {
-  const bucketName = randomUUID()
+class MockedStorage {
+  bucket(name?: string) {
+    return new MockedBucket(name)
+  }
+}
 
-  // Create storage instance with dummy credentials to avoid ADC lookup
-  const storage = new Storage({
-    bucket: bucketName,
-    clientEmail: 'test@test.iam.gserviceaccount.com',
-    privateKey:
-      '-----BEGIN RSA PRIVATE KEY-----\nMIIBOgIBAAJBALRiMLAHudeSA2ai3ebt\n-----END RSA PRIVATE KEY-----',
-    projectId: 'test-project',
+test('GCS', async (t) => {
+  await t.test('GCS mock test', async () => {
+    const storage = new MockedStorage()
+    const bucket = storage.bucket('foo')
+    const file = bucket.file('foo.txt')
+
+    assert.equal(file.name, 'foo.txt')
+
+    await pipeline(Readable.from('foo'), file.createWriteStream())
+    assert.equal(
+      Buffer.concat(await file.createReadStream().toArray()).toString(),
+      'foo',
+    )
+
+    assert.deepEqual(await file.exists(), [true])
+    await file.delete()
+    assert.deepEqual(await file.exists(), [false])
+    assert.deepEqual(await file.getMetadata(), [
+      {
+        name: 'foo.txt',
+        contentType: 'application/octet-stream',
+        size: 3,
+      },
+    ])
   })
 
-  // Mock the bucket at instance level (similar to S3 tests)
-  const mockBucket = new MockBucket(bucketName)
-  ;(storage as any).bucket = mockBucket
-
-  await test('storage is instance of Storage', () => {
-    assert.equal(storage instanceof Storage, true)
-  })
-
-  await test('storage instance extends from AbstractStorage', () => {
-    assert.equal(storage instanceof AbstractStorage, true)
-  })
-
-  await test('storage constructor accepts parameters', () => {
-    const storage = new Storage({
+  await t.test('storage constructor accepts parameters', () => {
+    const storage = createStorage({
       clientEmail: 'foobar',
       privateKey: 'foo',
       projectId: 'bar',
-      bucket: bucketName,
+      bucket: 'test',
+      client: new MockedStorage(),
     })
     assert.equal(storage instanceof Storage, true)
-    assert.equal(storage instanceof AbstractStorage, true)
   })
 
-  await test('storage.write a Readable to GCS bucket', async () => {
-    const key = randomUUID()
-    await storage.write(key, Readable.from(key))
-
-    assert.equal(await storage.exists(key), true)
-  })
-
-  await test('storage.read reads a file from GCS bucket', async () => {
-    const key = randomUUID()
-    await storage.write(key, Readable.from(key))
-    const file = await storage.read(key)
-
-    assert.equal(file instanceof Readable, true)
-  })
-
-  await test('storage.read throws on missing key', async () => {
-    const key = randomUUID()
-
-    await assert.rejects(() => storage.read(key), Error)
-  })
-
-  await test('storage.remove removes key from gcs bucket', async () => {
-    const key = randomUUID()
-    await storage.write(key, Readable.from(key))
-    await storage.remove(key)
-
-    assert.equal(await storage.exists(key), false)
-  })
-
-  await test('storage.copy copy a file to new location', async () => {
-    const key = randomUUID()
-    const objectKey = await storage.write(key, Readable.from(key))
-    const newKey = await storage.copy(objectKey, 'new-key')
-
-    assert.equal(await storage.exists(objectKey), true)
-    assert.equal(await storage.exists(newKey), true)
-  })
-
-  await test('storage.copy copy a file with ContentType set to new location', async () => {
-    const key = `${randomUUID()}.jpeg`
-    const objectKey = await storage.write(key, Readable.from(key))
-    const newKey = await storage.copy(objectKey, 'new-key.jpeg')
-
-    assert.equal(await storage.exists(objectKey), true)
-    assert.equal(await storage.exists(newKey), true)
-  })
-
-  await test('storage.move moves a file to a new location', async () => {
-    const key = randomUUID()
-
-    const objectKey = await storage.write(key, Readable.from(key))
-    const newKey = await storage.move(objectKey, 'new-key')
-
-    assert.equal(await storage.exists(objectKey), false)
-    assert.equal(await storage.exists(newKey), true)
-  })
-
-  await test('toBuffer returns a buffer from Readable with objectMode true', async () => {
-    const buffer = await storage.toBuffer(
-      Readable.from('foo', { objectMode: true }),
-    )
-
-    assert.equal(buffer instanceof Buffer, true)
-    assert.equal(buffer.toString(), 'foo')
-  })
-
-  await test('toBuffer returns a buffer from Readable with objectMode false', async () => {
-    const buffer = await storage.toBuffer(
-      Readable.from('foo', { objectMode: false }),
-    )
-
-    assert.equal(buffer instanceof Buffer, true)
-    assert.equal(buffer.toString(), 'foo')
+  await t.test('Compliance test', async () => {
+    const storage = createStorage({
+      bucket: 'storagebus-test',
+      client: new MockedStorage(),
+    })
+    await complianceTest(storage)
   })
 })
