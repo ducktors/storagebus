@@ -1,5 +1,5 @@
-import { otherTypes } from './types/other.js'
-import { standardTypes } from './types/standard.js'
+import { otherTypes } from './types/other.ts'
+import { standardTypes } from './types/standard.ts'
 
 class Mime {
   #types = new Map<string, string>()

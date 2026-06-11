@@ -4,13 +4,11 @@ packages:
 catalogs:
   devDeps:
     "@biomejs/biome": ^2.3.8
-    "@ducktors/tsconfig": ^1.0.0
     "@types/mime-types": ^2.1.1
-    "@types/node": ^22.0.2
+    "@types/node": 24.12.0
     c8: ^8.0.1
     rimraf: ^5.0.10
-    tsx: ^3.13.0
-    typescript: ^5.2.2
+    typescript: ^6.0.3
   prodDeps:
     mime-types: ^2.1.35
     tslib: ^2.5.0

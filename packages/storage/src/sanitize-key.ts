@@ -1,5 +1,5 @@
 // ported to TS from https://github.com/Advanon/sanitize-s3-objectkey
-import latinChars from './latin-chars.json'
+import latinChars from './latin-chars.json' with { type: 'json' }
 
 const SAFE_CHARACTERS = /[^0-9a-zA-Z! _\\.\\*'\\(\\)\\\-/]/g
 

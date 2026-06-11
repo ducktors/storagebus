@@ -1,5 +1,5 @@
 import { Storage as StorageBus } from '@storagebus/storage'
-import driver, { type StorageOptions } from './driver.js'
+import driver, { type StorageOptions } from './driver.ts'
 
 export function createStorage(options: StorageOptions) {
   return new Storage(options)

@@ -1,5 +1,5 @@
 import { Readable } from 'node:stream'
-import { mime } from './mime/mime.js'
+import { mime } from './mime/mime.ts'
 
 const kBusFile = Symbol('storagebus-file')
 
@@ -136,7 +136,9 @@ export class BusFile {
 
   async arrayBuffer(): Promise<ArrayBuffer> {
     const buf = await this.buffer()
-    return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.length)
+    const arrayBuffer = new ArrayBuffer(buf.length)
+    new Uint8Array(arrayBuffer).set(buf)
+    return arrayBuffer
   }
 
   async text(encoding: BufferEncoding = 'utf8'): Promise<string> {

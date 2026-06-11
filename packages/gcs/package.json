@@ -13,13 +13,12 @@
   "files": [
     "dist"
   ],
-  "type": "commonjs",
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/gcs.d.ts",
       "typescript": "./src/gcs.ts",
-      "import": "./dist/gcs.js",
-      "require": "./dist/gcs.js"
+      "import": "./dist/gcs.js"
     }
   },
   "main": "dist/gcs.js",
@@ -30,9 +29,9 @@
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
     "preinstall": "npx only-allow pnpm",
-    "test": "tsx --conditions=typescript --test test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --conditions=typescript --test ./test/*.ts",
-    "test:watch": "tsx --conditions=typescript --watch --test ./test/*.ts"
+    "test": "node --conditions=typescript --test test/*.ts",
+    "test:ci": "c8 --all --src src --reporter lcov --reporter text node --conditions=typescript --test ./test/*.ts",
+    "test:watch": "node --watch --conditions=typescript --test ./test/*.ts"
   },
   "keywords": [],
   "dependencies": {
@@ -42,12 +41,10 @@
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:devDeps",
-    "@ducktors/tsconfig": "catalog:devDeps",
     "@types/mime-types": "catalog:devDeps",
     "@types/node": "catalog:devDeps",
     "c8": "catalog:devDeps",
     "rimraf": "catalog:devDeps",
-    "tsx": "catalog:devDeps",
     "typescript": "catalog:devDeps"
   }
 }

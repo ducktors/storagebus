@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { sanitize } from '../dist/sanitize-key.js'
+import { sanitize } from '../src/sanitize-key.ts'
 
 test('@storagebus/storage', async (t) => {
   await t.test('sanitize key', async (t) => {

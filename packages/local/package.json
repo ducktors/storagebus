@@ -13,13 +13,12 @@
   "files": [
     "dist"
   ],
-  "type": "commonjs",
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/local.d.ts",
       "typescript": "./src/local.ts",
-      "import": "./dist/local.js",
-      "require": "./dist/local.js"
+      "import": "./dist/local.js"
     }
   },
   "main": "dist/local.js",
@@ -30,9 +29,9 @@
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
     "preinstall": "npx only-allow pnpm",
-    "test": "tsx --conditions=typescript --test test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --conditions=typescript --test ./test/*.ts",
-    "test:watch": "tsx --conditions=typescript --watch --test ./test/*.ts"
+    "test": "node --conditions=typescript --test test/*.ts",
+    "test:ci": "c8 --all --src src --reporter lcov --reporter text node --conditions=typescript --test ./test/*.ts",
+    "test:watch": "node --watch --conditions=typescript --test ./test/*.ts"
   },
   "keywords": [],
   "dependencies": {
@@ -41,12 +40,10 @@
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:devDeps",
-    "@ducktors/tsconfig": "catalog:devDeps",
     "@types/node": "catalog:devDeps",
     "c8": "catalog:devDeps",
     "mitata": "^0.1.6",
     "rimraf": "catalog:devDeps",
-    "tsx": "catalog:devDeps",
     "typescript": "catalog:devDeps"
   }
 }
