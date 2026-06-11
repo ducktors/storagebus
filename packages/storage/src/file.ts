@@ -136,9 +136,7 @@ export class BusFile {
 
   async arrayBuffer(): Promise<ArrayBuffer> {
     const buf = await this.buffer()
-    const arrayBuffer = new ArrayBuffer(buf.length)
-    new Uint8Array(arrayBuffer).set(buf)
-    return arrayBuffer
+    return Uint8Array.from(buf).buffer
   }
 
   async text(encoding: BufferEncoding = 'utf8'): Promise<string> {
