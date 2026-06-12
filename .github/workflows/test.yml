@@ -58,13 +58,13 @@ jobs:
       - name: Run tests
         run: pnpm test:ci
 
-      - name: Copy c8 json coverage report
+      - name: Merge LCOV coverage reports
         run: |
-          mkdir -p coverage/tmp
-          cp -r ./packages/*/coverage/tmp/. coverage/tmp
-
-      - name: Merge json coverage reports
-        run: pnpm dlx c8 report --reporter lcov --reporter text --extension ts
+          mkdir -p coverage
+          : > coverage/lcov.info
+          for file in ./packages/*/coverage/lcov.info; do
+            cat "$file" >> coverage/lcov.info
+          done
 
       - name: Coveralls
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # master
@@ -73,6 +73,7 @@ jobs:
           path-to-lcov: ./coverage/lcov.info
 
       - name: CodeClimate
+        if: runner.os == 'Linux'
         uses: paambaati/codeclimate-action@f429536ee076d758a24705203199548125a28ca7 # v9.0.0
         continue-on-error: true
         env:

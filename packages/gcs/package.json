@@ -28,7 +28,7 @@
     "lint:fix": "biome check . --write",
     "preinstall": "npx only-allow pnpm",
     "test": "node --conditions=typescript --test test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text node --conditions=typescript --test ./test/*.ts",
+    "test:ci": "mkdir -p coverage && node --conditions=typescript --test --experimental-test-coverage '--test-coverage-include=src/**/*.ts' --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info ./test/*.ts",
     "test:watch": "node --watch --conditions=typescript --test ./test/*.ts"
   },
   "keywords": [],
@@ -41,7 +41,6 @@
     "@storagebus/storage": "workspace:*",
     "@biomejs/biome": "catalog:devDeps",
     "@types/node": "catalog:devDeps",
-    "c8": "catalog:devDeps",
     "rimraf": "catalog:devDeps",
     "typescript": "catalog:devDeps"
   }
