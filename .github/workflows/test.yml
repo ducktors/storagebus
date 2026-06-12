@@ -63,7 +63,13 @@ jobs:
           mkdir -p coverage
           : > coverage/lcov.info
           for file in ./packages/*/coverage/lcov.info; do
-            cat "$file" >> coverage/lcov.info
+            package_dir="$(dirname "$(dirname "$file")")"
+            while IFS= read -r line; do
+              case "$line" in
+                SF:*) printf 'SF:%s/%s\n' "$package_dir" "${line#SF:}" ;;
+                *) printf '%s\n' "$line" ;;
+              esac
+            done < "$file" >> coverage/lcov.info
           done
 
       - name: Coveralls
