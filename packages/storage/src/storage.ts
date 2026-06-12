@@ -1,14 +1,14 @@
 import type { Readable } from 'node:stream'
+import type { Adapter } from './adapter.ts'
 import { BusFile, isBusFile } from './file.ts'
 
 import { logger as defaultLogger } from './logger.ts'
-import type { Driver } from './memory.ts'
 import { sanitize } from './sanitize-key.ts'
 
 function isFunction(x: unknown): x is (x: string) => string {
   return Object.prototype.toString.call(x) === '[object Function]'
 }
-export type { Driver }
+export type { Adapter }
 
 type Data = (() => Readable | Promise<Readable>) | Buffer | string | BusFile
 
@@ -19,17 +19,17 @@ export interface StorageOptions {
 }
 
 export class Storage {
-  #driver: Driver
+  #adapter: Adapter
   protected _debug = false
   protected _logger: typeof defaultLogger
   protected sanitize: (key: string) => string
 
   constructor(
-    driver: Driver,
+    adapter: Adapter,
     opts: StorageOptions = { logger: defaultLogger },
   ) {
     const { debug, logger = defaultLogger, sanitizeKey = false } = opts
-    this.#driver = driver
+    this.#adapter = adapter
     this._logger = logger
 
     if (debug) {
@@ -73,14 +73,14 @@ export class Storage {
       )
     }
     if (data === null) {
-      await this.#driver.delete(path)
+      await this.#adapter.delete(path)
     } else {
       const _data = isBusFile(data) ? () => data.stream() : data
 
       const file = new BusFile(_data, path, {
         type: contentType ?? (isBusFile(data) ? data.type : undefined),
       })
-      await this.#driver.set(file)
+      await this.#adapter.set(file)
     }
 
     return path
@@ -88,10 +88,10 @@ export class Storage {
 
   async file(path: string): Promise<BusFile> {
     const destination = this.sanitize(path)
-    const data = await this.#driver.get(destination)
-    const metadata = await this.#driver.metadata(destination)
+    const data = await this.#adapter.get(destination)
+    const metadata = await this.#adapter.metadata(destination)
 
-    const getMetadata = this.#driver.metadata.bind(this.#driver, destination)
+    const getMetadata = this.#adapter.metadata.bind(this.#adapter, destination)
 
     return new BusFile(data, destination, { ...metadata, getMetadata })
   }

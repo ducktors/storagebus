@@ -52,7 +52,7 @@ async function main() {
 
 ## Packages
 
-- `@storagebus/storage`: core `Storage`, `BusFile`, in-memory driver, and compliance tests.
+- `@storagebus/storage`: core `Storage`, `BusFile`, in-memory adapter, and compliance tests.
 - `@storagebus/local`: local filesystem adapter.
 - `@storagebus/s3`: AWS S3 adapter.
 - `@storagebus/gcs`: Google Cloud Storage adapter.

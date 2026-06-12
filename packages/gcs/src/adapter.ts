@@ -2,7 +2,7 @@ import { pipeline } from 'node:stream/promises'
 
 import * as GCS from '@google-cloud/storage'
 import type {
-  Driver,
+  Adapter,
   StorageOptions as StorageBusOptions,
 } from '@storagebus/storage'
 import { ENOENT } from '@storagebus/storage/errors'
@@ -31,7 +31,7 @@ export type StorageOptions = {
   client?: StorageClient
 } & StorageBusOptions
 
-export function driver(options: StorageOptions): Driver {
+export function adapter(options: StorageOptions): Adapter {
   const { bucket, client, clientEmail, privateKey, projectId } = options
 
   let storageClient: StorageClient
@@ -98,4 +98,4 @@ export function driver(options: StorageOptions): Driver {
   }
 }
 
-export default { driver }
+export default { adapter }

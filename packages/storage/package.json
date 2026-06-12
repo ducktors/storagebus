@@ -35,10 +35,10 @@
       "typescript": "./src/memory.ts",
       "import": "./dist/memory.js"
     },
-    "./driver": {
-      "types": "./dist/memory.d.ts",
-      "typescript": "./src/memory.ts",
-      "import": "./dist/memory.js"
+    "./adapter": {
+      "types": "./dist/adapter.d.ts",
+      "typescript": "./src/adapter.ts",
+      "import": "./dist/adapter.js"
     },
     "./compliance-test": {
       "types": "./dist/compliance-test.d.ts",

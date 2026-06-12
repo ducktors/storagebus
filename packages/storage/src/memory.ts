@@ -1,11 +1,10 @@
 import { Readable } from 'node:stream'
+import type { Adapter } from './adapter.ts'
 import { ENOENT } from './errors.ts'
-import type { BusFile, BusFileMetadata } from './file.ts'
 import { Storage as StorageBus, type StorageOptions } from './storage.ts'
 
 export type { StorageOptions }
 
-type createStream = () => Readable | Promise<Readable>
 interface StorageObject {
   lastModified: number
   size: number
@@ -13,14 +12,7 @@ interface StorageObject {
   type: string
 }
 
-export interface Driver {
-  set(data: BusFile): Promise<string>
-  get(path: string): Promise<createStream | Buffer | string>
-  metadata(path: string): Promise<BusFileMetadata>
-  delete(path: string): Promise<void>
-}
-
-export function driver(): Driver {
+export function adapter(): Adapter {
   const storage = new Map<string, StorageObject>()
   return {
     async set(file) {
@@ -66,6 +58,6 @@ export function createStorage(opts?: StorageOptions) {
 
 export class Storage extends StorageBus {
   constructor(opts?: StorageOptions) {
-    super(driver(), opts)
+    super(adapter(), opts)
   }
 }

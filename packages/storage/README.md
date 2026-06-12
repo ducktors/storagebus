@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@storagebus/storage)](https://www.npmjs.com/package/@storagebus/storage)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Core Storagebus package. It provides `Storage`, `BusFile`, the driver interface, an in-memory driver, and compliance tests for adapter packages.
+Core Storagebus package. It provides `Storage`, `BusFile`, the adapter interface, an in-memory adapter, and compliance tests for adapter packages.
 
 ## Installation
 
@@ -46,12 +46,12 @@ await storage.write(path, null)
 | `arrayBuffer()` | Return an `ArrayBuffer`. |
 | `text()` | Return a string. |
 
-## Custom Drivers
+## Custom Adapters
 
 ```typescript
-import { Storage, type Driver } from '@storagebus/storage'
+import { Storage, type Adapter } from '@storagebus/storage'
 
-const driver: Driver = {
+const adapter: Adapter = {
   async set(file) {
     const buffer = await file.buffer()
     // Store buffer at file.name.
@@ -70,7 +70,7 @@ const driver: Driver = {
   },
 }
 
-const storage = new Storage(driver)
+const storage = new Storage(adapter)
 ```
 
 ## License

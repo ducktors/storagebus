@@ -3,11 +3,11 @@ import { test } from 'node:test'
 
 import { Storage } from '@storagebus/storage'
 import { complianceTest } from '@storagebus/storage/compliance-test'
-import { createStorage, driver } from '@storagebus/storage/memory'
+import { adapter, createStorage } from '@storagebus/storage/memory'
 
 test('@storagebus/storage', async () => {
   await test('Constructor', async () => {
-    const storage = new Storage(driver())
+    const storage = new Storage(adapter())
 
     await test('creates an instance of Storage', () => {
       assert.equal(storage instanceof Storage, true)
@@ -19,13 +19,13 @@ test('@storagebus/storage', async () => {
     })
 
     await test('creates an instance of Storage in debug mode', () => {
-      const storage = new Storage(driver(), { debug: true })
+      const storage = new Storage(adapter(), { debug: true })
       // @ts-expect-error: testing wrong type
       assert.equal(storage._debug, true)
     })
 
     await test('creates an instance of Storage with a custom logger', () => {
-      const storage = new Storage(driver(), {
+      const storage = new Storage(adapter(), {
         debug: true,
         // @ts-expect-error: testing wrong type
         logger: { info: 'foo' },
@@ -35,7 +35,7 @@ test('@storagebus/storage', async () => {
     })
 
     await test('creates an instance of Storage with a custom sanitizeKey function', () => {
-      const storage = new Storage(driver(), {
+      const storage = new Storage(adapter(), {
         sanitizeKey: (key: string) => key,
       })
       assert.equal(storage instanceof Storage, true)
@@ -43,7 +43,7 @@ test('@storagebus/storage', async () => {
 
     await test('creates storage instance with wrong type for sanitizeKey param', () => {
       try {
-        new Storage(driver(), {
+        new Storage(adapter(), {
           // @ts-expect-error: testing wrong type
           sanitizeKey: '',
         })
@@ -53,7 +53,7 @@ test('@storagebus/storage', async () => {
     })
 
     await test('creates storage instance with default sanitize function', () => {
-      const storage = new Storage(driver(), {
+      const storage = new Storage(adapter(), {
         sanitizeKey: true,
       })
       assert.equal(storage instanceof Storage, true)
@@ -61,12 +61,12 @@ test('@storagebus/storage', async () => {
   })
 
   await test('Compliance test', async () => {
-    const storage = new Storage(driver())
+    const storage = new Storage(adapter())
     await complianceTest(storage)
   })
 
   await test('throws when a POJO is passed as data to write method', async () => {
-    const storage = new Storage(driver())
+    const storage = new Storage(adapter())
     await assert.rejects(
       () => storage.write('foo', { foo: 'bar' } as any),
       (err) => {
@@ -81,7 +81,7 @@ test('@storagebus/storage', async () => {
   })
 
   await test('throws when an empty strng is passed as destination to write method', async () => {
-    const storage = new Storage(driver())
+    const storage = new Storage(adapter())
     await assert.rejects(
       () => storage.write('', 'bar'),
       (err) => {

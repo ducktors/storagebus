@@ -4,7 +4,7 @@ import { mkdir, stat, unlink } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import {
-  type Driver,
+  type Adapter,
   Storage as StorageBus,
   type StorageOptions as StorageBusOptions,
 } from '@storagebus/storage'
@@ -14,7 +14,7 @@ export type StorageOptions = {
   root: string
 } & StorageBusOptions
 
-function driver(root: string): Driver {
+function adapter(root: string): Adapter {
   return {
     async set(file) {
       const path = join(root, file.name)
@@ -86,6 +86,6 @@ export function createStorage(opts: StorageOptions) {
 export class Storage extends StorageBus {
   constructor(opts: StorageOptions) {
     const { root, ...options } = opts
-    super(driver(root), options)
+    super(adapter(root), options)
   }
 }

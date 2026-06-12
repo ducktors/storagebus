@@ -9,7 +9,7 @@ import {
 } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'
 import type {
-  Driver,
+  Adapter,
   StorageOptions as StorageBusOptions,
 } from '@storagebus/storage'
 import { ENOENT } from '@storagebus/storage/errors'
@@ -36,7 +36,7 @@ export type StorageOptions = {
   upload?: UploadObject
 } & StorageBusOptions
 
-export function driver(options: StorageOptions): Driver {
+export function adapter(options: StorageOptions): Adapter {
   const {
     bucket,
     region,
@@ -130,4 +130,4 @@ export function driver(options: StorageOptions): Driver {
   }
 }
 
-export default { driver }
+export default { adapter }

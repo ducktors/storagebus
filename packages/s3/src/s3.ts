@@ -1,5 +1,5 @@
 import { Storage as StorageBus } from '@storagebus/storage'
-import driver, { type StorageOptions } from './driver.ts'
+import { adapter, type StorageOptions } from './adapter.ts'
 
 export function createStorage(options: StorageOptions) {
   return new Storage(options)
@@ -18,7 +18,7 @@ export class Storage extends StorageBus {
       ...options
     } = opts
     super(
-      driver.driver({
+      adapter({
         bucket,
         region,
         accessKeyId,
