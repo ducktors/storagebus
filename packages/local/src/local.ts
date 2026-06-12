@@ -1,117 +1,78 @@
-import {
-  constants,
-  createReadStream,
-  createWriteStream,
-  mkdirSync,
-} from 'node:fs'
-import fs from 'node:fs/promises'
-import { tmpdir } from 'node:os'
-import { dirname, isAbsolute, join } from 'node:path'
-import type { Readable } from 'node:stream'
+import { once } from 'node:events'
+import { createReadStream, createWriteStream } from 'node:fs'
+import { mkdir, stat, unlink } from 'node:fs/promises'
+import { dirname, join } from 'node:path'
 import { pipeline } from 'node:stream/promises'
+import type { Adapter } from '@storagebus/storage'
+import { ENOENT } from '@storagebus/storage/errors'
 
-import {
-  Storage as AbstractStorage,
-  type AbstractStorageOptions,
-} from '@ducktors/storagebus-abstract'
+export type AdapterOptions = {
+  root: string
+}
 
-// taken from https://github.com/sindresorhus/type-fest/blob/main/source/require-exactly-one.d.ts
-type RequireExactlyOne<
-  ObjectType,
-  KeysType extends keyof ObjectType = keyof ObjectType,
-> = {
-  [Key in KeysType]: Required<Pick<ObjectType, Key>> &
-    Partial<Record<Exclude<KeysType, Key>, never>>
-}[KeysType] &
-  Omit<ObjectType, KeysType>
+export function createAdapter(options: AdapterOptions): Adapter {
+  const { root } = options
 
-export type StorageOptions = RequireExactlyOne<
-  {
-    bucket: string
-    rootFolder: string
-  },
-  'bucket' | 'rootFolder'
-> &
-  AbstractStorageOptions
+  return {
+    async set(file) {
+      const path = join(root, file.name)
+      try {
+        await pipeline(await file.stream(), createWriteStream(path))
+      } catch (error: any) {
+        if (error.code !== 'ENOENT') {
+          throw error
+        }
 
-export class Storage extends AbstractStorage {
-  protected bucket: string
-
-  constructor(opts: StorageOptions) {
-    super(opts)
-
-    let rootFolder = opts.bucket ?? opts.rootFolder
-
-    // if rootFolder is not absolute, we put the bucket in the tmp folder
-    if (!isAbsolute(rootFolder)) {
-      const tmpDir = tmpdir()
-      rootFolder = join(tmpDir, rootFolder)
-    }
-    mkdirSync(rootFolder, { recursive: true })
-
-    this.bucket = rootFolder
-  }
-  async write(filePath: string, fileReadable: Readable): Promise<string> {
-    const path = join(this.bucket, filePath)
-
-    // ensure subfolder exists
-    await fs.mkdir(dirname(path), { recursive: true })
-
-    await pipeline(fileReadable, createWriteStream(path))
-
-    return filePath
-  }
-
-  async exists(filePath: string): Promise<boolean> {
-    try {
-      const path = join(this.bucket, filePath)
-      await fs.access(path, constants.F_OK)
-      return true
-    } catch (err) {
-      if (this._debug) {
-        this._logger.info({ err })
+        const folder = dirname(path)
+        await mkdir(folder, { recursive: true })
+        await pipeline(await file.stream(), createWriteStream(path))
       }
-      if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
-        return false
+
+      return path
+    },
+    async get(destination) {
+      const path = join(root, destination)
+
+      return async () => {
+        try {
+          const fileStream = createReadStream(path)
+          await once(fileStream, 'open')
+          return fileStream
+        } catch (error: any) {
+          if (error.code === 'ENOENT') {
+            throw new ENOENT(destination)
+          }
+          /* c8 ignore next 2 */
+          throw error
+        }
       }
-      throw err
-    }
-  }
+    },
+    async metadata(destination) {
+      try {
+        const path = join(root, destination)
+        const stats = await stat(path)
 
-  async read(filePath: string): Promise<Readable> {
-    const path = join(this.bucket, filePath)
-    return createReadStream(path)
-  }
-
-  async remove(filePath: string): Promise<void> {
-    const path = join(this.bucket, filePath)
-    return fs.unlink(path)
-  }
-
-  async copy(filePath: string, destFilePath: string): Promise<string> {
-    const path = join(this.bucket, filePath)
-    const destPath = join(this.bucket, destFilePath)
-    // ensure subfolder exists
-    await fs.mkdir(dirname(destPath), { recursive: true })
-    await fs.copyFile(path, destPath)
-    return destFilePath
-  }
-
-  async move(filePath: string, destFilePath: string): Promise<string> {
-    const path = join(this.bucket, filePath)
-    const destPath = join(this.bucket, destFilePath)
-    // ensure subfolder exists
-    await fs.mkdir(dirname(destPath), { recursive: true })
-    try {
-      await fs.rename(path, destPath)
-    } catch (err) {
-      if ((err as NodeJS.ErrnoException).code === 'EXDEV') {
-        await this.copy(filePath, destFilePath)
-        await this.remove(filePath)
-      } else {
-        throw err
+        return {
+          size: stats.size,
+          lastModified: stats.mtime.getTime(),
+        }
+      } catch {
+        return {
+          size: 0,
+          lastModified: -1,
+        }
       }
-    }
-    return destFilePath
+    },
+    async delete(destination) {
+      const path = join(root, destination)
+      try {
+        await unlink(path)
+        /* c8 ignore next 4 */
+      } catch (error: any) {
+        if (error.code !== 'ENOENT') {
+          throw error
+        }
+      }
+    },
   }
 }

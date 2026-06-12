@@ -1,5 +1,5 @@
 {
-  "name": "@ducktors/storagebus-local",
+  "name": "@storagebus/local",
   "version": "0.12.4",
   "description": "",
   "license": "MIT",
@@ -13,36 +13,34 @@
   "files": [
     "dist"
   ],
-  "type": "commonjs",
+  "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "types": "./dist/local.d.ts",
+      "typescript": "./src/local.ts",
+      "import": "./dist/local.js"
     }
   },
-  "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && tsc",
     "format": "biome format --write .",
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
     "preinstall": "npx only-allow pnpm",
-    "test": "tsx --test test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
-    "test:watch": "tsx --watch --test ./test/*.ts"
+    "test": "node --conditions=typescript --test test/*.ts",
+    "test:ci": "mkdir -p coverage && node --conditions=typescript --test --experimental-test-coverage '--test-coverage-include=src/**/*.ts' --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info ./test/*.ts",
+    "test:watch": "node --watch --conditions=typescript --test ./test/*.ts"
   },
   "keywords": [],
-  "dependencies": {
-    "@ducktors/storagebus-abstract": "workspace:*",
-    "tslib": "catalog:prodDeps"
+  "peerDependencies": {
+    "@storagebus/storage": "workspace:^"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:devDeps",
-    "@ducktors/tsconfig": "catalog:devDeps",
+    "@storagebus/storage": "workspace:*",
     "@types/node": "catalog:devDeps",
-    "c8": "catalog:devDeps",
+    "mitata": "^1.0.34",
     "rimraf": "catalog:devDeps",
-    "tsx": "catalog:devDeps",
     "typescript": "catalog:devDeps"
   }
 }

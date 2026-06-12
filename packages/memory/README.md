@@ -1,81 +1,60 @@
-# @ducktors/storagebus-memory
+# @storagebus/memory
 
-[![npm version](https://img.shields.io/npm/v/@ducktors/storagebus-memory)](https://www.npmjs.com/package/@ducktors/storagebus-memory)
+[![npm version](https://img.shields.io/npm/v/@storagebus/memory)](https://www.npmjs.com/package/@storagebus/memory)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-In-memory storage adapter for [Storagebus](https://github.com/ducktors/storagebus). Useful for testing and development purposes.
+In-memory Adapter for [StorageBus](https://github.com/ducktors/storagebus).
 
 ## Installation
 
 ```bash
-npm install @ducktors/storagebus-memory
-# or
-pnpm add @ducktors/storagebus-memory
-# or
-yarn add @ducktors/storagebus-memory
+npm install @storagebus/storage @storagebus/memory
+pnpm add @storagebus/storage @storagebus/memory
+yarn add @storagebus/storage @storagebus/memory
 ```
 
 ## Usage
 
 ```typescript
-import { Storage } from '@ducktors/storagebus-memory'
-import { Readable } from 'node:stream'
+import { createAdapter } from '@storagebus/memory'
+import { Storage } from '@storagebus/storage'
 
-const storage = new Storage({})
+const storage = new Storage(createAdapter())
 
-async function main() {
-  const readable = Readable.from('Hello, world!')
+const objectKey = await storage.write('notes/hello.txt', 'Hello, world!')
+const file = await storage.file(objectKey)
 
-  // Write a file
-  const writtenFile = await storage.write('path/to/file.txt', readable)
+console.log(await file.text())
+console.log(file.size)
+console.log(file.lastModified)
 
-  // Check if file exists
-  const exists = await storage.exists('path/to/file.txt')
-
-  // Read a file
-  const fileStream = await storage.read('path/to/file.txt')
-
-  // Copy a file
-  const copiedFile = await storage.copy('path/to/file.txt', 'path/to/copy.txt')
-
-  // Move a file
-  const movedFile = await storage.move('path/to/copy.txt', 'new/path/file.txt')
-
-  // Delete a file
-  await storage.remove('path/to/file.txt')
-}
+await storage.write(objectKey, null)
 ```
 
 ## API
 
-### Constructor Options
+`createAdapter()` creates an isolated in-memory Adapter. Each Adapter instance has its own in-memory Storage Backend.
 
-| Option | Type | Required | Description |
-|--------|------|----------|-------------|
-| `debug` | `boolean` | No | Enable debug logging |
-| `logger` | `Logger` | No | Custom logger instance |
-| `sanitizeKey` | `boolean \| (key: string) => string` | No | Sanitize file keys |
+Storage options such as `debug`, `logger`, and `sanitizeKey` are passed to `new Storage(adapter, options)` from `@storagebus/storage`.
 
-### Methods
+## Migration to v1
 
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `write` | `(key: string, fileReadable: Readable) => Promise<string>` | Write a file to storage |
-| `exists` | `(key: string) => Promise<boolean>` | Check if a file exists |
-| `read` | `(key: string) => Promise<Readable>` | Read a file from storage |
-| `remove` | `(key: string) => Promise<void>` | Delete a file from storage |
-| `copy` | `(key: string, destKey: string) => Promise<string>` | Copy a file |
-| `move` | `(key: string, destKey: string) => Promise<string>` | Move a file |
+Before v1:
 
-## Use Cases
+```typescript
+import { createStorage } from '@storagebus/storage/memory'
 
-- **Testing**: Use this adapter in your test suite to avoid hitting real storage services
-- **Development**: Quickly prototype storage-dependent features without external dependencies
-- **CI/CD**: Run tests in CI environments without needing cloud credentials
+const storage = createStorage()
+```
 
-## Note
+In v1:
 
-Data stored in memory is not persistent and will be lost when the process exits. This adapter is not suitable for production use cases where data persistence is required.
+```typescript
+import { createAdapter } from '@storagebus/memory'
+import { Storage } from '@storagebus/storage'
+
+const storage = new Storage(createAdapter())
+```
 
 ## License
 

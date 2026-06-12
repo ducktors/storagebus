@@ -1,5 +1,5 @@
 {
-  "name": "@ducktors/storagebus-s3",
+  "name": "@storagebus/s3",
   "version": "0.12.1",
   "description": "",
   "license": "MIT",
@@ -13,42 +13,37 @@
   "files": [
     "dist"
   ],
-  "type": "commonjs",
+  "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "types": "./dist/adapter.d.ts",
+      "typescript": "./src/adapter.ts",
+      "import": "./dist/adapter.js"
     }
   },
-  "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && tsc",
     "format": "biome format --write .",
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
     "preinstall": "npx only-allow pnpm",
-    "test": "tsx --test test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
-    "test:watch": "tsx --watch --test ./test/*.ts"
+    "test": "node --conditions=typescript --test test/*.ts",
+    "test:ci": "mkdir -p coverage && node --conditions=typescript --test --experimental-test-coverage '--test-coverage-include=src/**/*.ts' --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info ./test/*.ts",
+    "test:watch": "node --watch --conditions=typescript --test ./test/*.ts"
   },
   "keywords": [],
-  "dependencies": {
-    "@aws-sdk/abort-controller": "^3.272.0",
-    "@aws-sdk/client-s3": "^3.281.0",
-    "@aws-sdk/lib-storage": "^3.281.0",
-    "@ducktors/storagebus-abstract": "workspace:*",
-    "mime-types": "catalog:prodDeps",
-    "tslib": "catalog:prodDeps"
+  "peerDependencies": {
+    "@aws-sdk/client-s3": "^3.0.0",
+    "@aws-sdk/lib-storage": "^3.0.0",
+    "@storagebus/storage": "workspace:^"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1064.0",
+    "@aws-sdk/lib-storage": "^3.1064.0",
+    "@storagebus/storage": "workspace:*",
     "@biomejs/biome": "catalog:devDeps",
-    "@ducktors/tsconfig": "catalog:devDeps",
-    "@types/mime-types": "catalog:devDeps",
     "@types/node": "catalog:devDeps",
-    "aws-sdk-client-mock": "^2.0.1",
-    "c8": "catalog:devDeps",
     "rimraf": "catalog:devDeps",
-    "tsx": "catalog:devDeps",
     "typescript": "catalog:devDeps"
   }
 }

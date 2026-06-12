@@ -9,69 +9,81 @@
 ![fox1t_disco_elysium_styled_storagebus_with_boxes_covered_by_clo_8b9e8a49-f59c-44a6-9c6e-58bdedc9ee3f](https://user-images.githubusercontent.com/1620916/216316357-92a5fe47-2adf-4e61-8a60-aaddf1ba8ad0.jpg)
 
 
-[![CI](https://github.com/ducktors/storagebus/actions/workflows/ci.yml/badge.svg)](https://github.com/ducktors/storagebus/actions/workflows/ci.yml) [![Test](https://github.com/ducktors/storagebus/actions/workflows/test.yml/badge.svg)](https://github.com/ducktors/storagebus/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/ducktors/storagebus/badge.svg?branch=main)](https://coveralls.io/github/ducktors/storagebus?branch=main) [![Maintainability](https://api.codeclimate.com/v1/badges/40e86c80718286fa76b1/maintainability)](https://codeclimate.com/github/ducktors/storagebus/maintainability) [![storagebus](https://img.shields.io/npm/v/@ducktors/storagebus?label=storagebus)](https://www.npmjs.com/package/@ducktors/storagebus) [![storagebus-abstract](https://img.shields.io/npm/v/@ducktors/storagebus-abstract?label=storagebus-abstract)](https://www.npmjs.com/package/@ducktors/storagebus-abstract) [![storagebus-local](https://img.shields.io/npm/v/@ducktors/storagebus-local?label=storagebus-local)](https://www.npmjs.com/package/@ducktors/storagebus-local)
-[![storagebus-gcs](https://img.shields.io/npm/v/@ducktors/storagebus-gcs?label=storagebus-gcs)](https://www.npmjs.com/package/@ducktors/storagebus-gcs)
-[![storagebus-s3](https://img.shields.io/npm/v/@ducktors/storagebus-s3?label=storagebus-s3)](https://www.npmjs.com/package/@ducktors/storagebus-s3)
-[![storagebus-memory](https://img.shields.io/npm/v/@ducktors/storagebus-memory?label=storagebus-memory)](https://www.npmjs.com/package/@ducktors/storagebus-memory) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![CI](https://github.com/ducktors/storagebus/actions/workflows/ci.yml/badge.svg)](https://github.com/ducktors/storagebus/actions/workflows/ci.yml) [![Test](https://github.com/ducktors/storagebus/actions/workflows/test.yml/badge.svg)](https://github.com/ducktors/storagebus/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/ducktors/storagebus/badge.svg?branch=main)](https://coveralls.io/github/ducktors/storagebus?branch=main) [![Maintainability](https://api.codeclimate.com/v1/badges/40e86c80718286fa76b1/maintainability)](https://codeclimate.com/github/ducktors/storagebus/maintainability) [![storage](https://img.shields.io/npm/v/@storagebus/storage?label=storage)](https://www.npmjs.com/package/@storagebus/storage) [![local](https://img.shields.io/npm/v/@storagebus/local?label=local)](https://www.npmjs.com/package/@storagebus/local)
+[![memory](https://img.shields.io/npm/v/@storagebus/memory?label=memory)](https://www.npmjs.com/package/@storagebus/memory) [![gcs](https://img.shields.io/npm/v/@storagebus/gcs?label=gcs)](https://www.npmjs.com/package/@storagebus/gcs)
+[![s3](https://img.shields.io/npm/v/@storagebus/s3?label=s3)](https://www.npmjs.com/package/@storagebus/s3) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-Storagebus is a storage abstraction layer for Node.js that removes any difference among multiple public cloud storage services and local filesystems.
+StorageBus is a storage abstraction layer for Node.js that removes differences among public cloud storage services, local filesystems, and in-memory storage.
 
 ## Usage
 
-You can use Storagebus with your filesystem, AWS and GCP:
+StorageBus v1 has two core operations:
 
-```javascript
-const { Storage } = require("storage/local");
-// const { Storage } = require('storage/aws')
-// const { Storage } = require('storage/gcp')
-const { Readable } = require("node:stream");
+- `write(objectKey, data)` writes, replaces, or deletes an object.
+- `file(objectKey)` returns a `BusFile`, which can stream content and expose metadata.
 
-const storage = new Storage({
-  rootFolder: "path/to/folder",
-});
-// const storage = new Storage({
-//  bucket: 'your-aws-bucket';
-//  region: 'your-aws-region';
-//  accessKeyId: 'your-aws-access-key';
-//  secretAccessKey: 'your-aws-secret-access-key';
-// })
-// const storage = new Storage({
-//  bucket: 'your-gcp-bucket';
-//  projectId: 'your-gcp-project-id';
-//  clientEmail: 'your-gcp-client-email';
-//  privateKey: 'your-gcp-private-key';
-// })
+You can use StorageBus with your filesystem, AWS S3, Google Cloud Storage, or memory:
+
+```typescript
+import { Readable } from 'node:stream'
+import { Storage } from '@storagebus/storage'
+import { createAdapter } from '@storagebus/local'
+
+const storage = new Storage(createAdapter({ root: '/path/to/folder' }))
 
 async function main() {
-  // Your readable stream
-  const readable = Readable.from("Hello, world!");
+  const objectKey = await storage.write('hello.txt', 'Hello, world!')
+  const file = await storage.file(objectKey)
 
-  // write a file
-  const writtenFileString = await storage.write("your-file.txt", readable);
+  console.log(file.name)
+  console.log(file.type)
+  console.log(file.size)
+  console.log(await file.text())
 
-  // read a file from your storage
-  const fileReadable = await storage.read("your-file.txt");
+  await storage.write('stream.txt', () => Readable.from('stream content'))
 
-  // check for file existance in your storage
-  const exist = await storage.exists("your-file.txt");
-
-  // copy file
-  const copiedFileString = await storage.copy(
-    "your-file.txt",
-    "your-file-copy.txt"
-  );
-
-  // move a file
-  const movedFileString = await storage.move(
-    "your-file-copy.txt",
-    "moved/your-file-copy.txt"
-  );
-
-  // delete a file
-  await storage.remove("your-file.txt");
+  // Passing null deletes the Object Key.
+  await storage.write('hello.txt', null)
 }
+```
+
+## Packages
+
+- `@storagebus/storage`: core `Storage`, `BusFile`, Adapter contract, shared errors, and compliance tests.
+- `@storagebus/memory`: in-memory Adapter.
+- `@storagebus/local`: local filesystem Adapter.
+- `@storagebus/s3`: AWS S3 Adapter.
+- `@storagebus/gcs`: Google Cloud Storage Adapter.
+
+## Migration to v1
+
+StorageBus v1 creates Storage from the core package and injects an Adapter from the target Storage Backend package.
+
+Before v1:
+
+```typescript
+import { createStorage } from '@storagebus/local'
+
+const storage = createStorage({ root: '/path/to/folder' })
+```
+
+In v1:
+
+```typescript
+import { Storage } from '@storagebus/storage'
+import { createAdapter } from '@storagebus/local'
+
+const storage = new Storage(createAdapter({ root: '/path/to/folder' }))
+```
+
+Storage options such as `debug`, `logger`, and `sanitizeKey` now belong to `Storage`, not Adapter packages:
+
+```typescript
+const storage = new Storage(createAdapter({ root: '/path/to/folder' }), {
+  sanitizeKey: true,
+})
 ```
 
 ## Contribute to this project
@@ -101,15 +113,15 @@ To release a new version, simply choose which package to bump with `pnpm release
 ```
 $ pnpm release
 
-> @ducktors/storagebus@0.9.0 release /ducktors-workstation/storagebus
+> storagebus@0.9.0 release /ducktors-workstation/storagebus
 > changeset
 
 🦋  Which packages would you like to include? …
 ◯ unchanged packages
-  ◯ @ducktors/storagebus-abstract
-  ◯ @ducktors/storagebus-gcs
-  ◯ @ducktors/storagebus-local
-  ◯ @ducktors/storagebus-s3
+  ◯ @storagebus/storage
+  ◯ @storagebus/gcs
+  ◯ @storagebus/local
+  ◯ @storagebus/s3
 ```
 
 ## Contributors

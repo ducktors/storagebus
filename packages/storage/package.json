@@ -1,0 +1,56 @@
+{
+  "name": "@storagebus/storage",
+  "version": "0.10.4",
+  "description": "",
+  "license": "MIT",
+  "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ducktors/storagebus",
+    "directory": "packages/storage"
+  },
+  "private": false,
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/storage.d.ts",
+      "typescript": "./src/storage.ts",
+      "import": "./dist/storage.js"
+    },
+    "./file": {
+      "types": "./dist/file.d.ts",
+      "typescript": "./src/file.ts",
+      "import": "./dist/file.js"
+    },
+    "./errors": {
+      "types": "./dist/errors.d.ts",
+      "typescript": "./src/errors.ts",
+      "import": "./dist/errors.js"
+    },
+    "./compliance-test": {
+      "types": "./dist/compliance-test.d.ts",
+      "typescript": "./src/compliance-test.ts",
+      "import": "./dist/compliance-test.js"
+    }
+  },
+  "scripts": {
+    "build": "rimraf dist && tsc && cp src/latin-chars.json dist/latin-chars.json",
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write",
+    "preinstall": "npx only-allow pnpm",
+    "test": "node --conditions=typescript --test ./test/*.ts",
+    "test:ci": "mkdir -p coverage && node --conditions=typescript --test --experimental-test-coverage '--test-coverage-include=src/**/*.ts' --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info ./test/*.ts",
+    "test:watch": "node --watch --conditions=typescript --test ./test/*.ts"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@biomejs/biome": "catalog:devDeps",
+    "@types/node": "catalog:devDeps",
+    "rimraf": "catalog:devDeps",
+    "typescript": "catalog:devDeps"
+  }
+}

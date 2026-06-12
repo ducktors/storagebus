@@ -1,3 +1,3 @@
 export default {
-  '*.{mjs,cjs,js,jsx,ts,tsx}': 'biome lint . && biome check .',
+  '*.{mjs,cjs,js,jsx,ts}': 'biome lint . && biome check .',
 }

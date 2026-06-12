@@ -1,63 +1,56 @@
 import { Readable } from 'node:stream'
+import type { Adapter } from '@storagebus/storage'
+import { ENOENT } from '@storagebus/storage/errors'
 
-import {
-  Storage as AbstractStorage,
-  type AbstractStorageOptions,
-} from '@ducktors/storagebus-abstract'
+interface StorageObject {
+  lastModified: number
+  size: number
+  data: Buffer
+  type: string
+}
 
-export type StorageOptions = AbstractStorageOptions
+export type AdapterOptions = Record<string, never>
 
-export class Storage extends AbstractStorage {
-  protected bucket: Map<string, Buffer>
+export function createAdapter(_options: AdapterOptions = {}): Adapter {
+  const storage = new Map<string, StorageObject>()
 
-  constructor(opts: StorageOptions) {
-    super({ debug: opts?.debug, logger: opts?.logger })
-    this.bucket = new Map()
-  }
+  return {
+    async set(file) {
+      const buffer = await file.buffer()
+      storage.set(file.name, {
+        lastModified: Date.now(),
+        size: buffer.length,
+        data: buffer,
+        type: file.type,
+      })
+      return file.name
+    },
+    async get(key) {
+      return () => {
+        const buffer = storage.get(key)?.data
+        if (!buffer) {
+          throw new ENOENT(key)
+        }
+        return Readable.from(buffer)
+      }
+    },
+    async metadata(key) {
+      const data = storage.get(key)
 
-  async write(key: string, fileReadable: Readable): Promise<string> {
-    const _key = this.sanitize(key)
-
-    this.bucket.set(_key, await this.toBuffer(fileReadable))
-    return _key
-  }
-
-  async exists(key: string): Promise<boolean> {
-    const _key = this.sanitize(key)
-    return this.bucket.has(_key)
-  }
-
-  async read(key: string): Promise<Readable> {
-    const _key = this.sanitize(key)
-    if (!(await this.exists(_key))) {
-      throw new Error(`Missing ${_key} from Storagebus Memory`)
-    }
-
-    // biome-ignore lint/style/noNonNullAssertion: TBD
-    return Readable.from(this.bucket.get(_key)!)
-  }
-
-  async remove(key: string): Promise<void> {
-    const _key = this.sanitize(key)
-    this.bucket.delete(_key)
-  }
-
-  async copy(key: string, destKey: string): Promise<string> {
-    const _key = this.sanitize(key)
-    const file = this.bucket.has(_key)
-    if (!file) {
-      throw new Error(`Missing ${_key} from Storagebus Memory`)
-    }
-    const _destKey = this.sanitize(destKey)
-    // biome-ignore lint/style/noNonNullAssertion: TBD
-    this.bucket.set(_destKey, this.bucket.get(_key)!)
-    return _destKey
-  }
-
-  async move(key: string, destKey: string): Promise<string> {
-    const _destKey = await this.copy(key, destKey)
-    await this.remove(key)
-
-    return _destKey
+      if (!data) {
+        return {
+          size: 0,
+          lastModified: -1,
+        }
+      }
+      return {
+        size: data.size,
+        lastModified: data.lastModified,
+        type: data.type,
+      }
+    },
+    async delete(key) {
+      storage.delete(key)
+    },
   }
 }

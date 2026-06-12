@@ -1,5 +1,5 @@
 {
-  "name": "@ducktors/storagebus-gcs",
+  "name": "@storagebus/gcs",
   "version": "0.11.5",
   "description": "",
   "license": "MIT",
@@ -13,41 +13,35 @@
   "files": [
     "dist"
   ],
-  "type": "commonjs",
+  "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "types": "./dist/adapter.d.ts",
+      "typescript": "./src/adapter.ts",
+      "import": "./dist/adapter.js"
     }
   },
-  "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && tsc",
     "format": "biome format --write .",
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
     "preinstall": "npx only-allow pnpm",
-    "test": "tsx --test test/*.ts",
-    "test:ci": "c8 --all --src src --reporter lcov --reporter text tsx --test ./test/*.ts",
-    "test:watch": "tsx --watch --test ./test/*.ts"
+    "test": "node --conditions=typescript --test test/*.ts",
+    "test:ci": "mkdir -p coverage && node --conditions=typescript --test --experimental-test-coverage '--test-coverage-include=src/**/*.ts' --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info ./test/*.ts",
+    "test:watch": "node --watch --conditions=typescript --test ./test/*.ts"
   },
   "keywords": [],
-  "dependencies": {
-    "@ducktors/storagebus-abstract": "workspace:*",
-    "@google-cloud/storage": "^6.9.3",
-    "mime-types": "catalog:prodDeps",
-    "tslib": "catalog:prodDeps"
+  "peerDependencies": {
+    "@google-cloud/storage": "^7.0.0",
+    "@storagebus/storage": "workspace:^"
   },
   "devDependencies": {
+    "@google-cloud/storage": "^7.21.0",
+    "@storagebus/storage": "workspace:*",
     "@biomejs/biome": "catalog:devDeps",
-    "@ducktors/tsconfig": "catalog:devDeps",
-    "@types/mime-types": "catalog:devDeps",
     "@types/node": "catalog:devDeps",
-    "@types/stream-buffers": "^3.0.4",
-    "c8": "catalog:devDeps",
     "rimraf": "catalog:devDeps",
-    "stream-buffers": "^3.0.2",
-    "tsx": "catalog:devDeps",
     "typescript": "catalog:devDeps"
   }
 }

@@ -1,4 +1,4 @@
-# @ducktors/storagebus-gcs
+# @storagebus/gcs
 
 ## 0.11.5
 
@@ -6,7 +6,7 @@
 
 - 4ae248d: Update readme and test changeset release
 - Updated dependencies [4ae248d]
-  - @ducktors/storagebus-abstract@0.10.4
+  - @storagebus/storage@0.10.4
 
 ## 0.11.4
 
@@ -14,7 +14,7 @@
 
 - 41ed13e: chore: update tslib and cloud providers sdks
 - Updated dependencies [41ed13e]
-  - @ducktors/storagebus-abstract@0.10.3
+  - @storagebus/storage@0.10.3
 
 ## 0.11.3
 
@@ -27,7 +27,7 @@
 ### Patch Changes
 
 - Updated dependencies [[`e36e9d7`](https://github.com/ducktors/storagebus/commit/e36e9d74183b5a1c3fc9920236854abfc6006c45)]:
-  - @ducktors/storagebus-abstract@0.10.2
+  - @storagebus/storage@0.10.2
 
 ## 0.11.1
 
@@ -36,7 +36,7 @@
 - Updates deps
 
 - Updated dependencies []:
-  - @ducktors/storagebus-abstract@0.10.1
+  - @storagebus/storage@0.10.1
 
 ## 0.11.0
 
@@ -55,4 +55,4 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @ducktors/storagebus-abstract@0.10.0
+  - @storagebus/storage@0.10.0
