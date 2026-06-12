@@ -35,9 +35,6 @@
   "peerDependencies": {
     "@storagebus/storage": "workspace:^"
   },
-  "dependencies": {
-    "tslib": "catalog:prodDeps"
-  },
   "devDependencies": {
     "@storagebus/storage": "workspace:*",
     "@biomejs/biome": "catalog:devDeps",

@@ -8,10 +8,12 @@ Google Cloud Storage Adapter for [StorageBus](https://github.com/ducktors/storag
 ## Installation
 
 ```bash
-npm install @storagebus/storage @storagebus/gcs
-pnpm add @storagebus/storage @storagebus/gcs
-yarn add @storagebus/storage @storagebus/gcs
+npm install @storagebus/storage @storagebus/gcs @google-cloud/storage
+pnpm add @storagebus/storage @storagebus/gcs @google-cloud/storage
+yarn add @storagebus/storage @storagebus/gcs @google-cloud/storage
 ```
+
+`@google-cloud/storage` is a peer dependency so applications own the Google Cloud Storage SDK version used by their Storage Backend integration.
 
 ## Usage
 

@@ -8,10 +8,12 @@ AWS S3 Adapter for [StorageBus](https://github.com/ducktors/storagebus).
 ## Installation
 
 ```bash
-npm install @storagebus/storage @storagebus/s3
-pnpm add @storagebus/storage @storagebus/s3
-yarn add @storagebus/storage @storagebus/s3
+npm install @storagebus/storage @storagebus/s3 @aws-sdk/client-s3 @aws-sdk/lib-storage
+pnpm add @storagebus/storage @storagebus/s3 @aws-sdk/client-s3 @aws-sdk/lib-storage
+yarn add @storagebus/storage @storagebus/s3 @aws-sdk/client-s3 @aws-sdk/lib-storage
 ```
+
+`@aws-sdk/client-s3` and `@aws-sdk/lib-storage` are peer dependencies so applications own the AWS SDK versions used by their Storage Backend integration.
 
 ## Usage
 

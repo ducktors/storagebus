@@ -35,15 +35,12 @@
   "peerDependencies": {
     "@storagebus/storage": "workspace:^"
   },
-  "dependencies": {
-    "tslib": "catalog:prodDeps"
-  },
   "devDependencies": {
-    "@storagebus/storage": "workspace:*",
     "@biomejs/biome": "catalog:devDeps",
+    "@storagebus/storage": "workspace:*",
     "@types/node": "catalog:devDeps",
     "c8": "catalog:devDeps",
-    "mitata": "^0.1.6",
+    "mitata": "^1.0.34",
     "rimraf": "catalog:devDeps",
     "typescript": "catalog:devDeps"
   }

@@ -9,6 +9,7 @@ import { sanitize } from './sanitize-key.ts'
 function isFunction(x: unknown): x is (x: string) => string {
   return Object.prototype.toString.call(x) === '[object Function]'
 }
+
 export type { Adapter }
 
 type Data = (() => Readable | Promise<Readable>) | Buffer | string | BusFile

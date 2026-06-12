@@ -47,9 +47,6 @@
     "test:watch": "node --watch --conditions=typescript --test ./test/*.ts"
   },
   "keywords": [],
-  "dependencies": {
-    "tslib": "catalog:prodDeps"
-  },
   "devDependencies": {
     "@biomejs/biome": "catalog:devDeps",
     "@types/node": "catalog:devDeps",

@@ -113,7 +113,7 @@ To release a new version, simply choose which package to bump with `pnpm release
 ```
 $ pnpm release
 
-> @ducktors/storagebus@0.9.0 release /ducktors-workstation/storagebus
+> storagebus@0.9.0 release /ducktors-workstation/storagebus
 > changeset
 
 🦋  Which packages would you like to include? …

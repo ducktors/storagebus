@@ -32,17 +32,14 @@
     "test:watch": "node --watch --conditions=typescript --test ./test/*.ts"
   },
   "keywords": [],
-  "dependencies": {
-    "@google-cloud/storage": "^7.21.0",
-    "tslib": "catalog:prodDeps"
-  },
   "peerDependencies": {
+    "@google-cloud/storage": "^7.0.0",
     "@storagebus/storage": "workspace:^"
   },
   "devDependencies": {
+    "@google-cloud/storage": "^7.21.0",
     "@storagebus/storage": "workspace:*",
     "@biomejs/biome": "catalog:devDeps",
-    "@types/mime-types": "catalog:devDeps",
     "@types/node": "catalog:devDeps",
     "c8": "catalog:devDeps",
     "rimraf": "catalog:devDeps",
