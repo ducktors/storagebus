@@ -1,6 +1,6 @@
 {
   "name": "@storagebus/s3",
-  "version": "0.12.1",
+  "version": "1.0.0",
   "description": "",
   "license": "MIT",
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
