@@ -5,7 +5,7 @@ type CreateStream = () => Readable | Promise<Readable>
 
 export interface Adapter {
   set(data: BusFile): Promise<string>
-  get(path: string): Promise<CreateStream | Buffer | string>
-  metadata(path: string): Promise<BusFileMetadata>
-  delete(path: string): Promise<void>
+  get(key: string): Promise<CreateStream>
+  metadata(key: string): Promise<BusFileMetadata>
+  delete(key: string): Promise<void>
 }

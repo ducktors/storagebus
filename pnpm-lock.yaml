@@ -72,9 +72,6 @@ importers:
       '@google-cloud/storage':
         specifier: ^7.21.0
         version: 7.21.0
-      '@storagebus/storage':
-        specifier: workspace:*
-        version: link:../storage
       tslib:
         specifier: catalog:prodDeps
         version: 2.5.0
@@ -82,6 +79,9 @@ importers:
       '@biomejs/biome':
         specifier: catalog:devDeps
         version: 2.3.8
+      '@storagebus/storage':
+        specifier: workspace:*
+        version: link:../storage
       '@types/mime-types':
         specifier: catalog:devDeps
         version: 2.1.1
@@ -100,9 +100,6 @@ importers:
 
   packages/local:
     dependencies:
-      '@storagebus/storage':
-        specifier: workspace:*
-        version: link:../storage
       tslib:
         specifier: catalog:prodDeps
         version: 2.5.0
@@ -110,6 +107,9 @@ importers:
       '@biomejs/biome':
         specifier: catalog:devDeps
         version: 2.3.8
+      '@storagebus/storage':
+        specifier: workspace:*
+        version: link:../storage
       '@types/node':
         specifier: catalog:devDeps
         version: 24.12.0
@@ -126,6 +126,31 @@ importers:
         specifier: catalog:devDeps
         version: 6.0.3
 
+  packages/memory:
+    dependencies:
+      tslib:
+        specifier: catalog:prodDeps
+        version: 2.5.0
+    devDependencies:
+      '@biomejs/biome':
+        specifier: catalog:devDeps
+        version: 2.3.8
+      '@storagebus/storage':
+        specifier: workspace:*
+        version: link:../storage
+      '@types/node':
+        specifier: catalog:devDeps
+        version: 24.12.0
+      c8:
+        specifier: catalog:devDeps
+        version: 8.0.1
+      rimraf:
+        specifier: catalog:devDeps
+        version: 5.0.10
+      typescript:
+        specifier: catalog:devDeps
+        version: 6.0.3
+
   packages/s3:
     dependencies:
       '@aws-sdk/client-s3':
@@ -134,9 +159,6 @@ importers:
       '@aws-sdk/lib-storage':
         specifier: ^3.1064.0
         version: 3.1064.0(@aws-sdk/client-s3@3.1064.0)
-      '@storagebus/storage':
-        specifier: workspace:*
-        version: link:../storage
       tslib:
         specifier: catalog:prodDeps
         version: 2.5.0
@@ -144,6 +166,9 @@ importers:
       '@biomejs/biome':
         specifier: catalog:devDeps
         version: 2.3.8
+      '@storagebus/storage':
+        specifier: workspace:*
+        version: link:../storage
       '@types/mime-types':
         specifier: catalog:devDeps
         version: 2.1.1
@@ -629,9 +654,6 @@ packages:
 
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
-
-  '@types/node@22.0.2':
-    resolution: {integrity: sha512-yPL6DyFwY5PiMVEwymNeqUTKsDczQBJ/5T7W/46RwLU/VH+AA8aT5TZkvBviLKLbbm0hlfftEkGrNzfRk/fofQ==}
 
   '@types/node@24.12.0':
     resolution: {integrity: sha512-GYDxsZi3ChgmckRT9HPU0WEhKLP08ev/Yfcq2AstjrDASOYCSXeyjDsHg4v5t4jOj7cyDX3vmprafKlWIG9MXQ==}
@@ -1859,9 +1881,6 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  undici-types@6.11.1:
-    resolution: {integrity: sha512-mIDEX2ek50x0OlRgxryxsenE5XaQD4on5U2inY7RApK3SOJpofyw7uW2AyfMKkhAxXIceo2DeWGVGwyvng1GNQ==}
-
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
@@ -2678,17 +2697,13 @@ snapshots:
 
   '@types/conventional-commits-parser@5.0.2':
     dependencies:
-      '@types/node': 22.0.2
+      '@types/node': 24.12.0
 
   '@types/istanbul-lib-coverage@2.0.4': {}
 
   '@types/mime-types@2.1.1': {}
 
   '@types/node@12.20.55': {}
-
-  '@types/node@22.0.2':
-    dependencies:
-      undici-types: 6.11.1
 
   '@types/node@24.12.0':
     dependencies:
@@ -3718,7 +3733,7 @@ snapshots:
 
   rxjs@7.8.2:
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.8.1
 
   safe-buffer@5.2.1: {}
 
@@ -3879,8 +3894,6 @@ snapshots:
   type-fest@0.21.3: {}
 
   typescript@6.0.3: {}
-
-  undici-types@6.11.1: {}
 
   undici-types@7.16.0: {}
 

@@ -16,9 +16,9 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/s3.d.ts",
-      "typescript": "./src/s3.ts",
-      "import": "./dist/s3.js"
+      "types": "./dist/adapter.d.ts",
+      "typescript": "./src/adapter.ts",
+      "import": "./dist/adapter.js"
     }
   },
   "scripts": {
@@ -35,10 +35,13 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1064.0",
     "@aws-sdk/lib-storage": "^3.1064.0",
-    "@storagebus/storage": "workspace:*",
     "tslib": "catalog:prodDeps"
   },
+  "peerDependencies": {
+    "@storagebus/storage": "workspace:^"
+  },
   "devDependencies": {
+    "@storagebus/storage": "workspace:*",
     "@biomejs/biome": "catalog:devDeps",
     "@types/mime-types": "catalog:devDeps",
     "@types/node": "catalog:devDeps",

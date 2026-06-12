@@ -3,35 +3,36 @@
 [![npm version](https://img.shields.io/npm/v/@storagebus/s3)](https://www.npmjs.com/package/@storagebus/s3)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-AWS S3 adapter for [Storagebus](https://github.com/ducktors/storagebus).
+AWS S3 Adapter for [StorageBus](https://github.com/ducktors/storagebus).
 
 ## Installation
 
 ```bash
-npm install @storagebus/s3
-pnpm add @storagebus/s3
-yarn add @storagebus/s3
+npm install @storagebus/storage @storagebus/s3
+pnpm add @storagebus/storage @storagebus/s3
+yarn add @storagebus/storage @storagebus/s3
 ```
 
 ## Usage
 
 ```typescript
-import { createStorage } from '@storagebus/s3'
+import { createAdapter } from '@storagebus/s3'
+import { Storage } from '@storagebus/storage'
 
-const storage = createStorage({
+const storage = new Storage(createAdapter({
   bucket: 'your-s3-bucket',
   region: 'us-east-1',
   accessKeyId: 'your-access-key-id',
   secretAccessKey: 'your-secret-access-key',
-})
+}))
 
-const path = await storage.write('docs/readme.txt', 'Hello from S3')
-const file = await storage.file(path)
+const objectKey = await storage.write('docs/readme.txt', 'Hello from S3')
+const file = await storage.file(objectKey)
 
 console.log(file.type)
 console.log(await file.text())
 
-await storage.write(path, null)
+await storage.write(objectKey, null)
 ```
 
 ## API
@@ -45,16 +46,27 @@ await storage.write(path, null)
 | `accessKeyId` | `string` | No | AWS access key ID. Optional when using default AWS credentials. |
 | `secretAccessKey` | `string` | No | AWS secret access key. Optional when using default AWS credentials. |
 | `endpoint` | `string` | No | Custom S3-compatible endpoint. |
-| `debug` | `boolean` | No | Enable debug logging. |
-| `logger` | `Logger` | No | Custom logger instance. |
-| `sanitizeKey` | `boolean \| (key: string) => string` | No | Sanitize storage keys before use. |
 
-### Methods
+Storage options such as `debug`, `logger`, and `sanitizeKey` are passed to `new Storage(adapter, options)` from `@storagebus/storage`.
 
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `write` | `(destination, data, contentType?) => Promise<string>` | Write content, replace content, or delete when `data` is `null`. |
-| `file` | `(path: string) => Promise<BusFile>` | Return a `BusFile` for metadata and content access. |
+## Migration to v1
+
+Before v1:
+
+```typescript
+import { createStorage } from '@storagebus/s3'
+
+const storage = createStorage({ bucket: 'your-s3-bucket' })
+```
+
+In v1:
+
+```typescript
+import { createAdapter } from '@storagebus/s3'
+import { Storage } from '@storagebus/storage'
+
+const storage = new Storage(createAdapter({ bucket: 'your-s3-bucket' }))
+```
 
 ## License
 

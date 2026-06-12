@@ -3,6 +3,7 @@ import type { Adapter } from './adapter.ts'
 import { BusFile, isBusFile } from './file.ts'
 
 import { logger as defaultLogger } from './logger.ts'
+import { validateObjectKey } from './object-key.ts'
 import { sanitize } from './sanitize-key.ts'
 
 function isFunction(x: unknown): x is (x: string) => string {
@@ -52,15 +53,11 @@ export class Storage {
     data: Data | null,
     contentType?: string,
   ): Promise<string> {
-    const path = isBusFile(destination)
+    const key = isBusFile(destination)
       ? destination.name
       : this.sanitize(destination)
+    const objectKey = validateObjectKey(key)
 
-    if (typeof path !== 'string' || path.length === 0) {
-      throw new TypeError(
-        'Invalid destination: must be a non-empty string or BusFile.',
-      )
-    }
     if (
       typeof data !== 'string' &&
       !Buffer.isBuffer(data) &&
@@ -73,26 +70,26 @@ export class Storage {
       )
     }
     if (data === null) {
-      await this.#adapter.delete(path)
+      await this.#adapter.delete(objectKey)
     } else {
       const _data = isBusFile(data) ? () => data.stream() : data
 
-      const file = new BusFile(_data, path, {
+      const file = new BusFile(_data, objectKey, {
         type: contentType ?? (isBusFile(data) ? data.type : undefined),
       })
       await this.#adapter.set(file)
     }
 
-    return path
+    return objectKey
   }
 
-  async file(path: string): Promise<BusFile> {
-    const destination = this.sanitize(path)
-    const data = await this.#adapter.get(destination)
-    const metadata = await this.#adapter.metadata(destination)
+  async file(key: string): Promise<BusFile> {
+    const objectKey = validateObjectKey(this.sanitize(key))
+    const data = await this.#adapter.get(objectKey)
+    const metadata = await this.#adapter.metadata(objectKey)
 
-    const getMetadata = this.#adapter.metadata.bind(this.#adapter, destination)
+    const getMetadata = this.#adapter.metadata.bind(this.#adapter, objectKey)
 
-    return new BusFile(data, destination, { ...metadata, getMetadata })
+    return new BusFile(data, objectKey, { ...metadata, getMetadata })
   }
 }

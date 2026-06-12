@@ -5,22 +5,23 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { Readable } from 'node:stream'
 import { test } from 'node:test'
-import { createStorage, Storage as LocalStorage } from '@storagebus/local'
+import { createAdapter } from '@storagebus/local'
 import { Storage } from '@storagebus/storage'
 import { complianceTest } from '@storagebus/storage/compliance-test'
 
 test('local', async () => {
-  await test('Storage constructor accepts the root parameter', async () => {
-    const storage = createStorage({
-      root: await mkdtemp(join(tmpdir(), randomUUID())),
-    })
+  await test('createAdapter accepts the root parameter', async () => {
+    const storage = new Storage(
+      createAdapter({
+        root: await mkdtemp(join(tmpdir(), randomUUID())),
+      }),
+    )
     assert.equal(storage instanceof Storage, true)
-    assert.equal(storage instanceof LocalStorage, true)
   })
 
   await test('storage.write writes a Readable to disk', async () => {
     const tmpFolder = await mkdtemp(join(tmpdir(), randomUUID()))
-    const storage = createStorage({ root: tmpFolder })
+    const storage = new Storage(createAdapter({ root: tmpFolder }))
     const fileName = randomUUID()
     const path = await storage.write(fileName, () => Readable.from(fileName))
     const stats = await stat(join(tmpFolder, fileName))
@@ -35,7 +36,7 @@ test('local', async () => {
 
   await test('storage.write writes a Readable to deep path on disk', async () => {
     const root = await mkdtemp(join(tmpdir(), randomUUID()))
-    const storage = createStorage({ root })
+    const storage = new Storage(createAdapter({ root }))
 
     const fileName = `${randomUUID()}/${randomUUID()}`
     const path = await storage.write(fileName, () => Readable.from(fileName))
@@ -50,9 +51,11 @@ test('local', async () => {
   })
 
   await test('storage.read reads a file from disk', async () => {
-    const storage = createStorage({
-      root: await mkdtemp(join(tmpdir(), randomUUID())),
-    })
+    const storage = new Storage(
+      createAdapter({
+        root: await mkdtemp(join(tmpdir(), randomUUID())),
+      }),
+    )
     const fileName = randomUUID()
 
     await storage.write(fileName, () => Readable.from(fileName))
@@ -72,9 +75,7 @@ test('local', async () => {
 
   await test('storage.read reads a file from deep path on disk', async () => {
     const root = await mkdtemp(join(tmpdir(), randomUUID()))
-    const storage = createStorage({
-      root,
-    })
+    const storage = new Storage(createAdapter({ root }))
     const fileName = `${randomUUID()}/${randomUUID()}`
 
     await storage.write(fileName, fileName)
@@ -90,9 +91,11 @@ test('local', async () => {
   })
 
   await test('Compliance test', async () => {
-    const storage = createStorage({
-      root: await mkdtemp(join(tmpdir(), randomUUID())),
-    })
+    const storage = new Storage(
+      createAdapter({
+        root: await mkdtemp(join(tmpdir(), randomUUID())),
+      }),
+    )
     await complianceTest(storage)
   })
 })

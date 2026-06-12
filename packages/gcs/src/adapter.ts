@@ -1,13 +1,10 @@
 import { pipeline } from 'node:stream/promises'
 
 import * as GCS from '@google-cloud/storage'
-import type {
-  Adapter,
-  StorageOptions as StorageBusOptions,
-} from '@storagebus/storage'
+import type { Adapter } from '@storagebus/storage'
 import { ENOENT } from '@storagebus/storage/errors'
 
-type StorageFile = Pick<
+export type StorageFile = Pick<
   GCS.File,
   'createWriteStream' | 'createReadStream' | 'exists'
 > & {
@@ -15,23 +12,23 @@ type StorageFile = Pick<
   delete(options?: GCS.DeleteFileOptions): Promise<unknown>
 }
 
-type StorageBucket = {
+export type StorageBucket = {
   file(path: string): StorageFile
 }
 
-type StorageClient = {
+export type StorageClient = {
   bucket(name: string): StorageBucket
 }
 
-export type StorageOptions = {
+export type AdapterOptions = {
   bucket: string
   projectId?: string
   clientEmail?: string
   privateKey?: string
   client?: StorageClient
-} & StorageBusOptions
+}
 
-export function adapter(options: StorageOptions): Adapter {
+export function createAdapter(options: AdapterOptions): Adapter {
   const { bucket, client, clientEmail, privateKey, projectId } = options
 
   let storageClient: StorageClient
@@ -97,5 +94,3 @@ export function adapter(options: StorageOptions): Adapter {
     },
   }
 }
-
-export default { adapter }

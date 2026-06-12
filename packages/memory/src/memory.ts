@@ -1,9 +1,6 @@
 import { Readable } from 'node:stream'
-import type { Adapter } from './adapter.ts'
-import { ENOENT } from './errors.ts'
-import { Storage as StorageBus, type StorageOptions } from './storage.ts'
-
-export type { StorageOptions }
+import type { Adapter } from '@storagebus/storage'
+import { ENOENT } from '@storagebus/storage/errors'
 
 interface StorageObject {
   lastModified: number
@@ -12,8 +9,11 @@ interface StorageObject {
   type: string
 }
 
-export function adapter(): Adapter {
+export type AdapterOptions = Record<string, never>
+
+export function createAdapter(_options: AdapterOptions = {}): Adapter {
   const storage = new Map<string, StorageObject>()
+
   return {
     async set(file) {
       const buffer = await file.buffer()
@@ -25,20 +25,23 @@ export function adapter(): Adapter {
       })
       return file.name
     },
-    async get(path) {
+    async get(key) {
       return () => {
-        const buffer = storage.get(path)?.data
+        const buffer = storage.get(key)?.data
         if (!buffer) {
-          throw new ENOENT(path)
+          throw new ENOENT(key)
         }
         return Readable.from(buffer)
       }
     },
-    async metadata(path) {
-      const data = storage.get(path)
+    async metadata(key) {
+      const data = storage.get(key)
 
       if (!data) {
-        return {}
+        return {
+          size: 0,
+          lastModified: -1,
+        }
       }
       return {
         size: data.size,
@@ -46,18 +49,8 @@ export function adapter(): Adapter {
         type: data.type,
       }
     },
-    async delete(path) {
-      storage.delete(path)
+    async delete(key) {
+      storage.delete(key)
     },
-  }
-}
-
-export function createStorage(opts?: StorageOptions) {
-  return new Storage(opts)
-}
-
-export class Storage extends StorageBus {
-  constructor(opts?: StorageOptions) {
-    super(adapter(), opts)
   }
 }

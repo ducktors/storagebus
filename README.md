@@ -10,33 +10,32 @@
 
 
 [![CI](https://github.com/ducktors/storagebus/actions/workflows/ci.yml/badge.svg)](https://github.com/ducktors/storagebus/actions/workflows/ci.yml) [![Test](https://github.com/ducktors/storagebus/actions/workflows/test.yml/badge.svg)](https://github.com/ducktors/storagebus/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/ducktors/storagebus/badge.svg?branch=main)](https://coveralls.io/github/ducktors/storagebus?branch=main) [![Maintainability](https://api.codeclimate.com/v1/badges/40e86c80718286fa76b1/maintainability)](https://codeclimate.com/github/ducktors/storagebus/maintainability) [![storage](https://img.shields.io/npm/v/@storagebus/storage?label=storage)](https://www.npmjs.com/package/@storagebus/storage) [![local](https://img.shields.io/npm/v/@storagebus/local?label=local)](https://www.npmjs.com/package/@storagebus/local)
-[![gcs](https://img.shields.io/npm/v/@storagebus/gcs?label=gcs)](https://www.npmjs.com/package/@storagebus/gcs)
+[![memory](https://img.shields.io/npm/v/@storagebus/memory?label=memory)](https://www.npmjs.com/package/@storagebus/memory) [![gcs](https://img.shields.io/npm/v/@storagebus/gcs?label=gcs)](https://www.npmjs.com/package/@storagebus/gcs)
 [![s3](https://img.shields.io/npm/v/@storagebus/s3?label=s3)](https://www.npmjs.com/package/@storagebus/s3) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-Storagebus is a storage abstraction layer for Node.js that removes differences among public cloud storage services, local filesystems, and in-memory storage.
+StorageBus is a storage abstraction layer for Node.js that removes differences among public cloud storage services, local filesystems, and in-memory storage.
 
 ## Usage
 
-Storagebus v1 has two core operations:
+StorageBus v1 has two core operations:
 
-- `write(destination, data)` writes, replaces, or deletes an object.
-- `file(path)` returns a `BusFile`, which can stream content and expose metadata.
+- `write(objectKey, data)` writes, replaces, or deletes an object.
+- `file(objectKey)` returns a `BusFile`, which can stream content and expose metadata.
 
-You can use Storagebus with your filesystem, AWS S3, Google Cloud Storage, or memory:
+You can use StorageBus with your filesystem, AWS S3, Google Cloud Storage, or memory:
 
 ```typescript
 import { Readable } from 'node:stream'
-import { createStorage } from '@storagebus/local'
+import { Storage } from '@storagebus/storage'
+import { createAdapter } from '@storagebus/local'
 
-const storage = createStorage({
-  root: '/path/to/folder',
-})
+const storage = new Storage(createAdapter({ root: '/path/to/folder' }))
 
 async function main() {
-  const path = await storage.write('hello.txt', 'Hello, world!')
-  const file = await storage.file(path)
+  const objectKey = await storage.write('hello.txt', 'Hello, world!')
+  const file = await storage.file(objectKey)
 
   console.log(file.name)
   console.log(file.type)
@@ -45,17 +44,47 @@ async function main() {
 
   await storage.write('stream.txt', () => Readable.from('stream content'))
 
-  // Passing null deletes the destination.
+  // Passing null deletes the Object Key.
   await storage.write('hello.txt', null)
 }
 ```
 
 ## Packages
 
-- `@storagebus/storage`: core `Storage`, `BusFile`, in-memory adapter, and compliance tests.
-- `@storagebus/local`: local filesystem adapter.
-- `@storagebus/s3`: AWS S3 adapter.
-- `@storagebus/gcs`: Google Cloud Storage adapter.
+- `@storagebus/storage`: core `Storage`, `BusFile`, Adapter contract, shared errors, and compliance tests.
+- `@storagebus/memory`: in-memory Adapter.
+- `@storagebus/local`: local filesystem Adapter.
+- `@storagebus/s3`: AWS S3 Adapter.
+- `@storagebus/gcs`: Google Cloud Storage Adapter.
+
+## Migration to v1
+
+StorageBus v1 creates Storage from the core package and injects an Adapter from the target Storage Backend package.
+
+Before v1:
+
+```typescript
+import { createStorage } from '@storagebus/local'
+
+const storage = createStorage({ root: '/path/to/folder' })
+```
+
+In v1:
+
+```typescript
+import { Storage } from '@storagebus/storage'
+import { createAdapter } from '@storagebus/local'
+
+const storage = new Storage(createAdapter({ root: '/path/to/folder' }))
+```
+
+Storage options such as `debug`, `logger`, and `sanitizeKey` now belong to `Storage`, not Adapter packages:
+
+```typescript
+const storage = new Storage(createAdapter({ root: '/path/to/folder' }), {
+  sanitizeKey: true,
+})
+```
 
 ## Contribute to this project
 

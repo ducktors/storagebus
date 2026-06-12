@@ -3,35 +3,36 @@
 [![npm version](https://img.shields.io/npm/v/@storagebus/gcs)](https://www.npmjs.com/package/@storagebus/gcs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Google Cloud Storage adapter for [Storagebus](https://github.com/ducktors/storagebus).
+Google Cloud Storage Adapter for [StorageBus](https://github.com/ducktors/storagebus).
 
 ## Installation
 
 ```bash
-npm install @storagebus/gcs
-pnpm add @storagebus/gcs
-yarn add @storagebus/gcs
+npm install @storagebus/storage @storagebus/gcs
+pnpm add @storagebus/storage @storagebus/gcs
+yarn add @storagebus/storage @storagebus/gcs
 ```
 
 ## Usage
 
 ```typescript
-import { createStorage } from '@storagebus/gcs'
+import { createAdapter } from '@storagebus/gcs'
+import { Storage } from '@storagebus/storage'
 
-const storage = createStorage({
+const storage = new Storage(createAdapter({
   bucket: 'your-gcs-bucket',
   projectId: 'your-gcp-project-id',
   clientEmail: 'your-gcp-client-email',
   privateKey: 'your-gcp-private-key',
-})
+}))
 
-const path = await storage.write('docs/readme.txt', 'Hello from GCS')
-const file = await storage.file(path)
+const objectKey = await storage.write('docs/readme.txt', 'Hello from GCS')
+const file = await storage.file(objectKey)
 
 console.log(file.type)
 console.log(await file.text())
 
-await storage.write(path, null)
+await storage.write(objectKey, null)
 ```
 
 ## API
@@ -44,16 +45,27 @@ await storage.write(path, null)
 | `projectId` | `string` | No | GCP project ID. Optional when using Application Default Credentials. |
 | `clientEmail` | `string` | No | Service account client email. |
 | `privateKey` | `string` | No | Service account private key. |
-| `debug` | `boolean` | No | Enable debug logging. |
-| `logger` | `Logger` | No | Custom logger instance. |
-| `sanitizeKey` | `boolean \| (key: string) => string` | No | Sanitize storage keys before use. |
 
-### Methods
+Storage options such as `debug`, `logger`, and `sanitizeKey` are passed to `new Storage(adapter, options)` from `@storagebus/storage`.
 
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `write` | `(destination, data, contentType?) => Promise<string>` | Write content, replace content, or delete when `data` is `null`. |
-| `file` | `(path: string) => Promise<BusFile>` | Return a `BusFile` for metadata and content access. |
+## Migration to v1
+
+Before v1:
+
+```typescript
+import { createStorage } from '@storagebus/gcs'
+
+const storage = createStorage({ bucket: 'your-gcs-bucket' })
+```
+
+In v1:
+
+```typescript
+import { createAdapter } from '@storagebus/gcs'
+import { Storage } from '@storagebus/storage'
+
+const storage = new Storage(createAdapter({ bucket: 'your-gcs-bucket' }))
+```
 
 ## License
 

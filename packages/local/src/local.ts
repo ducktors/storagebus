@@ -3,18 +3,16 @@ import { createReadStream, createWriteStream } from 'node:fs'
 import { mkdir, stat, unlink } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { pipeline } from 'node:stream/promises'
-import {
-  type Adapter,
-  Storage as StorageBus,
-  type StorageOptions as StorageBusOptions,
-} from '@storagebus/storage'
+import type { Adapter } from '@storagebus/storage'
 import { ENOENT } from '@storagebus/storage/errors'
 
-export type StorageOptions = {
+export type AdapterOptions = {
   root: string
-} & StorageBusOptions
+}
 
-function adapter(root: string): Adapter {
+export function createAdapter(options: AdapterOptions): Adapter {
+  const { root } = options
+
   return {
     async set(file) {
       const path = join(root, file.name)
@@ -76,16 +74,5 @@ function adapter(root: string): Adapter {
         }
       }
     },
-  }
-}
-
-export function createStorage(opts: StorageOptions) {
-  return new Storage(opts)
-}
-
-export class Storage extends StorageBus {
-  constructor(opts: StorageOptions) {
-    const { root, ...options } = opts
-    super(adapter(root), options)
   }
 }

@@ -7,7 +7,8 @@ import type {
   GetObjectCommand,
   HeadObjectCommand,
 } from '@aws-sdk/client-s3'
-import { createStorage } from '@storagebus/s3'
+import { createAdapter } from '@storagebus/s3'
+import { Storage } from '@storagebus/storage'
 import { complianceTest } from '@storagebus/storage/compliance-test'
 
 const accessKeyId = 'S3RVER'
@@ -90,33 +91,37 @@ async function toBuffer(body: unknown): Promise<Buffer> {
 
 test('s3', async (t) => {
   await t.test('creates storage instance', () => {
-    const storage = createStorage({
-      region,
-      bucket,
-      accessKeyId,
-      secretAccessKey,
-    })
+    const storage = new Storage(
+      createAdapter({
+        region,
+        bucket,
+        accessKeyId,
+        secretAccessKey,
+      }),
+    )
 
     assert.equal(storage.constructor.name, 'Storage')
   })
 
   await t.test('Compliance test', async () => {
     const client = new MockS3Client()
-    const storage = createStorage({
-      region,
-      bucket,
-      accessKeyId,
-      secretAccessKey,
-      endpoint: `http://${randomUUID()}.example.test`,
-      client,
-      upload: async (input) => {
-        client.objects.set(input.Key as string, {
-          body: await toBuffer(input.Body),
-          contentType: input.ContentType,
-          lastModified: new Date(),
-        })
-      },
-    })
+    const storage = new Storage(
+      createAdapter({
+        region,
+        bucket,
+        accessKeyId,
+        secretAccessKey,
+        endpoint: `http://${randomUUID()}.example.test`,
+        client,
+        upload: async (input) => {
+          client.objects.set(input.Key as string, {
+            body: await toBuffer(input.Body),
+            contentType: input.ContentType,
+            lastModified: new Date(),
+          })
+        },
+      }),
+    )
     await complianceTest(storage)
   })
 })

@@ -2,7 +2,8 @@ import assert from 'node:assert/strict'
 import { Readable, Writable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import { test } from 'node:test'
-import { createStorage, Storage } from '@storagebus/gcs'
+import { createAdapter } from '@storagebus/gcs'
+import { Storage } from '@storagebus/storage'
 import { complianceTest } from '@storagebus/storage/compliance-test'
 
 class MockedFile {
@@ -140,22 +141,26 @@ test('GCS', async (t) => {
     ])
   })
 
-  await t.test('storage constructor accepts parameters', () => {
-    const storage = createStorage({
-      clientEmail: 'foobar',
-      privateKey: 'foo',
-      projectId: 'bar',
-      bucket: 'test',
-      client: new MockedStorage(),
-    })
+  await t.test('createAdapter accepts parameters', () => {
+    const storage = new Storage(
+      createAdapter({
+        clientEmail: 'foobar',
+        privateKey: 'foo',
+        projectId: 'bar',
+        bucket: 'test',
+        client: new MockedStorage(),
+      }),
+    )
     assert.equal(storage instanceof Storage, true)
   })
 
   await t.test('Compliance test', async () => {
-    const storage = createStorage({
-      bucket: 'storagebus-test',
-      client: new MockedStorage(),
-    })
+    const storage = new Storage(
+      createAdapter({
+        bucket: 'storagebus-test',
+        client: new MockedStorage(),
+      }),
+    )
     await complianceTest(storage)
   })
 })

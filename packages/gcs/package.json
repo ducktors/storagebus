@@ -16,9 +16,9 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/gcs.d.ts",
-      "typescript": "./src/gcs.ts",
-      "import": "./dist/gcs.js"
+      "types": "./dist/adapter.d.ts",
+      "typescript": "./src/adapter.ts",
+      "import": "./dist/adapter.js"
     }
   },
   "scripts": {
@@ -34,10 +34,13 @@
   "keywords": [],
   "dependencies": {
     "@google-cloud/storage": "^7.21.0",
-    "@storagebus/storage": "workspace:*",
     "tslib": "catalog:prodDeps"
   },
+  "peerDependencies": {
+    "@storagebus/storage": "workspace:^"
+  },
   "devDependencies": {
+    "@storagebus/storage": "workspace:*",
     "@biomejs/biome": "catalog:devDeps",
     "@types/mime-types": "catalog:devDeps",
     "@types/node": "catalog:devDeps",

@@ -1,13 +1,13 @@
 {
-  "name": "@storagebus/local",
-  "version": "0.12.4",
+  "name": "@storagebus/memory",
+  "version": "0.0.0",
   "description": "",
   "license": "MIT",
   "author": "Ducktors <your@ducktors.dev> (https://ducktors.dev)",
   "repository": {
     "type": "git",
     "url": "https://github.com/ducktors/storagebus",
-    "directory": "packages/local"
+    "directory": "packages/memory"
   },
   "private": false,
   "files": [
@@ -16,9 +16,9 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/local.d.ts",
-      "typescript": "./src/local.ts",
-      "import": "./dist/local.js"
+      "types": "./dist/memory.d.ts",
+      "typescript": "./src/memory.ts",
+      "import": "./dist/memory.js"
     }
   },
   "scripts": {
@@ -43,7 +43,6 @@
     "@biomejs/biome": "catalog:devDeps",
     "@types/node": "catalog:devDeps",
     "c8": "catalog:devDeps",
-    "mitata": "^0.1.6",
     "rimraf": "catalog:devDeps",
     "typescript": "catalog:devDeps"
   }

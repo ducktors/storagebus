@@ -8,13 +8,10 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'
-import type {
-  Adapter,
-  StorageOptions as StorageBusOptions,
-} from '@storagebus/storage'
+import type { Adapter } from '@storagebus/storage'
 import { ENOENT } from '@storagebus/storage/errors'
 
-type S3ClientLike = {
+export type S3ClientLike = {
   send(command: GetObjectCommand): Promise<{ Body?: unknown }>
   send(command: HeadObjectCommand): Promise<{
     ContentType?: string
@@ -24,9 +21,9 @@ type S3ClientLike = {
   send(command: DeleteObjectCommand): Promise<unknown>
 }
 
-type UploadObject = (params: PutObjectCommandInput) => Promise<void>
+export type UploadObject = (params: PutObjectCommandInput) => Promise<void>
 
-export type StorageOptions = {
+export type AdapterOptions = {
   bucket: string
   region?: string
   accessKeyId?: string
@@ -34,9 +31,9 @@ export type StorageOptions = {
   endpoint?: string
   client?: S3ClientLike
   upload?: UploadObject
-} & StorageBusOptions
+}
 
-export function adapter(options: StorageOptions): Adapter {
+export function createAdapter(options: AdapterOptions): Adapter {
   const {
     bucket,
     region,
@@ -129,5 +126,3 @@ export function adapter(options: StorageOptions): Adapter {
     },
   }
 }
-
-export default { adapter }

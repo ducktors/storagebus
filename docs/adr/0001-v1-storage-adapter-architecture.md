@@ -1,0 +1,3 @@
+# V1 Storage Adapter Architecture
+
+StorageBus v1 uses `@storagebus/storage` as the only package that creates `Storage` instances, while Adapter packages such as `@storagebus/local`, `@storagebus/s3`, `@storagebus/gcs`, and `@storagebus/memory` expose Adapter factories for specific Storage Backends. We intentionally chose a breaking 1.0 cleanup over deprecated provider-specific `createStorage` wrappers so applications can keep the same `Storage` import and swap Storage Backends by injecting a different Adapter. Adapter packages depend on `@storagebus/storage` as their peer host package, because `Storage`, `BusFile`, shared errors, and the Adapter contract belong to the core package.
