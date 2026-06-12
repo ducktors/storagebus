@@ -7,7 +7,21 @@ import type {
 } from '@storagebus/storage'
 import { ENOENT } from '@storagebus/storage/errors'
 
-type StorageClient = Pick<GCS.Storage, 'bucket'>
+type StorageFile = Pick<
+  GCS.File,
+  'createWriteStream' | 'createReadStream' | 'exists'
+> & {
+  getMetadata(): Promise<[GCS.GetFileMetadataResponse[0], ...unknown[]]>
+  delete(options?: GCS.DeleteFileOptions): Promise<unknown>
+}
+
+type StorageBucket = {
+  file(path: string): StorageFile
+}
+
+type StorageClient = {
+  bucket(name: string): StorageBucket
+}
 
 export type StorageOptions = {
   bucket: string

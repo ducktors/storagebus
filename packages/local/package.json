@@ -21,8 +21,6 @@
       "import": "./dist/local.js"
     }
   },
-  "main": "dist/local.js",
-  "types": "dist/local.d.ts",
   "scripts": {
     "build": "rimraf dist && tsc",
     "format": "biome format --write .",

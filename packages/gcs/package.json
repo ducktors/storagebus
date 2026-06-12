@@ -21,8 +21,6 @@
       "import": "./dist/gcs.js"
     }
   },
-  "main": "dist/gcs.js",
-  "types": "dist/gcs.d.ts",
   "scripts": {
     "build": "rimraf dist && tsc",
     "format": "biome format --write .",
@@ -35,8 +33,8 @@
   },
   "keywords": [],
   "dependencies": {
+    "@google-cloud/storage": "^7.21.0",
     "@storagebus/storage": "workspace:*",
-    "@google-cloud/storage": "^6.9.3",
     "tslib": "catalog:prodDeps"
   },
   "devDependencies": {

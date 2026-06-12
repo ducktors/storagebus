@@ -46,8 +46,6 @@
       "import": "./dist/compliance-test.js"
     }
   },
-  "main": "dist/storage.js",
-  "types": "dist/storage.d.ts",
   "scripts": {
     "build": "rimraf dist && tsc && cp src/latin-chars.json dist/latin-chars.json",
     "format": "biome format --write .",

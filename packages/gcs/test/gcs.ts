@@ -49,18 +49,30 @@ class MockedFile {
     this.#files.delete(this.name)
   }
 
-  async exists() {
+  async exists(): Promise<[boolean]> {
     return [this.#files.has(this.name)]
   }
 
-  async getMetadata() {
-    return [
+  async getMetadata(): Promise<
+    [
       {
-        name: this.name,
-        contentType: this.#type,
-        size: this.#content.length,
+        name: string
+        contentType: string
+        size: number
+      },
+      {
+        name: string
+        contentType: string
+        size: number
       },
     ]
+  > {
+    const metadata = {
+      name: this.name,
+      contentType: this.#type,
+      size: this.#content.length,
+    }
+    return [metadata, metadata]
   }
 }
 
@@ -115,6 +127,11 @@ test('GCS', async (t) => {
     await file.delete()
     assert.deepEqual(await file.exists(), [false])
     assert.deepEqual(await file.getMetadata(), [
+      {
+        name: 'foo.txt',
+        contentType: 'application/octet-stream',
+        size: 3,
+      },
       {
         name: 'foo.txt',
         contentType: 'application/octet-stream',
