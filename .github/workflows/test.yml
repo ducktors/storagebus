@@ -73,10 +73,10 @@ jobs:
           done
 
       - name: Coveralls
-        uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # master
+        uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2.3.6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ./coverage/lcov.info
+          file: ./coverage/lcov.info
 
       - name: CodeClimate
         if: runner.os == 'Linux'
