@@ -37,7 +37,7 @@
     "@storagebus/storage": "workspace:^"
   },
   "devDependencies": {
-    "@google-cloud/storage": "^7.21.0",
+    "@google-cloud/storage": "^8.4.0",
     "@storagebus/storage": "workspace:*",
     "@biomejs/biome": "catalog:devDeps",
     "@types/node": "catalog:devDeps",
